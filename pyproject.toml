@@ -1,0 +1,17 @@
+[project]
+name = "pdc"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Clément Harang",email = "clement.harang22@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dearpygui (>=2.0.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
