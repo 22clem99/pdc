@@ -32,7 +32,30 @@ files = [
     {file = "dearpygui-2.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:ffe10b14f836cea82881fb9f66e464877429ce3ff2fbc3e33d239881cd52bada"},
 ]
 
+[[package]]
+name = "logging"
+version = "0.4.9.6"
+description = "A logging module for Python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "logging-0.4.9.6.tar.gz", hash = "sha256:26f6b50773f085042d301085bd1bf5d9f3735704db9f37c1ce6d8b85c38f2417"},
+]
+
+[[package]]
+name = "xdialog"
+version = "1.2.0.1"
+description = "A cross-platform python wrapper for native dialogs."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "xdialog-1.2.0.1-py3-none-any.whl", hash = "sha256:05c019ac13ad3eae01bc1627fa21f37c1265720080355c6ff05a13fb73867192"},
+    {file = "xdialog-1.2.0.1.tar.gz", hash = "sha256:d3fce86d0c674d75b9793275a405ee3a37305f97d9b610b5e454dd0a64e146d3"},
+]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "b8990738d69ba2532fc78dcb7127ac536b22835815a01f019475a20f7316aa7b"
+content-hash = "948e24e357567be1016ad91f6c8535dc7c5a2a4080a02805a3f51f019f5350f8"
