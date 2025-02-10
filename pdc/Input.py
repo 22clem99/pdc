@@ -28,11 +28,10 @@ class ImageInput(Input):
         with dpg.node_attribute(tag=self.tag,
                                 label=self.name,
                                 parent=parent,
-                                attribute_type=dpg.mvNode_Attr_Output):
+                                attribute_type=dpg.mvNode_Attr_Input):
 
             dpg.add_text("Image",
                          tag=self.name + "_TextSlot")
-            
-            
+
     def __str__(self):
         return "Image Input: " + super().__str__() 

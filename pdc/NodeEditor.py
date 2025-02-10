@@ -11,15 +11,23 @@ class NodeEditor:
         input_node = InputImageNode()
         output_node = OutputImageNode()
         self.nodes = {input_node.tag:input_node, output_node.tag:output_node}
-        self.edges = [Edge(input_node.tag, output_node.tag)]
-
+        # Clear this because there is only one input available
+        for output in input_node.outputs.values():
+            output_edge = output
+        # Clear this because there is only one input available
+        for input in output_node.inputs.values():
+            input_edge = input
+        self.edges = [Edge(start_node=input_node.tag, output=output_edge.tag, end_node=output_node.tag, input=input_edge.tag)]
         # By defaut, crerate with an input Node and an output Node
+        logger.debug("Display the default node editor")
         with dpg.node_editor(label=NodeEditor.node_editor_name, parent=parent, callback=self.CB_link_node, delink_callback=self.CB_delink_node):
             for node in self.nodes.values():
+                logger.debug(f"Add node: {node.tag}")
                 node.add_node(parent=NodeEditor.node_editor_name)
 
             for edge in self.edges:
-                edge.add_edge(parent=NodeEditor.node_editor_name)
+                logger.debug(f"Add edge: {edge.tag}")
+                edge.add_edge()
 
     def add_node_to_editor(self, node):
         pass

@@ -28,7 +28,7 @@ class ImageOutput(Output):
         with dpg.node_attribute(tag=self.tag,
                                 label=self.name,
                                 parent=parent,
-                                attribute_type=dpg.mvNode_Attr_Input):
+                                attribute_type=dpg.mvNode_Attr_Output):
 
             dpg.add_text("Image",
                          tag=self.name + "_TextSlot")
