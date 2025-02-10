@@ -4,6 +4,7 @@ import logging
 from common.Singleton import *
 from Project import *
 from Settings import *
+from NodeEditor import *
 
 logger = logging.getLogger(__name__)
 
@@ -29,16 +30,23 @@ class ProjectManagerWindow(Singleton):
                 dpg.add_menu_item(label="Help", callback=self.CBMenuHelp)
 
             # Preview
-            with dpg.group(horizontal=True):
+            with dpg.group(tag="group horizontal project manager", horizontal=True):
                 with dpg.group(horizontal=False, width=(Settings.width/2)):
-                    # Preview non modified image
-                    with dpg.plot(label="Images displayed", no_title=True, crosshairs=False, equal_aspects=True):
-                        dpg.add_plot_axis(dpg.mvXAxis, label="x axis", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
-                        dpg.add_plot_axis(dpg.mvYAxis, label="y axis not modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
-                        dpg.add_image_series(parent=dpg.last_item(), texture_tag=Project.default_texture_image_name, bounds_min=[0, 0], bounds_max=[self.project.width_img_base, self.project.height_img_base])
-                        dpg.add_plot_axis(dpg.mvYAxis2, label="y axis modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
-                        dpg.add_image_series(parent=dpg.last_item(), texture_tag=Project.default_texture_image_name, bounds_min=[0, 0], bounds_max=[self.project.width_img_base, self.project.height_img_base])
+                    with dpg.subplots(2, 1, label="Images Preview", width=-1, height=-1, link_all_x=True, link_all_y=True):
+                        # Preview none modified image
+                        with dpg.plot(label="Images displayed", no_title=True, crosshairs=False, equal_aspects=True):
+                            dpg.add_plot_axis(dpg.mvXAxis, label="x axis not modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
+                            dpg.add_plot_axis(dpg.mvYAxis, label="y axis not modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
+                            dpg.add_image_series(parent=dpg.last_item(), texture_tag=Project.default_texture_image_name, bounds_min=[0, 0], bounds_max=[self.project.width_img_base, self.project.height_img_base])
 
+                        # Preview modified image
+                        with dpg.plot(label="Images displayed", no_title=True, crosshairs=False, equal_aspects=True):
+                            dpg.add_plot_axis(dpg.mvXAxis, label="x axis modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
+                            dpg.add_plot_axis(dpg.mvYAxis, label="y axis modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
+                            dpg.add_image_series(parent=dpg.last_item(), texture_tag=Project.default_texture_image_name, bounds_min=[0, 0], bounds_max=[self.project.width_img_base, self.project.height_img_base])
+
+                # Create the node editor here
+                node_editor = NodeEditor("group horizontal project manager")
 
     def CBMenuBarSave(self):
         logger.warning("TODO")
