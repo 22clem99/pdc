@@ -46,7 +46,7 @@ class Project:
 
         # Load default image as texture
         self.width_img_base, self.height_img_base, self.channels_img_base, self.data_img_base = dpg.load_image(self.working_image)
-        with dpg.texture_registry(show=True):
+        with dpg.texture_registry(show=False):
             dpg.add_static_texture(width=self.width_img_base,  height=self.height_img_base, default_value=self.data_img_base, tag=Project.default_texture_image_name)
 
 

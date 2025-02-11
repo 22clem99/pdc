@@ -16,10 +16,10 @@ class Output(ABC):
 
     def get_value(self):
         return self.value
-    
+
     def __str__(self):
         return f"name: {self.name}, tag: {self.tag}"
-    
+
 class ImageOutput(Output):
     def __init__(self):
         super().__init__("Image Ouput")
@@ -31,7 +31,7 @@ class ImageOutput(Output):
                                 attribute_type=dpg.mvNode_Attr_Output):
 
             dpg.add_text("Image",
-                         tag=self.name + "_TextSlot")
-    
+                         tag=self.name + "_TextSlot_" + str(random.randint(0, 50000)))
+
     def __str__(self):
         return "Image Output: " + super().__str__()

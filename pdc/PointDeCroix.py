@@ -31,6 +31,8 @@ class PointDeCroix:
         '''Start by creating a new windows'''
         dpg.create_viewport(title=f"Point de Croix V{__version__}", width=Settings.width, height=Settings.height)
 
+        dpg.show_item_registry()
+
         with dpg.window(tag="project_selection", no_close=True, no_collapse=True, no_title_bar=True):
             with dpg.group(horizontal=True):
                 dpg.add_button(label=_("open_project"), callback=self.CBOpenProject)

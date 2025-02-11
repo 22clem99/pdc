@@ -31,7 +31,7 @@ class ProjectManagerWindow(Singleton):
 
             # Preview
             with dpg.group(tag="group horizontal project manager", horizontal=True):
-                with dpg.group(horizontal=False, width=(Settings.width/2)):
+                with dpg.group(tag="group vertical preview", width=(Settings.width/2), height=-1):
                     with dpg.subplots(2, 1, label="Images Preview", width=-1, height=-1, link_all_x=True, link_all_y=True):
                         # Preview none modified image
                         with dpg.plot(label="Images displayed", no_title=True, crosshairs=False, equal_aspects=True):
@@ -45,8 +45,9 @@ class ProjectManagerWindow(Singleton):
                             dpg.add_plot_axis(dpg.mvYAxis, label="y axis modified", no_label=True, no_gridlines=True, no_tick_marks=True, no_tick_labels=True)
                             dpg.add_image_series(parent=dpg.last_item(), texture_tag=Project.default_texture_image_name, bounds_min=[0, 0], bounds_max=[self.project.width_img_base, self.project.height_img_base])
 
-                # Create the node editor here
-                node_editor = NodeEditor("group horizontal project manager")
+                with dpg.group(tag="group vertical node editor", height=-1, width=-1):
+                    # Create the node editor here
+                    node_editor = NodeEditor(parent="group vertical node editor")
 
     def CBMenuBarSave(self):
         logger.warning("TODO")

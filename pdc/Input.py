@@ -6,7 +6,7 @@ class Input(ABC):
     def __init__(self, name):
        self.name = name
        self.tag = name + "_" + str(random.randint(0, 50000))
-       
+
     @abstractmethod
     def add_input_to_node(self, parent):
         pass
@@ -31,7 +31,7 @@ class ImageInput(Input):
                                 attribute_type=dpg.mvNode_Attr_Input):
 
             dpg.add_text("Image",
-                         tag=self.name + "_TextSlot")
+                         tag=self.name + "_TextSlot_" + str(random.randint(0, 50000)))
 
     def __str__(self):
-        return "Image Input: " + super().__str__() 
+        return "Image Input: " + super().__str__()
