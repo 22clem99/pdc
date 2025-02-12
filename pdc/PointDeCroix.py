@@ -26,6 +26,7 @@ logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 class PointDeCroix:
     def __init__(self):
         dpg.create_context()
+        dpg.configure_app(manual_callback_management=True)
 
     def LaunchPointDeCroix(self):
         '''Start by creating a new windows'''
@@ -40,7 +41,11 @@ class PointDeCroix:
 
         dpg.setup_dearpygui()
         dpg.show_viewport()
-        dpg.start_dearpygui()
+        while dpg.is_dearpygui_running():
+            jobs = dpg.get_callback_queue() # retrieves and clears queue
+            dpg.run_callbacks(jobs)
+            dpg.render_dearpygui_frame()
+        # dpg.start_dearpygui()
 
     def CBNewProject(self):
         logger.debug(_("New existing project"))

@@ -21,16 +21,16 @@ class Input(ABC):
         return f"name: {self.name}, tag: {self.tag}"
 
 class ImageInput(Input):
-    def __init__(self):
-        super().__init__("Image Input")
+    def __init__(self, name="Image Input"):
+        super().__init__(name)
 
-    def add_input_to_node(self, parent):
+    def add_input_to_node(self, parent, text="Image"):
         with dpg.node_attribute(tag=self.tag,
                                 label=self.name,
                                 parent=parent,
                                 attribute_type=dpg.mvNode_Attr_Input):
 
-            dpg.add_text("Image",
+            dpg.add_text(text,
                          tag=self.name + "_TextSlot_" + str(random.randint(0, 50000)))
 
     def __str__(self):

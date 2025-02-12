@@ -21,16 +21,16 @@ class Output(ABC):
         return f"name: {self.name}, tag: {self.tag}"
 
 class ImageOutput(Output):
-    def __init__(self):
-        super().__init__("Image Ouput")
+    def __init__(self, name="Image Ouput"):
+        super().__init__(name)
 
-    def add_output_to_node(self, parent):
+    def add_output_to_node(self, parent, text="Image"):
         with dpg.node_attribute(tag=self.tag,
                                 label=self.name,
                                 parent=parent,
                                 attribute_type=dpg.mvNode_Attr_Output):
 
-            dpg.add_text("Image",
+            dpg.add_text(text,
                          tag=self.name + "_TextSlot_" + str(random.randint(0, 50000)))
 
     def __str__(self):

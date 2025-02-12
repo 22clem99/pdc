@@ -15,3 +15,6 @@ class Edge():
     def add_edge(self):
         logger.debug(f"Create edge with attr1={self.output}, attr2={self.input}, tag={self.tag}, parent={self.start_node}")
         dpg.add_node_link(self.output, self.input, tag=self.tag, parent="Node Editor")
+
+    def del_edge(self):
+        dpg.delete_item(self.tag)
