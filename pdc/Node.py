@@ -9,18 +9,6 @@ from Output import *
 
 logger = logging.getLogger(__name__)
 
-class HandlerNode(Singleton):
-    def __new__(cls):
-        logger.debug(f"Get {cls} singleton")
-        if not hasattr(cls, 'instance'):
-            logger.debug(f"Create a {cls} instance")
-            cls.instance = super(Singleton, cls).__new__(cls)
-            cls.instance.tag = "Handler node"
-            dpg.add_item_handler_registry(tag=cls.instance.tag)
-            dpg.add_item_clicked_handler(parent=cls.instance.tag, callback=Node.CB_right_click)
-        return cls.instance
-
-
 class Node(ABC):
     def __init__(self, name="", inputs=None, outputs=None, can_be_remove=True):
         self.tag = name + "_" + str(random.randint(0, 50000))
@@ -41,8 +29,6 @@ class Node(ABC):
             logger.debug(f"Add output: {output.tag}")
             self.outputs[output.tag] = output
 
-        self.handler_node = HandlerNode()
-
         logger.debug(f"Add new node [Name]: {self.name}, [Tag]: {self.tag}, [Inputs]: {self.inputs}, [Outputs]: {self.outputs}")
 
     def add_node(self, parent):
@@ -58,9 +44,9 @@ class Node(ABC):
             logger.debug(f"Add output \"{output.tag}\"to node editor")
             output.add_output_to_node(parent=self.tag)
 
-        # Add right click callback
-        logger.debug(f"Bind handler to {self.tag} to {self.handler_node.tag}")
-        dpg.bind_item_handler_registry(self.tag, self.handler_node.tag)
+    def del_node(self):
+        logger.debug(f"Delete node \"{self.tag}\"")
+        dpg.delete_item(self.tag)
 
     def set_pos(self, pos):
         logger.debug(f"Set position of node {self.tag}")
@@ -70,11 +56,6 @@ class Node(ABC):
     @abstractmethod
     def compute_outputs(self):
         pass
-
-    def CB_right_click(self, sender, app_data):
-        logger.debug(f"Right click with parameter: {sender=}, {app_data=}")
-
-
 
 class InputImageNode (Node):
     def __init__(self):

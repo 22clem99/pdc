@@ -46,6 +46,7 @@ class NodeEditor:
         input_node.set_pos((50, 50))
         output_node.set_pos((200, 50))
 
+        # Add a handler to trigger event to delete items from node editor
         with dpg.handler_registry():
             dpg.add_key_release_handler(key=dpg.mvKey_Delete, callback=self.callback_delete_item)
 
@@ -58,50 +59,26 @@ class NodeEditor:
         ## Check that the edge can be append
         # A node output can be a multiple edge source
         # but a input can't be a multiple edge destination
-        # for edge in self.edges:
-        #     if dpg.get_alias_id(edge.input) == app_data[0] or dpg.get_alias_id(edge.output) == app_data[0]:
-        #         logger.info(f"Can't create the edge from {dpg.get_item_alias(app_data[0])} to {dpg.get_item_alias(app_data[1])} because {dpg.get_item_alias(app_data[0])} is not free")
-        #         return 0
-        # the end node must be free
         for edge in self.edges:
-            logger.debug(f"edge {edge.tag}")
             if dpg.get_alias_id(edge.input) == app_data[1] or dpg.get_alias_id(edge.output) == app_data[1]:
                 logger.info(f"Can't create the edge from {dpg.get_item_alias(app_data[0])} to {dpg.get_item_alias(app_data[1])} because {dpg.get_item_alias(app_data[1])} is not free")
                 return 0
+
+        # Create a new edge
         edge = Edge(start_node=dpg.get_item_alias(dpg.get_item_parent(app_data[0])),
                     output=dpg.get_item_alias(app_data[0]),
                     end_node=dpg.get_item_alias(dpg.get_item_parent(app_data[0])),
                     input=dpg.get_item_alias(app_data[1]))
+
+        # Add the edge to the node editor
         edge.add_edge()
+
+        # Add the new edge to the list of edge
         self.edges.append(edge)
 
 
     def CB_delink_node(self, sender, app_data):
-        logger.debug(f"Delink with parameter: {sender=}, {app_data=}")
-        # Look for the edge to remove
-        edge_to_remove = None
-        for edge in self.edges:
-            if edge.input == app_data[0]:
-                if edge.output == app_data[1]:
-                    logger.debug(f"Find edge ({self.name=})")
-                    edge_to_remove = edge
-            elif edge.input == app_data[1]:
-                if edge.output == app_data[0]:
-                    logger.debug(f"Find edge ({self.name=})")
-                    edge_to_remove = edge
-
-        if edge_to_remove == None:
-            logger.error("Unable to find the Edge to delink")
-            exit(1)
-
-        # remove edge from the node editor
-        edge_to_remove.del_edge()
-
-        # Remove from the edge object from the list
-        self.edges.remove(edge_to_remove)
-
-    def CB_right_click(self, sender, app_data):
-        logger.debug(f"Right click with parameter: {sender=}, {app_data=}")
+        pass
 
     def CBMenuBarFilter(self, sender, app_data):
         logger.debug(f"Menu bar filter click with parameter: {sender=}, {app_data=}")
@@ -122,11 +99,47 @@ class NodeEditor:
     def callback_delete_item(self, sender):
         logger.debug(f"Try to delete: {sender=}")
         for selected_node in dpg.get_selected_nodes(NodeEditor.node_editor_name):
-            print(selected_node)
-            # Remove edge between the Node to remove and others
+            logger.debug(f"Remove the node {selected_node}")
+            # Get the node tag to remove
+            node_tag = dpg.get_item_alias(selected_node)
+            if self.nodes[node_tag].can_be_remove == True:
+                # Remove edge between the Node to remove and others
+                for edge in self.edges:
+                    # If the source or the destination of the edge is the node to delete, delete the edge
+                    if edge.start_node == node_tag or edge.end_node == node_tag:
+                        logger.debug(f"Remove the edge {edge.tag} because it is linked to the node {node_tag}")
+                        # remove edge from the node editor
+                        edge.del_edge()
 
-            # Remove the node*
+                        # Remove from the edge object from the list
+                        self.edges.remove(edge)
+
+                # remove node from the node editor
+                self.nodes[node_tag].del_node()
+
+                # Remove from the edge object from the list
+                del self.nodes[node_tag]
+            else:
+                logger.info(f"Can't remove {node_tag}")
 
         for selected_link in dpg.get_selected_links(NodeEditor.node_editor_name):
-            print(selected_link)
-            # Remove edge
+            logger.debug(f"Remove the edge {selected_link}")
+            # Get the edge tag to remove
+            link_tag = dpg.get_item_alias(selected_link)
+
+            # logger.debug(f"Delink with parameter: {sender=}, {app_data=}")
+            # Look for the edge to remove
+            edge_to_remove = None
+            for edge in self.edges:
+                if edge.tag == link_tag:
+                        edge_to_remove = edge
+
+            if edge_to_remove == None:
+                logger.error("Internal error, unable to find the Edge to delink")
+                exit(1)
+
+            # remove edge from the node editor
+            edge_to_remove.del_edge()
+
+            # Remove from the edge object from the list
+            self.edges.remove(edge_to_remove)
