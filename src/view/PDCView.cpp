@@ -1,5 +1,7 @@
 #include "PDCView.hpp"
 
+#include <iostream>
+
 PDCView::PDCView()
 {
     set_title("Point De Croix");

@@ -1,6 +1,6 @@
-#include <iostream>
 #include "view/PDCView.hpp"
 
+#include <iostream>
 #include <gtkmm/application.h>
 
 int main(int argc, char *argv[])
