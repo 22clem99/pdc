@@ -25,7 +25,7 @@ public:
 
         ss << uuid;
 
-        id = Derived::ClassName() + "." + ss.str();
+        id = Derived::class_name() + "." + ss.str();
     }
 };
 

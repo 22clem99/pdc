@@ -4,6 +4,8 @@ set (CMAKE_CXX_STANDARD 20)
 
 project(PointDeCroix)
 
+enable_testing()
+
 ## Find dependencies
 # find GTK
 find_package(PkgConfig REQUIRED)

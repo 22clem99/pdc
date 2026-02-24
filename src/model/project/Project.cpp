@@ -1,38 +1,29 @@
 #include "Project.hpp"
 #include <utils/Log.hpp>
 
-Project::Project()
-{
-    nodes = {};
-    empty = true;
-}
-
-int Project::set_name_and_file(string project_name, string file_path)
+Project::Project(string project_name, string file_path)
 {
     Log::info("Create a new project with (Name: \"" + project_name + "\"), (file: \"" + file_path + "\")");
     name = project_name;
     file = file_path;
-
-    empty = false;
 }
 
 int Project::add_node(string node_type, unsigned int position)
 {
-
+    return 0;
 }
 
 int Project::remove_node(string node_type)
 {
 
+    return 0;
 }
 
 string Project::get_str(void)
 {
+    string s = "";
 
-}
+    s += "Project {\n\tname: \"" + name + "\", file: \"" + file + "\"\n}";
 
-
-bool Project::is_empty(void)
-{
-    return empty;
+    return s;
 }

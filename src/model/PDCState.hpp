@@ -1,12 +1,14 @@
 #ifndef PDCSTATE_H
 #define PDCSTATE_H
 
+#include <memory>
+
 #include "project/Project.hpp"
 
 
 class PDCState {
 private:
-    Project prj;
+    unique_ptr<Project> prj;
 public:
     PDCState();
     bool createProject(string name);

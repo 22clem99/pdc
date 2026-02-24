@@ -29,31 +29,31 @@ void Log::set_level(LogLevel new_level) {
 // Implementation methods
 void Log::debug_impl(string msg) {
     if (level <= LogLevel::DEBUG) {
-        cout << "DEBUG: " << msg;
+        cout << "DEBUG: " << msg << endl;
     }
 }
 
 void Log::info_impl(string msg) {
     if (level <= LogLevel::INFO) {
-        cout << "INFO: " << msg;
+        cout << "INFO: " << msg << endl;
     }
 }
 
 void Log::warning_impl(string msg) {
     if (level <= LogLevel::WARNING) {
-        cout << "WARNING: " << msg;
+        cout << "WARNING: " << msg << endl;
     }
 }
 
 void Log::error_impl(string msg) {
     if (level <= LogLevel::ERROR) {
-        cout << "ERROR: " << msg;
+        cout << "ERROR: " << msg << endl;
     }
 }
 
 void Log::critical_impl(string msg) {
     if (level <= LogLevel::CRITICAL) {
-        cout << "CRITICAL: " << msg;
+        cout << "CRITICAL: " << msg << endl;
     }
 }
 

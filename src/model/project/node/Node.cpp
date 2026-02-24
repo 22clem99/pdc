@@ -1,6 +1,5 @@
 #include "Node.hpp"
 
-
 string Node::class_name()
 {
     return "Node";

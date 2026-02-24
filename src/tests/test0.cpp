@@ -1,10 +1,14 @@
 #include <model/project/Project.hpp>
 
+#include <utils/Log.hpp>
+
 int main(int argc, char *argv[])
 {
-    Project p;
+    Log::set_level(LogLevel::INFO);
 
-    p.set_name_and_file("My amazing project", "./test");
+    Project p("My amazing project", "./test");
+
+    Log::info(p.get_str());
 
     return 0;
 }

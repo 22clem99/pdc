@@ -6,7 +6,6 @@ add_library(Project
 
 target_link_libraries(Project
     PUBLIC
-        Log
         Node
     PRIVATE
         utils

@@ -6,5 +6,6 @@ add_library(Node
 )
 
 target_link_libraries(Node
-    PRIVATE utils
+    PRIVATE
+        utils
 )

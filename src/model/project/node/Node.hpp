@@ -29,11 +29,12 @@ private:
     map<string, InputVariant> inputs;
     map<string, OutputVariant> outputs;
 public:
+    virtual ~Node() = 0;
     static string class_name();
     int add_input(InputVariant &in);
     int add_output(OutputVariant &out);
     string get_str(void);
-    virtual int compute_output();
+    virtual int compute_output() = 0;
 };
 
 #endif
