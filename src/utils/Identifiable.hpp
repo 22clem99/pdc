@@ -1,3 +1,6 @@
+#ifndef IDENTIFIABLE_H
+#define IDENTIFIABLE_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -25,3 +28,5 @@ public:
         id = Derived::ClassName() + "." + ss.str();
     }
 };
+
+#endif

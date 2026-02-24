@@ -4,7 +4,7 @@
 #include <utils/Identifiable.hpp>
 
 template<typename T>
-class Output : public Identifiable<Output>
+class Output : public Identifiable<Output<T>>
 {
 private:
     T data;

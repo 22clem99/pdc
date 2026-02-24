@@ -7,13 +7,14 @@ foreach(src_file ${src_files})
 
     get_filename_component(exe_name ${src_file} NAME_WE)
 
-    add_executable(${exe_name}
+    add_executable(PointDeCroix
         ${file_list}
     )
 
     target_link_libraries(${exe_name}
     PRIVATE
-        Node
+        Project
+        utils
     )
 endforeach()
 

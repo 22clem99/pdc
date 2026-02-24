@@ -27,12 +27,13 @@ class Node : public Identifiable<Node>
 private:
     string id;
     map<string, InputVariant> inputs;
-    map<string, OutputVariant> inputs;
+    map<string, OutputVariant> outputs;
 public:
     static string class_name();
-    int add_input(InputVariant in);
-    int add_output(OutputVariant out);
+    int add_input(InputVariant &in);
+    int add_output(OutputVariant &out);
     string get_str(void);
+    virtual int compute_output();
 };
 
 #endif

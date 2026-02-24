@@ -4,6 +4,7 @@
 #include <utils/Identifiable.hpp>
 
 #include <list>
+#include <string>
 
 enum InputControlType {
     NO_CONTROL,
@@ -14,7 +15,7 @@ enum InputControlType {
 
 
 template<typename T>
-class Input : public Identifiable<Input>
+class Input : public Identifiable<Input<T>>
 {
 private:
     T data;
@@ -38,12 +39,12 @@ public:
 
     Input(T value, T high_value, T low_value, T step_value) : Input(data, high_value, low_value)  {
         control = LIMIT_WITH_STEP_CONTROL;
-        step = step_value
+        step = step_value;
     }
 
     Input(T value, list<T> values) {
         control = SET_VALUE_CONTROL;
-        available_values = values
+        available_values = values;
     }
 
     T get_value() {
@@ -57,25 +58,35 @@ public:
             // Nothing to do as we do not need to
             break;
         case LIMIT_CONTROL:
-            if (T.lesser(value, low_limit) || T.greater(value, high_limit)) {
+            if (T::lesser(value, low_limit) || T::greater(value, high_limit)) {
                 return false;
             }
             break;
         case LIMIT_WITH_STEP_CONTROL:
-            if (T.lesser(value, low_limit) || T.greater(value, high_limit) || T.is_divisible(value, step)) {
+            if (T::lesser(value, low_limit) || T::greater(value, high_limit) || T::is_divisible(value, step)) {
                 return false;
             }
             break;
 
         case SET_VALUE_CONTROL:
-            /* code */
-            break;
-
+            for (const auto& val : available_values)
+            {
+                if (T::equal(value, val)) {
+                    break;
+                }
+            }
+            return false;
         default:
             break;
         }
 
         data = value;
+        return true;
+    }
+
+    static std::string ClassName()
+    {
+        return "Node";
     }
 };
 
