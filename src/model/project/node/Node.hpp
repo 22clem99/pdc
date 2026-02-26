@@ -11,26 +11,27 @@
 #include "output/Output.hpp"
 
 #include <utils/Identifiable.hpp>
+#include <memory>
 
 using namespace std;
 
 using InputVariant = variant<
-    Input<Int>
+    unique_ptr<Input<Int>>
 >;
 
 using OutputVariant = variant<
-    Output<Int>
+    unique_ptr<Output<Int>>,
+    unique_ptr<Output<Image>>
 >;
 
 class Node : public Identifiable<Node>
 {
-private:
-    string id;
+public:
     map<string, InputVariant> inputs;
     map<string, OutputVariant> outputs;
-public:
-    virtual ~Node() = 0;
+    virtual ~Node() = default;
     static string class_name();
+    virtual string get_class_name() const = 0;
     int add_input(InputVariant &in);
     int add_output(OutputVariant &out);
     string get_str(void);

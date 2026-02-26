@@ -10,4 +10,6 @@ target_include_directories(Toolbar
 target_link_libraries(Toolbar
     PUBLIC
         PkgConfig::GGTKMM
+    PRIVATE
+        utils
 )

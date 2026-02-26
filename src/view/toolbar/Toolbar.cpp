@@ -1,13 +1,13 @@
 #include "Toolbar.hpp"
 
-#include <iostream>
+#include <utils/Log.hpp>
 
 Toolbar::Toolbar()
 {
 
     //add_child()
 
-    std::cout << "Toolbar created" << std::endl;
+    Log::debug("Toolbar created");
 
     return;
 }

@@ -16,13 +16,16 @@ enum LogLevel
     CRITICAL = 4
 };
 
-class Log : public Singleton<Log>
+class Log
 {
-    friend class Singleton<Log>; // Permet au Singleton d'accéder au constructeur
-
 private:
     LogLevel level = ERROR;
-    Log() = default;
+
+    static Log& instance()
+    {
+        static Log instance; // garanti thread-safe depuis C++11
+        return instance;
+    }
 
 public:
     // Public interface to log messages

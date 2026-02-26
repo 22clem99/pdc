@@ -1,13 +1,13 @@
 #include "PDCView.hpp"
 
-#include <iostream>
+#include <utils/Log.hpp>
 
 PDCView::PDCView()
 {
     set_title("Point De Croix");
     set_default_size(400, 400);
 
-    std::cout << "PDCView created" << std::endl;
+    Log::debug("PDCView created");
 
     return;
 }

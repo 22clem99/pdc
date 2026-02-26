@@ -12,4 +12,6 @@ target_include_directories(PDCView
 target_link_libraries(PDCView
     PUBLIC
         PkgConfig::GGTKMM
+    PRIVATE
+        utils
 )

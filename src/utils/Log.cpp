@@ -3,27 +3,27 @@
 #include "Log.hpp"
 
 void Log::debug(string msg) {
-    get_instance().debug_impl(msg);
+    instance().debug_impl(msg);
 }
 
 void Log::info(string msg) {
-    get_instance().info_impl(msg);
+    instance().info_impl(msg);
 }
 
 void Log::warning(string msg) {
-    get_instance().warning_impl(msg);
+    instance().warning_impl(msg);
 }
 
 void Log::error(string msg) {
-    get_instance().error_impl(msg);
+    instance().error_impl(msg);
 }
 
 void Log::critical(string msg) {
-    get_instance().critical_impl(msg);
+    instance().critical_impl(msg);
 }
 
 void Log::set_level(LogLevel new_level) {
-    get_instance().set_level_impl(new_level);
+    instance().set_level_impl(new_level);
 }
 
 // Implementation methods

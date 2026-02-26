@@ -9,7 +9,24 @@ class Output : public Identifiable<Output<T>>
 private:
     T data;
 public:
-    Output(T data);
+
+    Output() {}
+
+    Output(T value) {
+        data = value;
+    }
+
+    T get_value() {
+        return data;
+    }
+
+    int set_value(T value) {
+        data = value;
+    }
+
+    static string class_name() {
+        return "Output<" + T::class_name() + ">";
+    }
 };
 
 #endif

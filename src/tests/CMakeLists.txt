@@ -1,5 +1,6 @@
 set(src_files
     test0.cpp
+    test1.cpp
 )
 
 foreach(src_file ${src_files})
@@ -12,6 +13,7 @@ foreach(src_file ${src_files})
     target_link_libraries(${exe_name}
     PUBLIC
         Project
+        Node
     PRIVATE
         utils
     )

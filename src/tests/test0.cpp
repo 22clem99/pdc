@@ -4,11 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    Log::set_level(LogLevel::INFO);
+    Log::set_level(LogLevel::DEBUG);
 
-    Project p("My amazing project", "./test");
-
-    Log::info(p.get_str());
+    Project p("My amazing project", "./images/Tux.svg");
 
     return 0;
 }

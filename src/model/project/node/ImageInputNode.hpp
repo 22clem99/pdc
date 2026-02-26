@@ -2,8 +2,12 @@
 #define IMAGE_INPUT_NODE_H
 
 #include "Node.hpp"
+#include "NodeRegister.hpp"
 
 #include "output/Output.hpp"
+#include <string>
+
+using namespace std;
 
 
 /**
@@ -20,13 +24,19 @@
  *
  */
 
-class ImageInputNode : Node
+class ImageInputNode : public Node
 {
 public:
     ImageInputNode();
     static string class_name();
+    string get_class_name() const override { return class_name(); }
     string get_str(void);
     int compute_output();
+
+private:
+    static NodeRegister<ImageInputNode> reg;
 };
+
+static NodeRegister<ImageInputNode> reg;
 
 #endif

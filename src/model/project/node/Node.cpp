@@ -23,11 +23,21 @@ string Node::get_str(void)
 {
     string s = "";
 
-    s += "Node {\n\tid: \n\"" + id + "\"\n\tinputs: [\n";
-    // TODO, print dict of inputs
-    s += "\t]\n\toutputs: [\n";
-    // TODO, print dict of outputs
-    s += "}\n";
+    s += get_class_name() +" {\n\tid: \"" + id + "\";\n\tinputs: [\n";
+
+    for (auto const& [key, val] : inputs)
+    {
+        s += "\t\t [" + key + "]\n";
+    }
+
+    s += "\t];\n\toutputs: [\n";
+
+    for (auto const& [key, val] : outputs)
+    {
+        s += "\t\t [" + key + "]\n";
+    }
+
+    s += "\t];\n}";
 
     return s;
 }
