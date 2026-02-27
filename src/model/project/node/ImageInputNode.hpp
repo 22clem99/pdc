@@ -4,7 +4,7 @@
 #include "Node.hpp"
 #include "NodeRegister.hpp"
 
-#include "output/Output.hpp"
+#include "Port.hpp"
 #include <string>
 
 using namespace std;

@@ -9,12 +9,14 @@ using namespace std;
 
 class Edge
 {
-private:
+public:
     Id from_node;
     Id from_output;
 
     Id to_node;
     Id to_input;
+
+    Edge() = default;
 };
 
 #endif

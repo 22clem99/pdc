@@ -7,33 +7,26 @@
 
 #include <utils/Types.hpp>
 
-#include "input/Input.hpp"
-#include "output/Output.hpp"
+#include "Port.hpp"
 
 #include <utils/Identifiable.hpp>
 #include <memory>
 
 using namespace std;
 
-using InputVariant = variant<
-    unique_ptr<Input<Int>>
->;
-
-using OutputVariant = variant<
-    unique_ptr<Output<Int>>,
-    unique_ptr<Output<Image>>
+using PortVariant = variant<
+    unique_ptr<Port<Int>>,
+    unique_ptr<Port<Image>>
 >;
 
 class Node : public Identifiable<Node>
 {
 public:
-    map<string, InputVariant> inputs;
-    map<string, OutputVariant> outputs;
+    map<string, PortVariant> ports;
     virtual ~Node() = default;
     static string class_name();
     virtual string get_class_name() const = 0;
-    int add_input(InputVariant& in);
-    int add_output(OutputVariant& out);
+    int add_port(PortVariant& p);
     string get_str(void);
     virtual int compute_output() = 0;
 };

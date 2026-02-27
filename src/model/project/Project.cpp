@@ -10,13 +10,13 @@ Project::Project(const string& project_name, const string& file_path)
 
 int Project::add_node(const string& node_type, unsigned int position)
 {
-    return node_graph.add_node(node_type, position);
+    return (node_graph.add_node(node_type, position) != "" ? -1 : 0);
 }
 
 int Project::remove_node(const string& node_type)
 {
 
-    return node_graph.remove_node(node_type);
+    return (node_graph.remove_node(node_type) ? -1 : 0);
 }
 
 string Project::get_str(void)

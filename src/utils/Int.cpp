@@ -2,6 +2,11 @@
 
 using namespace std;
 
+void Int::copy(const Int& a)
+{
+    data = a.data;
+}
+
 bool Int::equal(const Int& a, const Int& b)
 {
     return  a.data == b.data;

@@ -1,5 +1,6 @@
-add_library(Graph SHARED
+add_library(Graph
     Graph.cpp
+    GraphEditor.cpp
 )
 
 target_link_libraries(Graph

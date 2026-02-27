@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
 
     Project p("My amazing project", "./images/Tux.svg");
 
-    unique_ptr<Node> new_node = NodeAllocator::alloc_node(ImageInputNode::class_name());
+    p.add_node(ImageInputNode::class_name(), -1);
 
-    Log::info(new_node->get_str());
+    Log::info(p.get_str());
 
     return 0;
 }

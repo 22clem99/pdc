@@ -9,6 +9,7 @@ class Int {
 public:
     int data;
     Int() = default;
+    void copy(const Int& a);
     static bool equal(const Int& a, const Int& b);
     static bool greater(const Int& a, const Int& b);
     static bool lesser(const Int& a, const Int& b);

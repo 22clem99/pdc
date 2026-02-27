@@ -1,5 +1,5 @@
-add_subdirectory(input)
-add_subdirectory(output)
+# add_subdirectory(input)
+# add_subdirectory(output)
 
 add_library(Node SHARED
     Node.cpp
@@ -8,9 +8,9 @@ add_library(Node SHARED
 )
 
 target_link_libraries(Node
-    PUBLIC
-        Input
-        Output
+    # PUBLIC
+    #     Input
+    #     Output
     PRIVATE
         utils
 )

@@ -5,7 +5,7 @@
 #include <map>
 #include <memory>
 
-#include "graph/Graph.hpp"
+#include "graph/GraphEditor.hpp"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ private:
     string name;
     string file;
 
-    Graph node_graph;
+    GraphEditor node_graph;
 
 public:
     Project(const string& project_name, const string& file_path);

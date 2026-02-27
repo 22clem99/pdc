@@ -12,8 +12,9 @@ foreach(src_file ${src_files})
 
     target_link_libraries(${exe_name}
     PUBLIC
-        Project
         Node
+        Graph
+        Project
     PRIVATE
         utils
     )
