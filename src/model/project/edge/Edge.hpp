@@ -10,8 +10,11 @@ using namespace std;
 class Edge
 {
 private:
-    Id start;
-    Id end;
+    Id from_node;
+    Id from_output;
+
+    Id to_node;
+    Id to_input;
 };
 
 #endif

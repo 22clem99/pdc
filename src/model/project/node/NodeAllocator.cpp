@@ -2,12 +2,12 @@
 
 #include <utils/Log.hpp>
 
-void NodeAllocator::register_node(string name, CreatorFunc func)
+void NodeAllocator::register_node(const string& name, CreatorFunc func)
 {
     registry()[name] = func;
 }
 
-unique_ptr<Node> NodeAllocator::alloc_node(string node_type)
+unique_ptr<Node> NodeAllocator::alloc_node(const string& node_type)
 {
     Log::debug("Trying to alloc a node of type : \"" + node_type + "\"");
     auto it = registry().find(node_type);

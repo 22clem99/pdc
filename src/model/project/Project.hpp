@@ -3,10 +3,9 @@
 
 #include <string>
 #include <map>
-
 #include <memory>
 
-#include "node/Node.hpp"
+#include "graph/Graph.hpp"
 
 using namespace std;
 
@@ -16,12 +15,12 @@ private:
     string name;
     string file;
 
-    map<string, unique_ptr<Node>> nodes;
+    Graph node_graph;
 
 public:
-    Project(string project_name, string file_path);
-    int add_node(string node_type, unsigned int position);
-    int remove_node(string node_type);
+    Project(const string& project_name, const string& file_path);
+    int add_node(const string& node_type, unsigned int position);
+    int remove_node(const string& node_type);
     string get_str(void);
 };
 

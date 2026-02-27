@@ -1,22 +1,22 @@
 #include "Project.hpp"
 #include <utils/Log.hpp>
 
-Project::Project(string project_name, string file_path)
+Project::Project(const string& project_name, const string& file_path)
 {
     Log::info("Create a new project with (Name: \"" + project_name + "\"), (file: \"" + file_path + "\")");
     name = project_name;
     file = file_path;
 }
 
-int Project::add_node(string node_type, unsigned int position)
+int Project::add_node(const string& node_type, unsigned int position)
 {
-    return 0;
+    return node_graph.add_node(node_type, position);
 }
 
-int Project::remove_node(string node_type)
+int Project::remove_node(const string& node_type)
 {
 
-    return 0;
+    return node_graph.remove_node(node_type);
 }
 
 string Project::get_str(void)

@@ -84,7 +84,7 @@ public:
         return true;
     }
 
-    static std::string ClassName()
+    static std::string class_name()
     {
         return "Node";
     }

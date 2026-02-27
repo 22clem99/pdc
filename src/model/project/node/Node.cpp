@@ -12,7 +12,7 @@ int Node::add_input(InputVariant& in)
     // }
 }
 
-int Node::add_output(OutputVariant &out)
+int Node::add_output(OutputVariant& out)
 {
     // if (inputs.contains(in.id)) {
     return 0;

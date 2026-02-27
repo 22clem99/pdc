@@ -11,7 +11,7 @@ private:
     unique_ptr<Project> prj;
 public:
     PDCState();
-    bool createProject(string name);
+    bool createProject(const string& name);
     bool closeProject();
     bool saveProject();
     bool renameProject();

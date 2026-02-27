@@ -22,6 +22,8 @@ public:
 
     int set_value(T value) {
         data = value;
+
+        return 1;
     }
 
     static string class_name() {

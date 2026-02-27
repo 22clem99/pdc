@@ -29,20 +29,20 @@ private:
 
 public:
     // Public interface to log messages
-    static void debug(string msg);
-    static void info(string msg);
-    static void warning(string msg);
-    static void error(string msg);
-    static void critical(string msg);
+    static void debug(const string& msg);
+    static void info(const string& msg);
+    static void warning(const string& msg);
+    static void error(const string& msg);
+    static void critical(const string& msg);
     static void set_level(LogLevel level);
 
 private:
     // Log methods implementation
-    void debug_impl(string msg);
-    void info_impl(string msg);
-    void warning_impl(string msg);
-    void error_impl(string msg);
-    void critical_impl(string msg);
+    void debug_impl(const string& msg);
+    void info_impl(const string& msg);
+    void warning_impl(const string& msg);
+    void error_impl(const string& msg);
+    void critical_impl(const string& msg);
     void set_level_impl(LogLevel level);
 };
 

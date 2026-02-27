@@ -1,4 +1,6 @@
 add_subdirectory(node)
+add_subdirectory(edge)
+add_subdirectory(graph)
 
 add_library(Project
     Project.cpp
@@ -6,7 +8,7 @@ add_library(Project
 
 target_link_libraries(Project
     PUBLIC
-        Node
+        Graph
     PRIVATE
         utils
 )

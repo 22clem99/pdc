@@ -32,8 +32,8 @@ public:
     virtual ~Node() = default;
     static string class_name();
     virtual string get_class_name() const = 0;
-    int add_input(InputVariant &in);
-    int add_output(OutputVariant &out);
+    int add_input(InputVariant& in);
+    int add_output(OutputVariant& out);
     string get_str(void);
     virtual int compute_output() = 0;
 };

@@ -2,32 +2,32 @@
 
 using namespace std;
 
-bool Int::equal(Int a, Int b)
+bool Int::equal(const Int& a, const Int& b)
 {
     return  a.data == b.data;
 }
 
-bool Int::greater(Int a, Int b)
+bool Int::greater(const Int& a, const Int& b)
 {
     return a.data > b.data;
 }
 
-bool Int::lesser(Int a, Int b)
+bool Int::lesser(const Int& a, const Int& b)
 {
     return a.data < b.data;
 }
 
-bool Int::equal_and_greater(Int a, Int b)
+bool Int::equal_and_greater(const Int& a, const Int& b)
 {
     return a.data >= b.data;
 }
 
-bool Int::equal_and_lesser(Int a, Int b)
+bool Int::equal_and_lesser(const Int& a, const Int& b)
 {
     return a.data <= b.data;
 }
 
-bool Int::is_divisible(Int a, Int div)
+bool Int::is_divisible(const Int& a, const Int& div)
 {
     return ((a.data % div.data) == 0);
 }

@@ -25,5 +25,5 @@ string ImageInputNode::get_str(void)
 
 int ImageInputNode::compute_output()
 {
-
+    return 0;
 }

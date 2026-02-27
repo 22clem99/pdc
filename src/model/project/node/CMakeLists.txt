@@ -8,6 +8,9 @@ add_library(Node SHARED
 )
 
 target_link_libraries(Node
+    PUBLIC
+        Input
+        Output
     PRIVATE
         utils
 )
