@@ -49,9 +49,9 @@ public:
     /// @param from_node edge start node
     /// @param from_output output from the start node
     /// @param to_node edge end node
-    /// @param from_input input from the end node
+    /// @param to_input input from the end node
     /// @return Id of the new edge create
-    Id connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& from_input);
+    Id connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input);
 
     /// @brief remove an edge by ID
     /// @param edge edge ID tyo be removed

@@ -10,6 +10,7 @@
 #include <optional>
 #include <ostream>
 #include <sstream>
+#include <memory>
 
 
 enum class PortDirection {
@@ -64,13 +65,28 @@ public:
 
 };
 
+// class IPort {
+// public:
+//     virtual ~IPort() = default;
+//     virtual const std::type_info& valueType() const = 0;
+// };
+
 template<typename T>
 class Port : public Identifiable<Port<T>>
 {
 public:
 using Identifiable<Port<T>>::id;
 
-    Port() = default;
+    Port(PortDirection p_dir, ConnectionMode p_mode)
+    {
+        data = T();
+        dir = p_dir;
+        mode = p_mode;
+    }
+
+    const std::type_info& valueType() const {
+        return typeid(T);
+    }
 
     T data;
     enum PortDirection dir;
@@ -145,6 +161,16 @@ using Identifiable<Port<T>>::id;
         return "Port<" + T::class_name() + ">";
     }
 };
+
+using PortVariant = variant<
+    unique_ptr<Port<Int>>,
+    unique_ptr<Port<Image>>
+>;
+
+static bool same_type(const PortVariant& a, const PortVariant& b)
+{
+    return a.index() == b.index();
+}
 
 
 #endif

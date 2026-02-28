@@ -14,11 +14,6 @@
 
 using namespace std;
 
-using PortVariant = variant<
-    unique_ptr<Port<Int>>,
-    unique_ptr<Port<Image>>
->;
-
 enum class NodeKind {
     Head,
     Tail,
@@ -28,7 +23,7 @@ enum class NodeKind {
 class Node : public Identifiable<Node>
 {
 public:
-    map<string, PortVariant> ports;
+    map<Id, PortVariant> ports;
     NodeKind kind;
     virtual ~Node() = default;
     static string class_name();

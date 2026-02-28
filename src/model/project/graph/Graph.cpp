@@ -89,8 +89,21 @@ bool Graph::has_node(const Id& node_id)
     return false;
 }
 
-Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& from_input)
+Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
+    // Test compatibility
+    if (!same_type(nodes[from_node]->ports[from_output], nodes[to_node]->ports[to_input]))
+    {
+        Log::error("Node \"" + from_node + "\" and \"" + to_node + "\n are not the same type, can't be connected");
+
+        return nullid;
+    }
+
+    // Test output mode
+
+
+    // Test input mode
+
     return "false";
 }
 

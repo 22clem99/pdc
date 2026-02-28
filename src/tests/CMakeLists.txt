@@ -2,6 +2,7 @@ set(src_files
     test0.cpp
     test1.cpp
     test2.cpp
+    test3.cpp
 )
 
 foreach(src_file ${src_files})

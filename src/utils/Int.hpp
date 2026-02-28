@@ -8,7 +8,7 @@ using namespace std;
 class Int {
 public:
     int data;
-    Int() = default;
+    Int();
     void copy(const Int& a);
     static bool equal(const Int& a, const Int& b);
     static bool greater(const Int& a, const Int& b);

@@ -34,16 +34,16 @@ public:
     static void warning(const string& msg);
     static void error(const string& msg);
     static void critical(const string& msg);
-    static void set_level(LogLevel level);
+    static void set_level(LogLevel new_level);
 
 private:
     // Log methods implementation
-    void debug_impl(const string& msg);
-    void info_impl(const string& msg);
-    void warning_impl(const string& msg);
-    void error_impl(const string& msg);
-    void critical_impl(const string& msg);
-    void set_level_impl(LogLevel level);
+    void debug_impl(const string& msg) const;
+    void info_impl(const string& msg) const;
+    void warning_impl(const string& msg) const;
+    void error_impl(const string& msg) const;
+    void critical_impl(const string& msg) const;
+    void set_level_impl(LogLevel new_level);
 };
 
 #endif

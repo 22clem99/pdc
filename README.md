@@ -9,3 +9,5 @@ install Flatpak
 flatpak run --user ar.xjuan.Cambalache//master
 
 https://en.wikipedia.org/wiki/Tux_(mascot)#/media/File:Tux.svg
+
+Cppcheck 2.13.0

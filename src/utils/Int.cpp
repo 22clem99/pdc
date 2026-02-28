@@ -3,6 +3,11 @@
 
 using namespace std;
 
+Int::Int(void)
+{
+    data = 0;
+}
+
 void Int::copy(const Int& a)
 {
     data = a.data;

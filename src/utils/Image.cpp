@@ -6,7 +6,6 @@ string Image::class_name(void)
     return "Image";
 }
 
-
 string Image::get_str(void)
 {
     return get_str(0);

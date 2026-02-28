@@ -8,10 +8,7 @@
 
 ImageOutputNode::ImageOutputNode()
 {
-    auto img_output = make_unique<Port<Image>>();
-
-    img_output->dir = PortDirection::Input;
-    img_output->mode = ConnectionMode::Single;
+    auto img_output = make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
 
     ports.emplace(img_output->id, move(img_output));
 }
