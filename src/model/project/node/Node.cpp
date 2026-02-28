@@ -1,4 +1,5 @@
 #include "Node.hpp"
+#include <utils/Tab.hpp>
 
 string Node::class_name()
 {
@@ -12,18 +13,29 @@ int Node::add_port(PortVariant& p)
     // }
 }
 
-string Node::get_str(void)
+string Node::get_str()
+{
+    return get_str(0);
+}
+
+string Node::get_str(const unsigned int tab)
 {
     string s = "";
+    string s_tab = Tab::tab(tab);
 
-    s += get_class_name() +" {\n\tid: \"" + id + "\";\n\tports: [\n";
+    s += s_tab + get_class_name() +" {\n"
+        + s_tab + "\tid: \"" + id + "\";\n"
+        + s_tab + "\tports: [\n";
 
-    for (auto const& [key, val] : ports)
+    for (auto port = ports.begin(); port != ports.end(); port++)
     {
-        s += "\t\t [" + key + "]\n";
+        std::visit([&](auto& ptr) {
+            s += "\t" + ptr->get_str(tab + 1) + "\n";
+        }, port->second);
     }
 
-    s += "\t];\n}";
+    s += s_tab +"\t];\n"
+        + s_tab + "}";
 
     return s;
 }

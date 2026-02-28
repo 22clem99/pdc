@@ -17,6 +17,7 @@ public:
     // static bool is_divisible(Image a, Image div);
     static string class_name(void);
     string get_str(void);
+    string get_str(const unsigned int tab);
 };
 
 #endif

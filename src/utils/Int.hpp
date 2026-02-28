@@ -18,6 +18,7 @@ public:
     static bool is_divisible(const Int& a, const Int& div);
     static string class_name(void);
     string get_str(void);
+    string get_str(const unsigned int tab);
 };
 
 #endif

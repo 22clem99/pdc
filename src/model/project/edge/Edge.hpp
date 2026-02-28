@@ -17,6 +17,16 @@ public:
     Id to_input;
 
     Edge() = default;
+
+    string get_str(void)
+    {
+        return get_str(0);
+    }
+
+    string get_str(const unsigned int tab)
+    {
+        return "Edge {from " + from_node + "[" + from_output + "], to " + to_node +  "[" + to_input + "]}";
+    }
 };
 
 #endif

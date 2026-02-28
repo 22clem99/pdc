@@ -28,6 +28,7 @@ public:
     virtual string get_class_name() const = 0;
     int add_port(PortVariant& p);
     string get_str(void);
+    string get_str(const unsigned int tab);
     virtual int compute_output() = 0;
 };
 

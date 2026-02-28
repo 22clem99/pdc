@@ -21,7 +21,8 @@ public:
     Project(const string& project_name, const string& file_path);
     int add_node(const string& node_type, unsigned int position);
     int remove_node(const string& node_type);
-    string get_str(void);
+    string get_str();
+    string get_str(const unsigned int tab);
 };
 
 #endif

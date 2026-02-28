@@ -31,6 +31,7 @@ public:
     static string class_name();
     string get_class_name() const override { return class_name(); }
     string get_str(void);
+    string get_str(const unsigned int tab);
     int compute_output();
 
 private:

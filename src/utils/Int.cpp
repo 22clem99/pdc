@@ -1,4 +1,5 @@
 #include "Int.hpp"
+#include <utils/Tab.hpp>
 
 using namespace std;
 
@@ -42,7 +43,13 @@ string Int::class_name(void)
     return "Int";
 }
 
-string Int::get_str(void)
+
+string Int::get_str()
 {
-    return "Int (value=" + to_string(data) + ")";
+    return get_str(0);
+}
+
+string Int::get_str(const unsigned int tab)
+{
+    return Tab::tab(tab) + "Int, value=" + to_string(data);
 }

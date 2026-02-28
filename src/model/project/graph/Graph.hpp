@@ -75,7 +75,8 @@ public:
 
     /// @brief Get a string representation of the Graph
     /// @return the string representation
-    string get_str(void);
+    string get_str();
+    string get_str(const unsigned int tab);
 };
 
 #endif

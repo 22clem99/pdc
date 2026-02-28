@@ -2,6 +2,7 @@
 #define PORT_H
 
 #include <utils/Identifiable.hpp>
+#include <utils/Tab.hpp>
 
 #include <list>
 #include <map>
@@ -67,6 +68,8 @@ template<typename T>
 class Port : public Identifiable<Port<T>>
 {
 public:
+using Identifiable<Port<T>>::id;
+
     Port() = default;
 
     T data;
@@ -94,42 +97,45 @@ public:
 
     string get_str()
     {
-        string s;
+        return get_str(0);
+    }
 
-        s = "Port [";
+    string get_str(unsigned int tab)
+    {
+        string s = "";
+        string s_tab = Tab::tab(tab);
 
+        s += s_tab + "id:\"" + id + "\", ";
         switch (dir)
         {
             case PortDirection::Input :
-                s += "Input";
+                s += "[Input]";
                 break;
             case PortDirection::Output :
-                s += "Output";
+                s += "[Output]";
                 break;
             default:
-                s += "Error";
+                s += "[Error]";
                 break;
         }
-
-        s += "](";
 
         switch (mode)
         {
         case ConnectionMode::None :
-            s += "None";
+            s += "(None)";
             break;
         case ConnectionMode::Single :
-            s += "Single";
+            s += "(Single)";
             break;
         case ConnectionMode::Multiple :
-            s += "Multiple";
+            s += "(Multiple)";
             break;
         default:
-            s += "Error";
+            s += "(Error)";
             break;
         }
 
-        s += ") data: " << data.get_str() << ";";
+        s += ", type=" + data.get_str() + ";";
 
         return s;
     }

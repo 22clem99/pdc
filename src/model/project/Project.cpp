@@ -1,5 +1,6 @@
 #include "Project.hpp"
 #include <utils/Log.hpp>
+#include <utils/Tab.hpp>
 
 Project::Project(const string& project_name, const string& file_path)
 {
@@ -19,11 +20,21 @@ int Project::remove_node(const string& node_type)
     return (node_graph.remove_node(node_type) ? -1 : 0);
 }
 
-string Project::get_str(void)
+string Project::get_str()
+{
+    return get_str(0);
+}
+
+string Project::get_str(const unsigned int tab)
 {
     string s = "";
+    string s_tab = Tab::tab(tab);
 
-    s += "Project {\n\tname: \"" + name + "\", file: \"" + file + "\"\n}";
+    s   += s_tab + "Project {\n"
+        + s_tab + "\tname: \"" + name + "\",\n"
+        + s_tab +  "\tfile: \"" + file + "\",\n"
+        + s_tab + node_graph.get_str(tab + 1) + "\n"
+        + s_tab + "}";
 
     return s;
 }

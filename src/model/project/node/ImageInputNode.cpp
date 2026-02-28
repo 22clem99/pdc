@@ -24,7 +24,12 @@ string ImageInputNode::class_name()
 
 string ImageInputNode::get_str(void)
 {
-    return get_str();
+    return get_str(0);
+}
+
+string ImageInputNode::get_str(const unsigned int tab)
+{
+    return get_str(tab);
 }
 
 int ImageInputNode::compute_output()

@@ -14,5 +14,10 @@ bool GraphEditor::remove_node(const Id& node_id)
 
 string GraphEditor::get_str(void)
 {
-    return node_graph.get_str();
+    return get_str(0);
+}
+
+string GraphEditor::get_str(const unsigned int tab)
+{
+    return node_graph.get_str(tab);
 }
