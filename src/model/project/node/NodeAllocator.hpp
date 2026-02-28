@@ -1,7 +1,7 @@
 #ifndef NODE_ALLOCATOR_H
 #define NODE_ALLOCATOR_H
 
-#include "Node.hpp"
+#include "NodeProperty.hpp"
 
 #include <utils/Singleton.hpp>
 
@@ -12,16 +12,15 @@
 
 using namespace std;
 
-typedef function<unique_ptr<Node>()> CreatorFunc;
-
 class NodeAllocator
 {
 public:
-    static void register_node(const string& name, CreatorFunc func);
+    static void register_node(const string& name, NodeProperty property);
     static unique_ptr<Node> alloc_node(const string& node_type);
+    static optional<NodeProperty> get_property(const string& node_type);
 
 private:
-    static unordered_map<string, CreatorFunc>& registry();
+    static unordered_map<string, NodeProperty>& registry();
 
 };
 

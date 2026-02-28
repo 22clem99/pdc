@@ -27,17 +27,17 @@ using namespace std;
 class ImageInputNode : public Node
 {
 public:
+    static constexpr NodeKind kind = NodeKind::Head;
     ImageInputNode();
     static string class_name();
     string get_class_name() const override { return class_name(); }
+    NodeKind get_kind(void);
     string get_str(void);
     string get_str(const unsigned int tab);
     int compute_output();
 
 private:
-    static NodeRegister<ImageInputNode> reg;
+    inline static NodeRegister<ImageInputNode> reg;
 };
-
-static NodeRegister<ImageInputNode> reg;
 
 #endif

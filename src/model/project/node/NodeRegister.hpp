@@ -3,6 +3,7 @@
 
 
 #include "NodeAllocator.hpp"
+#include "NodeProperty.hpp"
 
 template<typename node>
 class NodeRegister
@@ -10,10 +11,10 @@ class NodeRegister
 public:
     NodeRegister()
     {
-        NodeAllocator::register_node(node::class_name(), []()
+        NodeAllocator::register_node(node::class_name(), {node::kind, []()
         {
             return make_unique<node>();
-        });
+        }});
     }
 };
 

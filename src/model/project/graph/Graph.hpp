@@ -21,8 +21,8 @@ public:
     /// @brief Map of edges between nodes
     map<Id, unique_ptr<Edge>> edges;
 
-    Id head;
-    Id tail;
+    optional<Id> head_id;
+    optional<Id> tail_id;
 
     Graph() = default;
 

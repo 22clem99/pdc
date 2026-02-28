@@ -19,13 +19,21 @@ using PortVariant = variant<
     unique_ptr<Port<Image>>
 >;
 
+enum class NodeKind {
+    Head,
+    Tail,
+    Regular
+};
+
 class Node : public Identifiable<Node>
 {
 public:
     map<string, PortVariant> ports;
+    NodeKind kind;
     virtual ~Node() = default;
     static string class_name();
     virtual string get_class_name() const = 0;
+    // virtual NodeKind kind() const = 0;
     int add_port(PortVariant& p);
     string get_str(void);
     string get_str(const unsigned int tab);

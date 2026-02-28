@@ -22,6 +22,11 @@ string ImageInputNode::class_name()
     return "ImageInputNode";
 }
 
+NodeKind ImageInputNode::get_kind()
+{
+    return kind;
+}
+
 string ImageInputNode::get_str(void)
 {
     return get_str(0);

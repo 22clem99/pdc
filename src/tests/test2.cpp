@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
     Project p("My amazing project", "./images/Tux.svg");
 
     p.add_node(ImageInputNode::class_name(), -1);
+    p.add_node(ImageInputNode::class_name(), -1);
+
+    p.add_node(ImageOutputNode::class_name(), -1);
     p.add_node(ImageOutputNode::class_name(), -1);
 
     Log::info(p.get_str());

@@ -7,4 +7,6 @@ using namespace std;
 
 typedef string Id;
 
+const Id nullid = "";
+
 #endif

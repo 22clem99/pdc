@@ -5,6 +5,7 @@ add_library(Node SHARED
     Node.cpp
     NodeAllocator.cpp
     ImageInputNode.cpp
+    ImageOutputNode.cpp
 )
 
 target_link_libraries(Node
