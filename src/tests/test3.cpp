@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     Id id_out_port = outPorts.begin()->first;
 
     g.connect(id_in, id_in_port, id_out, id_out_port);
+    g.connect(id_out, id_out_port, id_in, id_in_port);
 
     Log::info(g.get_str());
 

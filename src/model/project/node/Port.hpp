@@ -25,7 +25,7 @@ enum ConnectionMode {
 };
 
 template<typename T>
-struct ValueConstraints
+class ValueConstraints
 {
 public:
     ValueConstraints() = default;
@@ -70,11 +70,13 @@ class IPortBase
 public:
     virtual ~IPortBase() = default;
 
-    std::vector<Id> connected_edges;
-
     virtual const std::type_info& value_type() const = 0;
     virtual string get_str() const = 0;
     virtual string get_str(unsigned int tab) const = 0;
+
+    virtual PortDirection get_direction() const = 0;
+    virtual ConnectionMode get_connection_mode() const = 0;
+    virtual vector<Id> get_connected_edges() const = 0;
 
     static bool same_type(const IPortBase& a, const IPortBase& b)
     {
@@ -120,11 +122,6 @@ using Identifiable<Port<T>>::id;
     T get_value()
     {
         return data;
-    }
-
-    vector<Id> get_connected_edges(void)
-    {
-        return connected_edges;
     }
 
     string get_str() const override
@@ -176,6 +173,22 @@ using Identifiable<Port<T>>::id;
     {
         return "Port<" + T::class_name() + ">";
     }
+
+    PortDirection get_direction() const override
+    {
+        return dir;
+    }
+
+    ConnectionMode get_connection_mode() const override
+    {
+        return mode;
+    }
+
+    vector<Id> get_connected_edges() const override
+    {
+        return connected_edges;
+    }
+
 };
 
 #endif

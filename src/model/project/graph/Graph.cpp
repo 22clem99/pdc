@@ -1,6 +1,7 @@
 #include "Graph.hpp"
 #include "../node/NodeAllocator.hpp"
 #include <utils/Tab.hpp>
+#include <memory>
 
 Id Graph::add_node(const string& node_type)
 {
@@ -49,41 +50,6 @@ bool Graph::remove_node(const Id& node_id)
     return false;
 }
 
-string Graph::get_str(void)
-{
-    return get_str(0);
-}
-
-string Graph::get_str(const unsigned int tab)
-{
-    string s_tab = Tab::tab(tab);
-    string s = s_tab + "Graph {\n"
-                + s_tab + "\tNodes {\n";
-
-    for (auto node = nodes.begin(); node != nodes.end(); node++) {
-        s += node->second->get_str(tab + 2) + "\n";
-    }
-
-    s += s_tab + "\t},\n"
-        + s_tab + "\tEdges {\n";
-
-    for (auto edge = edges.begin(); edge != edges.end(); edge++) {
-        s += edge->second->get_str(tab + 1) + "\n";
-    }
-
-    s += s_tab + "\t}\n";
-
-    if (head_id)
-        s += s_tab + "\thead: \"" + head_id.value() + "\",\n";
-
-    if (tail_id)
-        s += s_tab + "\ttail: \"" + tail_id.value() + "\",\n";
-
-    s += s_tab + "}";
-
-    return s;
-}
-
 bool Graph::has_node(const Id& node_id)
 {
     return false;
@@ -91,20 +57,55 @@ bool Graph::has_node(const Id& node_id)
 
 Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
-    // Test compatibility
-    if (!IPortBase::same_type(*nodes[from_node]->ports[from_output], *nodes[to_node]->ports[to_input]))
+    auto& from_node_obj = *nodes[from_node];
+    auto& to_node_obj = *nodes[to_node];
+
+    auto& from_output_obj = *from_node_obj.ports[from_output];
+    auto& to_input_obj = *to_node_obj.ports[to_input];
+
+    // Test compatibility, edge need to link
+    // the same type of data.
+    if (!IPortBase::same_type(from_output_obj, to_input_obj))
     {
         Log::error("Node \"" + from_node + "\" and \"" + to_node + "\n are not the same type, can't be connected");
 
         return nullid;
     }
 
-    // Test output mode
+    // Test output mode, edge need to link
+    // an output and the output kind need to
+    // be <Multiple>
+    if ((from_output_obj.get_direction() != PortDirection::Output)
+        || (from_output_obj.get_connection_mode() != ConnectionMode::Multiple))
+    {
+        Log::error("Node \"" + from_node + "\" is not an Output or it's connection mode is not Multiple");
+        return nullid;
+    }
+
+    // Test input mode, edge need to link
+    // to an input, the input kind need to
+    // be <Single> and the input port need
+    // to be available (i.e any connection
+    // is binded to this port)
+    if ((to_input_obj.get_direction() != PortDirection::Input)
+        || (to_input_obj.get_connection_mode() != ConnectionMode::Single)
+        || (!to_input_obj.get_connected_edges().empty()))
+    {
+        Log::error("Node \"" + to_node + "\" is not an Input or it's connection mode is not Single or a edge is already connected");
+        return nullid;
+    }
+
+    // All test OK, now we can create the edge
+    auto new_edge = make_unique<Edge>(from_node, from_output, to_node, to_input);
+    Id new_edge_id = new_edge->id;
 
 
-    // Test input mode
+    // Add edge in the edges vector
+    edges.emplace(new_edge_id, move(new_edge));
 
-    return "false";
+    // TODO update connection vector in PORTS
+
+    return new_edge_id;
 }
 
 bool Graph::disconnect(const Id& edge)
@@ -156,5 +157,40 @@ vector<Id> Graph::get_outgoing_edges(const Id& node)
 
 vector<Id> Graph::get_connections(const Id& node, const Id& PortID)
 {
-    return nodes[node]->ports[PortID]->connected_edges;
+    return nodes[node]->ports[PortID]->get_connected_edges();
+}
+
+string Graph::get_str(void)
+{
+    return get_str(0);
+}
+
+string Graph::get_str(const unsigned int tab)
+{
+    string s_tab = Tab::tab(tab);
+    string s = s_tab + "Graph {\n"
+                + s_tab + "\tNodes {\n";
+
+    for (auto node = nodes.begin(); node != nodes.end(); node++) {
+        s += node->second->get_str(tab + 2) + "\n";
+    }
+
+    s += s_tab + "\t},\n"
+        + s_tab + "\tEdges {\n";
+
+    for (auto edge = edges.begin(); edge != edges.end(); edge++) {
+        s += edge->second->get_str(tab + 1) + "\n";
+    }
+
+    s += s_tab + "\t}\n";
+
+    if (head_id)
+        s += s_tab + "\thead: \"" + head_id.value() + "\",\n";
+
+    if (tail_id)
+        s += s_tab + "\ttail: \"" + tail_id.value() + "\",\n";
+
+    s += s_tab + "}";
+
+    return s;
 }
