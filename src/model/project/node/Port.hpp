@@ -65,14 +65,25 @@ public:
 
 };
 
-// class IPort {
-// public:
-//     virtual ~IPort() = default;
-//     virtual const std::type_info& valueType() const = 0;
-// };
+class IPortBase
+{
+public:
+    virtual ~IPortBase() = default;
+
+    std::vector<Id> connected_edges;
+
+    virtual const std::type_info& value_type() const = 0;
+    virtual string get_str() const = 0;
+    virtual string get_str(unsigned int tab) const = 0;
+
+    static bool same_type(const IPortBase& a, const IPortBase& b)
+    {
+        return a.value_type() == b.value_type();
+    }
+};
 
 template<typename T>
-class Port : public Identifiable<Port<T>>
+class Port : public Identifiable<Port<T>>, public IPortBase
 {
 public:
 using Identifiable<Port<T>>::id;
@@ -84,7 +95,7 @@ using Identifiable<Port<T>>::id;
         mode = p_mode;
     }
 
-    const std::type_info& valueType() const {
+    const std::type_info& value_type() const {
         return typeid(T);
     }
 
@@ -94,7 +105,7 @@ using Identifiable<Port<T>>::id;
 
     optional<ValueConstraints<T>> constraints;
 
-    vector<Id> incoming_edge;
+    vector<Id> connected_edges;
 
     bool set_value(const T& value)
     {
@@ -111,12 +122,17 @@ using Identifiable<Port<T>>::id;
         return data;
     }
 
-    string get_str()
+    vector<Id> get_connected_edges(void)
+    {
+        return connected_edges;
+    }
+
+    string get_str() const override
     {
         return get_str(0);
     }
 
-    string get_str(unsigned int tab)
+    string get_str(unsigned int tab) const override
     {
         string s = "";
         string s_tab = Tab::tab(tab);
@@ -161,16 +177,5 @@ using Identifiable<Port<T>>::id;
         return "Port<" + T::class_name() + ">";
     }
 };
-
-using PortVariant = variant<
-    unique_ptr<Port<Int>>,
-    unique_ptr<Port<Image>>
->;
-
-static bool same_type(const PortVariant& a, const PortVariant& b)
-{
-    return a.index() == b.index();
-}
-
 
 #endif

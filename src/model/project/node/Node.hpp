@@ -23,13 +23,13 @@ enum class NodeKind {
 class Node : public Identifiable<Node>
 {
 public:
-    map<Id, PortVariant> ports;
+    map<Id, unique_ptr<IPortBase>> ports;
     NodeKind kind;
     virtual ~Node() = default;
     static string class_name();
     virtual string get_class_name() const = 0;
     // virtual NodeKind kind() const = 0;
-    int add_port(PortVariant& p);
+    int add_port(IPortBase& p);
     string get_str(void);
     string get_str(const unsigned int tab);
     virtual int compute_output() = 0;

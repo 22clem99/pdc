@@ -49,7 +49,7 @@ bool Graph::remove_node(const Id& node_id)
     return false;
 }
 
-string Graph::get_str()
+string Graph::get_str(void)
 {
     return get_str(0);
 }
@@ -92,7 +92,7 @@ bool Graph::has_node(const Id& node_id)
 Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
     // Test compatibility
-    if (!same_type(nodes[from_node]->ports[from_output], nodes[to_node]->ports[to_input]))
+    if (!IPortBase::same_type(*nodes[from_node]->ports[from_output], *nodes[to_node]->ports[to_input]))
     {
         Log::error("Node \"" + from_node + "\" and \"" + to_node + "\n are not the same type, can't be connected");
 
@@ -130,4 +130,31 @@ bool Graph::validateGraph()
 bool Graph::is_cycle()
 {
     return false;
+}
+
+    /*********** Graph structur access ***********/
+vector<Id> Graph::neighbors(const Id& node)
+{
+    vector<Id> neighbors_id = {};
+
+    return neighbors_id;
+}
+
+vector<Id> Graph::get_incoming_edges(const Id& node)
+{
+    vector<Id> edges_id = {};
+
+    return edges_id;
+}
+
+vector<Id> Graph::get_outgoing_edges(const Id& node)
+{
+    vector<Id> edges_id = {};
+
+    return edges_id;
+}
+
+vector<Id> Graph::get_connections(const Id& node, const Id& PortID)
+{
+    return nodes[node]->ports[PortID]->connected_edges;
 }

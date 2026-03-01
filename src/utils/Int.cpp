@@ -49,12 +49,12 @@ string Int::class_name(void)
 }
 
 
-string Int::get_str()
+string Int::get_str() const
 {
     return get_str(0);
 }
 
-string Int::get_str(const unsigned int tab)
+string Int::get_str(const unsigned int tab) const
 {
     return Tab::tab(tab) + "Int, value=" + to_string(data);
 }

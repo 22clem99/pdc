@@ -71,11 +71,16 @@ public:
     bool validateGraph();
     bool is_cycle();
 
+    /*********** Graph structur access ***********/
+    vector<Id> neighbors(const Id& node);
+    vector<Id> get_incoming_edges(const Id& node);
+    vector<Id> get_outgoing_edges(const Id& node);
+    vector<Id> get_connections(const Id& node, const Id& PortID);
 
 
     /// @brief Get a string representation of the Graph
     /// @return the string representation
-    string get_str();
+    string get_str(void);
     string get_str(const unsigned int tab);
 };
 

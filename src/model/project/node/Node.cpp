@@ -6,7 +6,7 @@ string Node::class_name()
     return "Node";
 }
 
-int Node::add_port(PortVariant& p)
+int Node::add_port(IPortBase& p)
 {
     // if (inputs.contains(in.id)) {
     return 0;
@@ -29,9 +29,7 @@ string Node::get_str(const unsigned int tab)
 
     for (auto port = ports.begin(); port != ports.end(); port++)
     {
-        std::visit([&](auto& ptr) {
-            s += "\t" + ptr->get_str(tab + 1) + "\n";
-        }, port->second);
+        s += "\t" + port->second->get_str(tab + 1) + "\n";
     }
 
     s += s_tab +"\t];\n"

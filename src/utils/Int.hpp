@@ -17,8 +17,8 @@ public:
     static bool equal_and_lesser(const Int& a, const Int& b);
     static bool is_divisible(const Int& a, const Int& div);
     static string class_name(void);
-    string get_str(void);
-    string get_str(const unsigned int tab);
+    string get_str(void) const;
+    string get_str(const unsigned int tab) const;
 };
 
 #endif
