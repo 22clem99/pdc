@@ -1,3 +1,8 @@
+/**
+ * @file PDCState.cpp
+ * @brief Implementation of the PDCState class
+ */
+
 #include "PDCState.hpp"
 
 PDCState::PDCState()

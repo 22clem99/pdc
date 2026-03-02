@@ -1,3 +1,8 @@
+/**
+ * @file Graph.hpp
+ * @brief header for the low level graph object
+ */
+
 #ifndef GRAPH_H
 #define GRAPH_H
 

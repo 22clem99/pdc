@@ -1,11 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "Singleton.hpp"
-
 #include <string>
-
-
 
 enum LogLevel
 {
@@ -23,7 +19,7 @@ private:
 
     static Log& instance()
     {
-        static Log instance; // garanti thread-safe depuis C++11
+        static Log instance;
         return instance;
     }
 

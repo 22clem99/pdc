@@ -1,8 +1,12 @@
+/**
+ * @file Port.hpp
+ * @brief This file describe generic Ports
+ *
+ * A ports is an output ou input of graph's node
+ */
+
 #ifndef PORT_H
 #define PORT_H
-
-#include <utils/Identifiable.hpp>
-#include <utils/Tab.hpp>
 
 #include <list>
 #include <map>
@@ -12,18 +16,36 @@
 #include <sstream>
 #include <memory>
 
+#include <utils/Identifiable.hpp>
+#include <utils/Tab.hpp>
 
+/**
+ * @brief describe the direction of the Port
+ *
+ */
 enum class PortDirection {
     Input,
     Output
 };
 
-enum ConnectionMode {
+/**
+ * @brief Describe the connection mode
+ *
+ * None -> no connection available (mainly used for data to set by GUI)
+ * Single -> One connection only is allowed
+ * Multiple -> Port can be bind multiple time
+ */
+enum class ConnectionMode {
     None,
     Single,
     Multiple
 };
 
+/**
+ * @brief The class ValueConstraints describe a generic interface to provite value constraint for Port
+ *
+ * @tparam T type of the Port
+ */
 template<typename T>
 class ValueConstraints
 {
@@ -35,6 +57,13 @@ public:
 
     std::optional<std::vector<T>> allowed_values;
 
+    /**
+     * @brief Test the value depending constraint setup
+     *
+     * @param value value to be tested
+     * @return true the value is valid
+     * @return false the value is not valid
+     */
     bool validate(const T& value)
     {
         if (allowed_values)
@@ -65,26 +94,90 @@ public:
 
 };
 
+/**
+ * @brief Abstract class used as list of reference in Node
+ *
+ */
 class IPortBase
 {
 public:
     virtual ~IPortBase() = default;
 
-    virtual const std::type_info& value_type() const = 0;
-    virtual std::string get_str() const = 0;
+    /**
+     * @brief abstract method to get the type of the port
+     *
+     * @return const std::type_info&
+     */
+    virtual const std::type_info& value_type(void) const = 0;
+
+    /**
+     * @brief abstract method to get the string representation of a port
+     *
+     * @return std::string representation of the port
+     */
+    virtual std::string get_str(void) const = 0;
+
+    /**
+     * @brief same as get_str(void) but with tabulation append at each line
+     *
+     * @param tab number of tabulation to append
+     * @return std::string representation of the port with tabulations
+     */
     virtual std::string get_str(unsigned int tab) const = 0;
 
+    /**
+     * @brief Get the direction value
+     *
+     * @return PortDirection
+     */
     virtual PortDirection get_direction() const = 0;
+
+    /**
+     * @brief Get the connection mode
+     *
+     * @return ConnectionMode
+     */
     virtual ConnectionMode get_connection_mode() const = 0;
+
+    /**
+     * @brief Get the connected edges
+     *
+     * @return std::vector<Id>
+     */
     virtual std::vector<Id> get_connected_edges() const = 0;
+
+    /**
+     * @brief add an edge to the list of edge connected
+     *
+     * @param edge_id
+     */
     virtual void add_connected_edge(const Id& edge_id) = 0;
 
+    /**
+     * @brief Function to compare type of two Ports
+     *
+     * As Port is a template, we need to compare port to bind them, so we use
+     * this function
+     *
+     * @param a port a
+     * @param b port b
+     * @return true if type of the object a and object b is the same
+     * @return false if type of the object a and object b is different
+     */
     static bool same_type(const IPortBase& a, const IPortBase& b)
     {
         return a.value_type() == b.value_type();
     }
 };
 
+/**
+ * @brief Effective implementation of Port
+ *
+ * Each object allocate of kind Port<T> inherit the
+ * Identifiable class to provide a unique identifier.
+ *
+ * @tparam T Type of the port
+ */
 template<typename T>
 class Port : public Identifiable<Port<T>>, public IPortBase
 {

@@ -1,8 +1,6 @@
 #include "Int.hpp"
 #include <utils/Tab.hpp>
 
-
-
 Int::Int(void)
 {
     data = 0;

@@ -1,10 +1,19 @@
+/**
+ * @file NodeRegister.hpp
+ * @brief Provide a register class used by allocator
+ */
+
 #ifndef NODE_REGISTER_H
 #define NODE_REGISTER_H
-
 
 #include "NodeAllocator.hpp"
 #include "NodeProperty.hpp"
 
+/**
+ * @brief Object to register node to the factory
+ *
+ * @tparam node object to instanciate a register object for the factory
+ */
 template<typename node>
 class NodeRegister
 {

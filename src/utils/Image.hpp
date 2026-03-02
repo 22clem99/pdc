@@ -1,9 +1,15 @@
+/**
+ * @file Image.hpp
+ * @brief This file provide an Image abstraction class
+ *
+ * This image class will be helpfull for effective implementation
+ * independantly of the graphical librairy chose
+ */
+
 #ifndef IMAGE_H
 #define IMAGE_H
 
 #include <string>
-
-
 
 class Image {
 public:
