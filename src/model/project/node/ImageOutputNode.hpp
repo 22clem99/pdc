@@ -8,7 +8,7 @@
 #include "Port.hpp"
 #include <string>
 
-using namespace std;
+
 
 
 /**
@@ -28,11 +28,11 @@ class ImageOutputNode : public Node
 public:
     static constexpr NodeKind kind = NodeKind::Tail;
     ImageOutputNode();
-    static string class_name();
-    string get_class_name() const override { return class_name(); }
+    static std::string class_name();
+    std::string get_class_name() const override { return class_name(); }
     NodeKind get_kind(void);
-    string get_str(void);
-    string get_str(const unsigned int tab);
+    std::string get_str(void);
+    std::string get_str(const unsigned int tab);
     int compute_output();
 
 private:

@@ -1,7 +1,7 @@
 #include "Int.hpp"
 #include <utils/Tab.hpp>
 
-using namespace std;
+
 
 Int::Int(void)
 {
@@ -43,18 +43,17 @@ bool Int::is_divisible(const Int& a, const Int& div)
     return ((a.data % div.data) == 0);
 }
 
-string Int::class_name(void)
+std::string Int::class_name(void)
 {
     return "Int";
 }
 
-
-string Int::get_str() const
+std::string Int::get_str() const
 {
     return get_str(0);
 }
 
-string Int::get_str(const unsigned int tab) const
+std::string Int::get_str(const unsigned int tab) const
 {
-    return Tab::tab(tab) + "Int, value=" + to_string(data);
+    return Tab::tab(tab) + "Int, value=" + std::to_string(data);
 }

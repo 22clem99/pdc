@@ -3,9 +3,9 @@
 #include <utils/Tab.hpp>
 #include <memory>
 
-Id Graph::add_node(const string& node_type)
+Id Graph::add_node(const std::string& node_type)
 {
-    optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
+    std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
 
     if (!prop) {
         Log::error("Can't allocate node of type \"" + node_type +"\"");
@@ -23,7 +23,7 @@ Id Graph::add_node(const string& node_type)
     }
 
     // Allocation is done there
-    unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type);
+    std::unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type);
     Id id = new_node->id;
 
     if(new_node == nullptr) {
@@ -40,7 +40,7 @@ Id Graph::add_node(const string& node_type)
         Log::debug("The node:\"" + id + "\" is set as the tail");
     }
 
-    nodes.insert({id, move(new_node)});
+    nodes.insert({id, std::move(new_node)});
 
     return id;
 }
@@ -122,11 +122,11 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     }
 
     // All test OK, now we can create the edge
-    auto new_edge = make_unique<Edge>(from_node, from_output, to_node, to_input);
+    auto new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input);
     Id new_edge_id = new_edge->id;
 
     // Add edge in the edges vector
-    edges.emplace(new_edge_id, move(new_edge));
+    edges.emplace(new_edge_id, std::move(new_edge));
 
     // Then link ports to the new edge
     from_output_obj.add_connected_edge(new_edge_id);
@@ -145,11 +145,6 @@ int Graph::remove_edges_of_node(const Id& node)
     return false;
 }
 
-bool Graph::can_connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& from_input)
-{
-    return false;
-}
-
 bool Graph::validateGraph()
 {
     return false;
@@ -161,41 +156,41 @@ bool Graph::is_cycle()
 }
 
     /*********** Graph structur access ***********/
-vector<Id> Graph::neighbors(const Id& node)
+std::vector<Id> Graph::neighbors(const Id& node)
 {
-    vector<Id> neighbors_id = {};
+    std::vector<Id> neighbors_id = {};
 
     return neighbors_id;
 }
 
-vector<Id> Graph::get_incoming_edges(const Id& node)
+std::vector<Id> Graph::get_incoming_edges(const Id& node)
 {
-    vector<Id> edges_id = {};
+    std::vector<Id> edges_id = {};
 
     return edges_id;
 }
 
-vector<Id> Graph::get_outgoing_edges(const Id& node)
+std::vector<Id> Graph::get_outgoing_edges(const Id& node)
 {
-    vector<Id> edges_id = {};
+    std::vector<Id> edges_id = {};
 
     return edges_id;
 }
 
-vector<Id> Graph::get_connections(const Id& node, const Id& PortID)
+std::vector<Id> Graph::get_connections(const Id& node, const Id& PortID)
 {
     return nodes[node]->ports[PortID]->get_connected_edges();
 }
 
-string Graph::get_str(void)
+std::string Graph::get_str(void)
 {
     return get_str(0);
 }
 
-string Graph::get_str(const unsigned int tab)
+std::string Graph::get_str(const unsigned int tab)
 {
-    string s_tab = Tab::tab(tab);
-    string s = s_tab + "Graph {\n"
+    std::string s_tab = Tab::tab(tab);
+    std::string s = s_tab + "Graph {\n"
                 + s_tab + "\tNodes {\n";
 
     for (auto node = nodes.begin(); node != nodes.end(); node++) {

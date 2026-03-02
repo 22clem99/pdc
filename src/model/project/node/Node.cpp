@@ -1,7 +1,7 @@
 #include "Node.hpp"
 #include <utils/Tab.hpp>
 
-string Node::class_name()
+std::string Node::class_name()
 {
     return "Node";
 }
@@ -13,15 +13,15 @@ int Node::add_port(IPortBase& p)
     // }
 }
 
-string Node::get_str()
+std::string Node::get_str()
 {
     return get_str(0);
 }
 
-string Node::get_str(const unsigned int tab)
+std::string Node::get_str(const unsigned int tab)
 {
-    string s = "";
-    string s_tab = Tab::tab(tab);
+    std::string s = "";
+    std::string s_tab = Tab::tab(tab);
 
     s += s_tab + get_class_name() +" {\n"
         + s_tab + "\tid: \"" + id + "\";\n"

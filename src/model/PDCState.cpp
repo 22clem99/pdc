@@ -5,7 +5,7 @@ PDCState::PDCState()
     return;
 }
 
-bool PDCState::createProject(const string& name)
+bool PDCState::createProject(const std::string& name)
 {
     return true;
 }

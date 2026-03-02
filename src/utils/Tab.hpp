@@ -6,9 +6,9 @@
 class Tab
 {
 public:
-    static string tab(const unsigned int n)
+    static std::string tab(const unsigned int n)
     {
-        string s = "";
+        std::string s = "";
 
         for (unsigned int i = 0; i < n; i++){
             s += "\t";

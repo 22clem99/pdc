@@ -12,7 +12,6 @@
 #include "Log.hpp"
 #include "Id.hpp"
 
-using namespace std;
 
 template<typename Derived>
 class Identifiable
@@ -22,7 +21,7 @@ public:
     Identifiable() {
         // Générateur UUID aléatoire
         static boost::uuids::random_generator generator;
-        stringstream ss;
+        std::stringstream ss;
 
         boost::uuids::uuid uuid = generator();
 

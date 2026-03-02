@@ -3,9 +3,7 @@
 
 #include <string>
 
-using namespace std;
-
-typedef string Id;
+typedef std::string Id;
 
 const Id nullid = "";
 

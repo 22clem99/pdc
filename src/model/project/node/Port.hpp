@@ -29,11 +29,11 @@ class ValueConstraints
 {
 public:
     ValueConstraints() = default;
-    optional<T> min;
-    optional<T> max;
-    optional<T> step;
+    std::optional<T> min;
+    std::optional<T> max;
+    std::optional<T> step;
 
-    optional<vector<T>> allowed_values;
+    std::optional<std::vector<T>> allowed_values;
 
     bool validate(const T& value)
     {
@@ -71,12 +71,12 @@ public:
     virtual ~IPortBase() = default;
 
     virtual const std::type_info& value_type() const = 0;
-    virtual string get_str() const = 0;
-    virtual string get_str(unsigned int tab) const = 0;
+    virtual std::string get_str() const = 0;
+    virtual std::string get_str(unsigned int tab) const = 0;
 
     virtual PortDirection get_direction() const = 0;
     virtual ConnectionMode get_connection_mode() const = 0;
-    virtual vector<Id> get_connected_edges() const = 0;
+    virtual std::vector<Id> get_connected_edges() const = 0;
     virtual void add_connected_edge(const Id& edge_id) = 0;
 
     static bool same_type(const IPortBase& a, const IPortBase& b)
@@ -107,9 +107,9 @@ using Identifiable<Port<T>>::id;
     enum PortDirection dir;
     enum ConnectionMode mode;
 
-    optional<ValueConstraints<T>> constraints;
+    std::optional<ValueConstraints<T>> constraints;
 
-    vector<Id> connected_edges;
+    std::vector<Id> connected_edges;
 
     bool set_value(const T& value)
     {
@@ -126,15 +126,15 @@ using Identifiable<Port<T>>::id;
         return data;
     }
 
-    string get_str() const override
+    std::string get_str() const override
     {
         return get_str(0);
     }
 
-    string get_str(unsigned int tab) const override
+    std::string get_str(unsigned int tab) const override
     {
-        string s = "";
-        string s_tab = Tab::tab(tab);
+        std::string s = "";
+        std::string s_tab = Tab::tab(tab);
 
         s += s_tab + "id:\"" + id + "\", ";
         switch (dir)
@@ -178,7 +178,7 @@ using Identifiable<Port<T>>::id;
         return s;
     }
 
-    static string class_name()
+    static std::string class_name()
     {
         return "Port<" + T::class_name() + ">";
     }
@@ -193,7 +193,7 @@ using Identifiable<Port<T>>::id;
         return mode;
     }
 
-    vector<Id> get_connected_edges() const override
+    std::vector<Id> get_connected_edges() const override
     {
         return connected_edges;
     }

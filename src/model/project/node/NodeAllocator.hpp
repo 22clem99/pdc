@@ -10,17 +10,17 @@
 #include <functional>
 #include <unordered_map>
 
-using namespace std;
+
 
 class NodeAllocator
 {
 public:
-    static void register_node(const string& name, NodeProperty property);
-    static unique_ptr<Node> alloc_node(const string& node_type);
-    static optional<NodeProperty> get_property(const string& node_type);
+    static void register_node(const std::string& name, NodeProperty property);
+    static std::unique_ptr<Node> alloc_node(const std::string& node_type);
+    static std::optional<NodeProperty> get_property(const std::string& node_type);
 
 private:
-    static unordered_map<string, NodeProperty>& registry();
+    static std::unordered_map<std::string, NodeProperty>& registry();
 
 };
 

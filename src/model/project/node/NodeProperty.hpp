@@ -4,7 +4,7 @@
 #include "Node.hpp"
 #include <functional>
 
-typedef function<unique_ptr<Node>()> CreatorFunc;
+typedef std::function<std::unique_ptr<Node>()> CreatorFunc;
 
 class NodeProperty
 {

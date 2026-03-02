@@ -3,7 +3,7 @@
 
 #include <string>
 
-using namespace std;
+
 
 class Image {
 public:
@@ -15,9 +15,9 @@ public:
     // static bool equal_and_greater(Image a, Image b);
     // static bool equal_and_lesser(Image a, Image b);
     // static bool is_divisible(Image a, Image div);
-    static string class_name(void);
-    string get_str(void) const;
-    string get_str(const unsigned int tab) const;
+    static std::string class_name(void);
+    std::string get_str(void) const;
+    std::string get_str(const unsigned int tab) const;
 };
 
 #endif

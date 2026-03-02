@@ -13,7 +13,7 @@ public:
     {
         NodeAllocator::register_node(node::class_name(), {node::kind, []()
         {
-            return make_unique<node>();
+            return std::make_unique<node>();
         }});
     }
 };

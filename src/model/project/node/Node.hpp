@@ -12,7 +12,7 @@
 #include <utils/Identifiable.hpp>
 #include <memory>
 
-using namespace std;
+
 
 enum class NodeKind {
     Head,
@@ -23,15 +23,15 @@ enum class NodeKind {
 class Node : public Identifiable<Node>
 {
 public:
-    map<Id, unique_ptr<IPortBase>> ports;
+    std::map<Id, std::unique_ptr<IPortBase>> ports;
     NodeKind kind;
     virtual ~Node() = default;
-    static string class_name();
-    virtual string get_class_name() const = 0;
+    static std::string class_name();
+    virtual std::string get_class_name() const = 0;
     // virtual NodeKind kind() const = 0;
     int add_port(IPortBase& p);
-    string get_str(void);
-    string get_str(const unsigned int tab);
+    std::string get_str(void);
+    std::string get_str(const unsigned int tab);
     virtual int compute_output() = 0;
 };
 

@@ -12,10 +12,10 @@ private:
 
 public:
     GraphEditor() = default;
-    Id add_node(const string& node_type, unsigned int position);
+    Id add_node(const std::string& node_type, unsigned int position);
     bool remove_node(const Id& node_id);
-    string get_str(void);
-    string get_str(const unsigned int tab);
+    std::string get_str(void);
+    std::string get_str(const unsigned int tab);
 };
 
 #endif

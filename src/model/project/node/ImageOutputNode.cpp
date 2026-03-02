@@ -8,13 +8,13 @@
 
 ImageOutputNode::ImageOutputNode()
 {
-    auto img_output = make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
+    auto img_output = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
 
-    ports.emplace(img_output->id, move(img_output));
+    ports.emplace(img_output->id, std::move(img_output));
 }
 
 
-string ImageOutputNode::class_name()
+std::string ImageOutputNode::class_name()
 {
     return "ImageOutputNode";
 }
@@ -24,12 +24,12 @@ NodeKind ImageOutputNode::get_kind()
     return kind;
 }
 
-string ImageOutputNode::get_str(void)
+std::string ImageOutputNode::get_str(void)
 {
     return get_str(0);
 }
 
-string ImageOutputNode::get_str(const unsigned int tab)
+std::string ImageOutputNode::get_str(const unsigned int tab)
 {
     return get_str(tab);
 }

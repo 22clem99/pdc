@@ -8,10 +8,10 @@
 
 class PDCState {
 private:
-    unique_ptr<Project> prj;
+    std::unique_ptr<Project> prj;
 public:
     PDCState();
-    bool createProject(const string& name);
+    bool createProject(const std::string& name);
     bool closeProject();
     bool saveProject();
     bool renameProject();

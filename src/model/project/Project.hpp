@@ -7,22 +7,22 @@
 
 #include "graph/GraphEditor.hpp"
 
-using namespace std;
+
 
 class Project
 {
 private:
-    string name;
-    string file;
+    std::string name;
+    std::string file;
 
     GraphEditor node_graph;
 
 public:
-    Project(const string& project_name, const string& file_path);
-    int add_node(const string& node_type, unsigned int position);
-    int remove_node(const string& node_type);
-    string get_str();
-    string get_str(const unsigned int tab);
+    Project(const std::string& project_name, const std::string& file_path);
+    int add_node(const std::string& node_type, unsigned int position);
+    int remove_node(const std::string& node_type);
+    std::string get_str();
+    std::string get_str(const unsigned int tab);
 };
 
 #endif

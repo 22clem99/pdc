@@ -2,23 +2,23 @@
 
 #include "Log.hpp"
 
-void Log::debug(const string& msg) {
+void Log::debug(const std::string& msg) {
     instance().debug_impl(msg);
 }
 
-void Log::info(const string& msg) {
+void Log::info(const std::string& msg) {
     instance().info_impl(msg);
 }
 
-void Log::warning(const string& msg) {
+void Log::warning(const std::string& msg) {
     instance().warning_impl(msg);
 }
 
-void Log::error(const string& msg) {
+void Log::error(const std::string& msg) {
     instance().error_impl(msg);
 }
 
-void Log::critical(const string& msg) {
+void Log::critical(const std::string& msg) {
     instance().critical_impl(msg);
 }
 
@@ -27,33 +27,33 @@ void Log::set_level(LogLevel new_level) {
 }
 
 // Implementation methods
-void Log::debug_impl(const string& msg) const {
+void Log::debug_impl(const std::string& msg) const {
     if (level <= LogLevel::DEBUG) {
-        cout << "DEBUG: " << msg << endl;
+        std::cout << "DEBUG: " << msg << std::endl;
     }
 }
 
-void Log::info_impl(const string& msg) const {
+void Log::info_impl(const std::string& msg) const {
     if (level <= LogLevel::INFO) {
-        cout << "INFO: " << msg << endl;
+        std::cout << "INFO: " << msg << std::endl;
     }
 }
 
-void Log::warning_impl(const string& msg) const {
+void Log::warning_impl(const std::string& msg) const {
     if (level <= LogLevel::WARNING) {
-        cout << "WARNING: " << msg << endl;
+        std::cout << "WARNING: " << msg << std::endl;
     }
 }
 
-void Log::error_impl(const string& msg) const {
+void Log::error_impl(const std::string& msg) const {
     if (level <= LogLevel::ERROR) {
-        cout << "ERROR: " << msg << endl;
+        std::cout << "ERROR: " << msg << std::endl;
     }
 }
 
-void Log::critical_impl(const string& msg) const {
+void Log::critical_impl(const std::string& msg) const {
     if (level <= LogLevel::CRITICAL) {
-        cout << "CRITICAL: " << msg << endl;
+        std::cout << "CRITICAL: " << msg << std::endl;
     }
 }
 
