@@ -6,7 +6,6 @@
 #include <memory>
 
 #include <utils/Types.hpp>
-
 #include "../node/Node.hpp"
 #include "../edge/Edge.hpp"
 

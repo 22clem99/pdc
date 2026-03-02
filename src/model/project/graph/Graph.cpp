@@ -1,10 +1,17 @@
+/**
+ * @file Graph.cpp
+ * @brief Implementation of class Graph
+ */
+
+#include <memory>
+
 #include "Graph.hpp"
 #include "../node/NodeAllocator.hpp"
 #include <utils/Tab.hpp>
-#include <memory>
 
 Id Graph::add_node(const std::string& node_type)
 {
+    // Get factory configuration by the name
     std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
 
     if (!prop) {
@@ -155,7 +162,6 @@ bool Graph::is_cycle()
     return false;
 }
 
-    /*********** Graph structur access ***********/
 std::vector<Id> Graph::neighbors(const Id& node)
 {
     std::vector<Id> neighbors_id = {};

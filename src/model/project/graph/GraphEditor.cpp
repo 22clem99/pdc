@@ -1,5 +1,9 @@
-#include "GraphEditor.hpp"
+/**
+ * @file GraphEditor.cpp
+ * @brief Implementing GraphEditor class
+ */
 
+#include "GraphEditor.hpp"
 
 Id GraphEditor::add_node(const std::string& node_type, unsigned int position)
 {

@@ -1,10 +1,15 @@
-#include "ImageInputNode.hpp"
+/**
+ * @file ImageInputNode.cpp
+ * @brief Implementing the ImageInputNode class
+ */
 
-#include <utils/Log.hpp>
-#include <utils/Types.hpp>
+#include "ImageInputNode.hpp"
 
 #include <memory>
 #include <functional>
+
+#include <utils/Log.hpp>
+#include <utils/Types.hpp>
 
 ImageInputNode::ImageInputNode()
 {

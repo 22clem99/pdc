@@ -1,5 +1,10 @@
-#include "NodeAllocator.hpp"
+/**
+ * @file NodeAllocator.cpp
+ * @brief Implementing NodeAllocator class
+ *
+ */
 
+#include "NodeAllocator.hpp"
 #include <utils/Log.hpp>
 
 void NodeAllocator::register_node(const std::string& name, NodeProperty property)

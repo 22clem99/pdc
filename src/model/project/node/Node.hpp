@@ -1,37 +1,72 @@
+/**
+ * @file Node.hpp
+ * @brief Define an sabstract Node class
+ *
+ * This kind of object are used in the graph each node
+ * can embedded port to communicate to other nodes
+ */
+
 #ifndef NODE_H
 #define NODE_H
 
 #include <string>
 #include <map>
 #include <variant>
-
-#include <utils/Types.hpp>
-
-#include "Port.hpp"
-
-#include <utils/Identifiable.hpp>
 #include <memory>
 
+#include <utils/Types.hpp>
+#include "Port.hpp"
+#include <utils/Identifiable.hpp>
 
-
+/**
+ * @brief Kind of node
+ *
+ * Used for node that can only allocate once
+ */
 enum class NodeKind {
     Head,
     Tail,
     Regular
 };
 
+/**
+ * @brief abstract class Node use by the graph class
+ *
+ * Each object allocate of kind Node inherit the
+ * Identifiable class to provide a unique identifier
+ */
 class Node : public Identifiable<Node>
 {
 public:
     std::map<Id, std::unique_ptr<IPortBase>> ports;
     NodeKind kind;
+
     virtual ~Node() = default;
+
     static std::string class_name();
+
     virtual std::string get_class_name() const = 0;
-    // virtual NodeKind kind() const = 0;
-    int add_port(IPortBase& p);
+
+    /**
+     * @brief Get the string representation of the Node
+     *
+     * @return std::string Node representation
+     */
     std::string get_str(void);
+
+    /**
+     * @brief Same as get_str(void) but with tab at each lines
+     *
+     * @param tab number of tab to insert
+     * @return std::string Node representation
+     */
     std::string get_str(const unsigned int tab);
+
+    /**
+     * @brief Abstract function to compute outputs, need to be implement in derived class
+     *
+     * @return int
+     */
     virtual int compute_output() = 0;
 };
 

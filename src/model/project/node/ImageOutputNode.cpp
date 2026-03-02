@@ -1,10 +1,16 @@
+/**
+ * @file ImageOutputNode.cpp
+ * @brief Implementation of the ImageOutputNode class
+ */
+
 #include "ImageOutputNode.hpp"
+
+#include <memory>
+#include <functional>
 
 #include <utils/Log.hpp>
 #include <utils/Types.hpp>
 
-#include <memory>
-#include <functional>
 
 ImageOutputNode::ImageOutputNode()
 {

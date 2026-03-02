@@ -1,16 +1,14 @@
+/**
+ * @file Node.cpp
+ * @brief Implementation of the Base class Node
+ */
+
 #include "Node.hpp"
 #include <utils/Tab.hpp>
 
 std::string Node::class_name()
 {
     return "Node";
-}
-
-int Node::add_port(IPortBase& p)
-{
-    // if (inputs.contains(in.id)) {
-    return 0;
-    // }
 }
 
 std::string Node::get_str()
