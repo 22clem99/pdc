@@ -5,6 +5,7 @@
 #include <model/project/node/ImageOutputNode.hpp>
 
 #include <utils/Log.hpp>
+#include <cassert>
 
 int main(int argc, char *argv[])
 {
@@ -21,8 +22,19 @@ int main(int argc, char *argv[])
     Id id_in_port = inPorts.begin()->first;
     Id id_out_port = outPorts.begin()->first;
 
-    g.connect(id_in, id_in_port, id_out, id_out_port);
-    g.connect(id_out, id_out_port, id_in, id_in_port);
+    // Test with bad nodes ID
+    assert(g.connect("", "", id_out, id_out_port) == nullid);
+    assert(g.connect(id_in, id_in_port, "", "") == nullid);
+
+    // Test with bad port
+    assert(g.connect(id_in, id_in_port, id_out, "") == nullid);
+    assert(g.connect(id_in, "", id_out, id_in_port) == nullid);
+
+    // Test a good edge
+    assert(g.connect(id_in, id_in_port, id_out, id_out_port) != nullid);
+
+    // Test a edge in the wrong direction
+    assert(g.connect(id_out, id_out_port, id_in, id_in_port) == nullid);
 
     Log::info(g.get_str());
 

@@ -52,11 +52,38 @@ bool Graph::remove_node(const Id& node_id)
 
 bool Graph::has_node(const Id& node_id)
 {
-    return false;
+    return nodes.find(node_id) != nodes.end();
+}
+
+bool Graph::has_port(const Id& node_id, const Id& port_id)
+{
+    return nodes[node_id]->ports.find(port_id) != nodes[node_id]->ports.end();
 }
 
 Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
+    // Test IDs before to do anything
+    if (!has_node(from_node))
+    {
+        Log::error("from node \"" + from_node + "\"is not a correct ID");
+        return nullid;
+    }
+    if (!has_node(to_node))
+    {
+        Log::error("to node \"" + to_node + "\" is not a correct ID");
+        return nullid;
+    }
+    if (!has_port(from_node, from_output) || !has_port(to_node, to_input))
+    {
+        Log::error("Port \"" + from_output + "\" is not a correct ID");
+        return nullid;
+    }
+    if (!has_port(from_node, from_output) || !has_port(to_node, to_input))
+    {
+        Log::error("Port \"" + to_input + "\" is not a correct ID");
+        return nullid;
+    }
+
     auto& from_node_obj = *nodes[from_node];
     auto& to_node_obj = *nodes[to_node];
 
@@ -67,8 +94,7 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     // the same type of data.
     if (!IPortBase::same_type(from_output_obj, to_input_obj))
     {
-        Log::error("Node \"" + from_node + "\" and \"" + to_node + "\n are not the same type, can't be connected");
-
+        Log::error("Node \"" + from_node + "\" and \"" + to_node + "\" are not the same type, can't be connected");
         return nullid;
     }
 
@@ -78,7 +104,7 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     if ((from_output_obj.get_direction() != PortDirection::Output)
         || (from_output_obj.get_connection_mode() != ConnectionMode::Multiple))
     {
-        Log::error("Node \"" + from_node + "\" is not an Output or it's connection mode is not Multiple");
+        Log::error("Node \"" + from_output + "\" is not an Output or it's connection mode is not Multiple");
         return nullid;
     }
 
@@ -91,7 +117,7 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
         || (to_input_obj.get_connection_mode() != ConnectionMode::Single)
         || (!to_input_obj.get_connected_edges().empty()))
     {
-        Log::error("Node \"" + to_node + "\" is not an Input or it's connection mode is not Single or a edge is already connected");
+        Log::error("Node \"" + to_input + "\" is not an Input or it's connection mode is not Single or a edge is already connected");
         return nullid;
     }
 
@@ -99,11 +125,12 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     auto new_edge = make_unique<Edge>(from_node, from_output, to_node, to_input);
     Id new_edge_id = new_edge->id;
 
-
     // Add edge in the edges vector
     edges.emplace(new_edge_id, move(new_edge));
 
-    // TODO update connection vector in PORTS
+    // Then link ports to the new edge
+    from_output_obj.add_connected_edge(new_edge_id);
+    to_input_obj.add_connected_edge(new_edge_id);
 
     return new_edge_id;
 }

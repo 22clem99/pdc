@@ -43,6 +43,13 @@ public:
     /// @return true if the node exist otherwise false
     bool has_node(const Id& node_id);
 
+
+    /// @brief test if the node has a port
+    /// @param node_id node Id to be tested
+    /// @param port_id port Id to be tested
+    /// @return true if the port exist otherwise false
+    bool has_port(const Id& node_id, const Id& port_id);
+
     /*********** Edges manipulation ***********/
 
     /// @brief connect two nodes with an edge

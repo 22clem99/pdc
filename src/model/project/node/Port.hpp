@@ -77,6 +77,7 @@ public:
     virtual PortDirection get_direction() const = 0;
     virtual ConnectionMode get_connection_mode() const = 0;
     virtual vector<Id> get_connected_edges() const = 0;
+    virtual void add_connected_edge(const Id& edge_id) = 0;
 
     static bool same_type(const IPortBase& a, const IPortBase& b)
     {
@@ -95,6 +96,7 @@ using Identifiable<Port<T>>::id;
         data = T();
         dir = p_dir;
         mode = p_mode;
+        connected_edges = {};
     }
 
     const std::type_info& value_type() const {
@@ -164,7 +166,14 @@ using Identifiable<Port<T>>::id;
             break;
         }
 
-        s += ", type=" + data.get_str() + ";";
+        s += ", type=" + data.get_str() + ", connected_edges {\n";
+
+        for (auto edge_id : connected_edges)
+        {
+            s += s_tab + "\t\t" + edge_id + "\n";
+        }
+
+        s += s_tab + "\t};";
 
         return s;
     }
@@ -189,6 +198,10 @@ using Identifiable<Port<T>>::id;
         return connected_edges;
     }
 
+    void add_connected_edge(const Id& edge_id) override
+    {
+        connected_edges.push_back(edge_id);
+    }
 };
 
 #endif
