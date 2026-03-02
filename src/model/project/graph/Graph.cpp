@@ -67,6 +67,11 @@ bool Graph::has_port(const Id& node_id, const Id& port_id)
     return nodes[node_id]->ports.find(port_id) != nodes[node_id]->ports.end();
 }
 
+bool Graph::has_edge(const Id& edge_id)
+{
+    return edges.find(edge_id) != edges.end();
+}
+
 Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
     // Test IDs before to do anything
@@ -144,7 +149,34 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
 
 bool Graph::disconnect(const Id& edge)
 {
-    return false;
+    if (!has_edge(edge))
+    {
+        Log::debug("The edge \"" + edge + "\" is not part of this graph");
+        return false;
+    }
+
+    // First clear link in ports
+    auto& edge_obj = edges[edge];
+
+    auto& port_from_obj = nodes[edge_obj->from_node]->ports;
+    auto& ports_to_obj = nodes[edge_obj->to_node]->ports;
+
+    auto& port_from = *port_from_obj[edge_obj->from_output];
+    auto& port_to = *ports_to_obj[edge_obj->to_input];
+
+    if ((port_from.remove_connected_edge(edge) != 1) || (port_to.remove_connected_edge(edge) != 1))
+    {
+        Log::warning("Unable to remove links on nodes\"" + edge_obj->from_node + "\" and \"" + edge_obj->to_node + "\", will continue to remove the edge but with risk");
+    }
+
+    // Then erase the edge from the edge map
+    if (edges.erase(edge) != 1)
+    {
+        Log::warning("Unable to remove the edge\"" + edge + "\"");
+        return false;
+    }
+
+    return true;
 }
 
 int Graph::remove_edges_of_node(const Id& node)

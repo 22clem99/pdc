@@ -31,11 +31,21 @@ int main(int argc, char *argv[])
     assert(g.connect(id_in, "", id_out, id_in_port) == nullid);
 
     // Test a good edge
-    assert(g.connect(id_in, id_in_port, id_out, id_out_port) != nullid);
+    auto id_first = g.connect(id_in, id_in_port, id_out, id_out_port);
+    assert(id_first != nullid);
 
     // Test a edge in the wrong direction
     assert(g.connect(id_out, id_out_port, id_in, id_in_port) == nullid);
 
+    Log::info(g.get_str());
+
+    // Test the disconnect method
+    assert(g.disconnect(id_first));
+    Log::info(g.get_str());
+
+    // Rollback and add the same edge
+    auto id_sec = g.connect(id_in, id_in_port, id_out, id_out_port);
+    assert(id_sec != nullid);
     Log::info(g.get_str());
 
     return 0;

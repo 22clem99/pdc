@@ -20,14 +20,13 @@
  */
 class Edge : public Identifiable<Edge>
 {
-private:
+public:
     Id from_node;
     Id from_output;
 
     Id to_node;
     Id to_input;
 
-public:
     /**
      * @brief Construct a new Edge object
      *
@@ -67,7 +66,7 @@ public:
      */
     std::string get_str(const unsigned int tab) const
     {
-        return Tab::tab(tab) + "\tEdge {from " + from_node + "[" + from_output + "], to " + to_node +  "[" + to_input + "]}";
+        return Tab::tab(tab) + "\tEdge {id:\"" + id + "\", from " + from_node + "[" + from_output + "], to " + to_node +  "[" + to_input + "]}";
     }
 
     static std::string class_name()

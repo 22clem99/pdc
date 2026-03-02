@@ -154,6 +154,15 @@ public:
     virtual void add_connected_edge(const Id& edge_id) = 0;
 
     /**
+     * @brief remove an edge from the list of edges connected
+     *
+     * @param edge_id
+     * @return true if the edge is remove
+     * @return false if the edge failed to be removed
+     */
+    virtual bool remove_connected_edge(const Id& edge_id) = 0;
+
+    /**
      * @brief Function to compare type of two Ports
      *
      * As Port is a template, we need to compare port to bind them, so we use
@@ -291,9 +300,15 @@ using Identifiable<Port<T>>::id;
         return connected_edges;
     }
 
+
     void add_connected_edge(const Id& edge_id) override
     {
         connected_edges.push_back(edge_id);
+    }
+
+    bool remove_connected_edge(const Id& edge_id) override
+    {
+        return (std::erase(connected_edges, edge_id) == 1);
     }
 };
 

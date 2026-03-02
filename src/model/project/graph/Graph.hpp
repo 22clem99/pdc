@@ -79,6 +79,14 @@ public:
     bool has_port(const Id& node_id, const Id& port_id);
 
     /**
+    * @brief test if the node has a port
+    * @param node_id node Id to be tested
+    * @param port_id port Id to be tested
+    * @return true if the port exist otherwise false
+    */
+    bool has_edge(const Id& edge_id);
+
+    /**
      * Edges manipulation
      */
 
