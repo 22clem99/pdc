@@ -401,16 +401,42 @@ std::vector<Id> Graph::neighbors(const Id& node_id)
     return neighbors_id;
 }
 
-std::vector<Id> Graph::get_incoming_edges(const Id& node)
+std::vector<Id> Graph::get_incoming_edges(const Id& node_id)
 {
     std::vector<Id> edges_id = {};
+
+    // Get inputs port
+    auto inputs_port = nodes[node_id]->get_ports_from_direction(PortDirection::Input);
+
+    for (auto input_port : inputs_port)
+    {
+        auto port_conn_edges = nodes[node_id]->ports[input_port]->get_connected_edges();
+
+        if (!port_conn_edges.empty())
+        {
+            edges_id.insert(port_conn_edges.end(), port_conn_edges.begin(), port_conn_edges.end());
+        }
+    }
 
     return edges_id;
 }
 
-std::vector<Id> Graph::get_outgoing_edges(const Id& node)
+std::vector<Id> Graph::get_outgoing_edges(const Id& node_id)
 {
     std::vector<Id> edges_id = {};
+
+    // Get outputs port
+    auto outputs_port = nodes[node_id]->get_ports_from_direction(PortDirection::Output);
+
+    for (auto output_port : outputs_port)
+    {
+        auto port_conn_edges = nodes[node_id]->ports[output_port]->get_connected_edges();
+
+        if (!port_conn_edges.empty())
+        {
+            edges_id.insert(port_conn_edges.end(), port_conn_edges.begin(), port_conn_edges.end());
+        }
+    }
 
     return edges_id;
 }

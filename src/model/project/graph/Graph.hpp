@@ -211,7 +211,7 @@ public:
      * @param node id of the node
      * @return std::vector<Id> list of a outgoing edges
      */
-    std::vector<Id> get_incoming_edges(const Id& node);
+    std::vector<Id> get_incoming_edges(const Id& node_id);
 
     /**
      * @brief Get the edges ID incoming to a node
@@ -219,7 +219,7 @@ public:
      * @param node id of the node
      * @return std::vector<Id> list of a incoming edges
      */
-    std::vector<Id> get_outgoing_edges(const Id& node);
+    std::vector<Id> get_outgoing_edges(const Id& node_id);
 
     /**
      * @brief Get the connections of a specific port of a specific node
