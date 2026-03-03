@@ -6,6 +6,7 @@ add_library(Node SHARED
     NodeAllocator.cpp
     ImageInputNode.cpp
     ImageOutputNode.cpp
+    ImageRGBSplitterNode.cpp
 )
 
 target_link_libraries(Node

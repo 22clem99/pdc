@@ -54,7 +54,23 @@ Id Graph::add_node(const std::string& node_type)
 
 bool Graph::remove_node(const Id& node_id)
 {
-    return false;
+    if (!has_node(node_id))
+    {
+        Log::debug("The node \"" + node_id + "\" is not part of this graph");
+        return false;
+    }
+
+    // First remove all edges connected to the node
+    remove_edges_of_node(node_id);
+
+    // Then remove the node from the node list
+    if (nodes.erase(node_id) != 1)
+    {
+        Log::debug("Unable to remove the node \"" + node_id + "\" from the graph");
+        return false;
+    }
+
+    return true;
 }
 
 bool Graph::has_node(const Id& node_id)
@@ -147,16 +163,16 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     return new_edge_id;
 }
 
-bool Graph::disconnect(const Id& edge)
+bool Graph::disconnect(const Id& edge_id)
 {
-    if (!has_edge(edge))
+    if (!has_edge(edge_id))
     {
-        Log::debug("The edge \"" + edge + "\" is not part of this graph");
+        Log::debug("The edge \"" + edge_id + "\" is not part of this graph");
         return false;
     }
 
     // First clear link in ports
-    auto& edge_obj = edges[edge];
+    auto& edge_obj = edges[edge_id];
 
     auto& port_from_obj = nodes[edge_obj->from_node]->ports;
     auto& ports_to_obj = nodes[edge_obj->to_node]->ports;
@@ -164,24 +180,39 @@ bool Graph::disconnect(const Id& edge)
     auto& port_from = *port_from_obj[edge_obj->from_output];
     auto& port_to = *ports_to_obj[edge_obj->to_input];
 
-    if ((port_from.remove_connected_edge(edge) != 1) || (port_to.remove_connected_edge(edge) != 1))
+    if ((port_from.remove_connected_edge(edge_id) != 1) || (port_to.remove_connected_edge(edge_id) != 1))
     {
         Log::warning("Unable to remove links on nodes\"" + edge_obj->from_node + "\" and \"" + edge_obj->to_node + "\", will continue to remove the edge but with risk");
     }
 
     // Then erase the edge from the edge map
-    if (edges.erase(edge) != 1)
+    if (edges.erase(edge_id) != 1)
     {
-        Log::warning("Unable to remove the edge\"" + edge + "\"");
+        Log::warning("Unable to remove the edge\"" + edge_id + "\"");
         return false;
     }
 
     return true;
 }
 
-int Graph::remove_edges_of_node(const Id& node)
+int Graph::remove_edges_of_node(const Id& node_id)
 {
-    return false;
+    auto& node = nodes[node_id];
+    int cnt = 0;
+
+    for (auto& port : node->ports)
+    {
+        for (auto& connected_edge : port.second->get_connected_edges())
+        {
+            if (!disconnect(connected_edge))
+            {
+                Log::warning("Unable to disconect edge \"" + connected_edge + "\" from node \"" + node_id + "\"");
+            }
+            cnt++;
+        }
+    }
+
+    return cnt;
 }
 
 bool Graph::validateGraph()

@@ -108,15 +108,15 @@ public:
      * @return true if the edge is successfully removed
      * @return false if the edge is not successfully removed
      */
-    bool disconnect(const Id& edge);
+    bool disconnect(const Id& edge_id);
 
     /**
      * @brief Remove all edges connected to a node
      *
-     * @param node node ID to clear edges
+     * @param node_id node ID to clear edges
      * @return int number of edges removed
      */
-    int remove_edges_of_node(const Id& node);
+    int remove_edges_of_node(const Id& node_id);
 
     /**
      * Graph validation
