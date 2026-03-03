@@ -35,3 +35,32 @@ std::string Node::get_str(const unsigned int tab)
 
     return s;
 }
+
+void Node::set_visit_status(VisitState state)
+{
+    visite_state = state;
+}
+
+VisitState Node::get_visit_status(void)
+{
+    return visite_state;
+}
+
+void Node::clear_visit_status(void)
+{
+    visite_state = VisitState::NotVisited;
+}
+
+std::vector<Id> Node::get_ports_from_direction(PortDirection dir)
+{
+    std::vector<Id> ports_dir = {};
+    for (auto& port : ports)
+    {
+        if (port.second->get_direction() == dir)
+        {
+            ports_dir.push_back(port.first);
+        }
+    }
+
+    return (ports_dir);
+}

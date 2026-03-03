@@ -7,6 +7,7 @@ add_library(Node SHARED
     ImageInputNode.cpp
     ImageOutputNode.cpp
     ImageRGBSplitterNode.cpp
+    ImageRGBCombinerNode.cpp
 )
 
 target_link_libraries(Node

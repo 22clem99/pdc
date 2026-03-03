@@ -30,6 +30,18 @@ enum class NodeKind {
 };
 
 /**
+ * @brief Enum type to manage DFS graph visit
+ *
+ * Used for node that can only allocate once
+ */
+enum class VisitState
+{
+    NotVisited,
+    Visiting,
+    Visited
+};
+
+/**
  * @brief abstract class Node use by the graph class
  *
  * Each object allocate of kind Node inherit the
@@ -40,6 +52,8 @@ class Node : public Identifiable<Node>
 public:
     std::map<Id, std::unique_ptr<IPortBase>> ports;
     NodeKind kind;
+
+    VisitState visite_state;
 
     virtual ~Node() = default;
 
@@ -68,6 +82,29 @@ public:
      * @return int
      */
     virtual int compute_output() = 0;
+
+    /**
+     * @brief set the node visit state status (use for graph navigation)
+     */
+    void set_visit_status(VisitState state);
+
+    /**
+     * @brief get the node visit state status (use for graph navigation)
+     */
+    VisitState get_visit_status(void);
+
+    /**
+     * @brief clear the node visit state status (use for graph navigation)
+     */
+    void clear_visit_status(void);
+
+    /**
+     * @brief get a list of port by direction
+     *
+     * @param dir direction of ports
+     */
+    std::vector<Id> get_ports_from_direction(PortDirection dir);
+
 };
 
 #endif

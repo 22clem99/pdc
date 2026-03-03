@@ -48,6 +48,7 @@ Id Graph::add_node(const std::string& node_type)
     }
 
     nodes.insert({id, std::move(new_node)});
+    analysis.analysis_dirty = true;
 
     return id;
 }
@@ -63,12 +64,22 @@ bool Graph::remove_node(const Id& node_id)
     // First remove all edges connected to the node
     remove_edges_of_node(node_id);
 
+    // If the node is the head, remove the head
+    if (head_id == node_id)
+        head_id.reset();
+
+    // If the node is the tail, remove the tail
+    if (tail_id == node_id)
+        tail_id.reset();
+
     // Then remove the node from the node list
     if (nodes.erase(node_id) != 1)
     {
         Log::debug("Unable to remove the node \"" + node_id + "\" from the graph");
         return false;
     }
+
+    analysis.analysis_dirty = true;
 
     return true;
 }
@@ -160,6 +171,8 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     from_output_obj.add_connected_edge(new_edge_id);
     to_input_obj.add_connected_edge(new_edge_id);
 
+    analysis.analysis_dirty = true;
+
     return new_edge_id;
 }
 
@@ -192,11 +205,19 @@ bool Graph::disconnect(const Id& edge_id)
         return false;
     }
 
+    analysis.analysis_dirty = true;
+
     return true;
 }
 
 int Graph::remove_edges_of_node(const Id& node_id)
 {
+    if (!has_node(node_id))
+    {
+        Log::debug("The node \"" + node_id + "\" is not part of this graph");
+        return 0;
+    }
+
     auto& node = nodes[node_id];
     int cnt = 0;
 
@@ -215,19 +236,167 @@ int Graph::remove_edges_of_node(const Id& node_id)
     return cnt;
 }
 
-bool Graph::validateGraph()
+bool Graph::validate_graph()
 {
+    // Head must be set
+    if (!head_id)
+    {
+        Log::debug("The head is not set");
+        return false;
+    }
+
+    // Tail must be set
+    if (!tail_id)
+    {
+        Log::debug("The tail is not set");
+        return false;
+    }
+
+    // Test Cycle
+    if (is_cycle())
+    {
+        Log::debug("The graph has at least one cycle");
+        return false;
+    }
+
+    // Test connected
+    if (!is_connected())
+    {
+        Log::debug("The graph is not connected");
+        return false;
+    }
+
+    // Test that the tail can be reach from the head
+    if (!tail_reachable())
+    {
+        Log::debug("The graph is not connected");
+        return false;
+    }
+
+    Log::debug("The graph si valid");
+    return true;
+}
+
+bool Graph::run_DFS_analyse()
+{
+    // First clear all boolean used to traversing graph
+    for (auto& [id, node] : nodes)
+    {
+        node->clear_visit_status();
+    }
+
+    // Run the DFS algorythm and check cycle
+    if (DFS(head_id.value()))
+    {
+        analysis.has_cycle = true;
+    }
+
+    // Check that all node were visited
+    analysis.is_connected = true;
+    for (auto& [id, node] : nodes)
+    {
+        if (node->get_visit_status() == VisitState::NotVisited)
+        {
+            analysis.is_connected = false;
+            break;
+        }
+    }
+
+    // Check that tail was visited, yes it is redundant with the previous test
+    if (nodes[tail_id.value()]->get_visit_status() == VisitState::NotVisited)
+    {
+        analysis.tail_reachable = false;
+    }
+
+    // The analysis is valid
+    analysis.analysis_dirty = false;
+
+    return true;
+}
+
+void Graph::set_graph_dirty(void)
+{
+    analysis.analysis_dirty = true;
+}
+
+bool Graph::DFS(const Id node_id)
+{
+    auto& node = *nodes[node_id];
+
+    node.set_visit_status(VisitState::Visiting);
+
+    for (Id neighbors_id : neighbors(node_id))
+    {
+        if (nodes[neighbors_id]->get_visit_status() == VisitState::Visiting)
+        {
+            return true;
+        }
+
+        if (nodes[neighbors_id]->get_visit_status() == VisitState::NotVisited)
+        {
+            if (DFS(neighbors_id))
+            {
+                return true;
+            }
+        }
+    }
+
+    node.set_visit_status(VisitState::Visited);
+
     return false;
 }
 
 bool Graph::is_cycle()
 {
-    return false;
+    if (analysis.analysis_dirty)
+        run_DFS_analyse();
+
+    // Use the DFS analysis
+    return analysis.has_cycle;
 }
 
-std::vector<Id> Graph::neighbors(const Id& node)
+bool Graph::is_connected()
+{
+    if (analysis.analysis_dirty)
+        run_DFS_analyse();
+
+    // Use the DFS analysis
+    return analysis.is_connected;
+}
+
+bool Graph::tail_reachable()
+{
+    if (analysis.analysis_dirty)
+        run_DFS_analyse();
+
+    // Use the DFS analysis
+    return analysis.tail_reachable;
+}
+
+std::vector<Id> Graph::neighbors(const Id& node_id)
 {
     std::vector<Id> neighbors_id = {};
+
+    if (!has_node(node_id))
+    {
+        Log::debug("The node \"" + node_id + "\" is not part of this graph");
+        return neighbors_id;
+    }
+
+    auto& node = *nodes[node_id];
+
+    for (auto& [port_id, port] : node.ports)
+    {
+        for (auto& connected_edge : port->get_connected_edges())
+        {
+            auto& edge = *edges[connected_edge];
+
+            if (edge.from_node == node_id)
+            {
+                neighbors_id.push_back(edge.to_node);
+            }
+        }
+    }
 
     return neighbors_id;
 }

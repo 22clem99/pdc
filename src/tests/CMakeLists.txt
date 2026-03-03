@@ -4,6 +4,9 @@ set(src_files
     test2.cpp
     test3.cpp
     test4.cpp
+    test_graph_valid_no_head.cpp
+    test_graph_valid_no_tail.cpp
+    test_graph_valid_not_connected.cpp
 )
 
 foreach(src_file ${src_files})

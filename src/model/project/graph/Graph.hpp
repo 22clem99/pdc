@@ -14,6 +14,21 @@
 #include "../node/Node.hpp"
 #include "../edge/Edge.hpp"
 
+/**
+ * @brief Provide the result abstraction result of the graph analyze
+ *
+ */
+class GraphAnalyzer
+{
+public:
+    bool has_cycle;
+    bool is_connected;
+    bool tail_reachable;
+
+    bool analysis_dirty = true;
+
+    GraphAnalyzer() = default;
+};
 
 /**
  * @brief Graph object, represent nodes and edges.
@@ -24,6 +39,8 @@
  */
 class Graph
 {
+private:
+    GraphAnalyzer analysis;
 public:
     /**
      * @brief Map of nodes
@@ -128,7 +145,29 @@ public:
      * @return true the graph is valid and all properties are fulfilled
      * @return false the graph is not valid and at least one properties is not fulfilled
      */
-    bool validateGraph();
+    bool validate_graph();
+
+    /**
+     * @brief run a DFS analyze,
+     *
+     * @return true the DFS is run succesfully
+     * @return false the DFS failed to be run
+     */
+    bool run_DFS_analyse();
+
+    /**
+     * @brief Set graph analysis dirty (the graph was modify)
+     *
+     */
+    void set_graph_dirty(void);
+
+    /**
+     * @brief function used to visit the graph and detect cycle
+     *
+     * @return true the graph contain at least one circle
+     * @return false no cycle found
+     */
+    bool DFS(const Id node_id);
 
     /**
      * @brief Check that the graph does not contain a cycle
@@ -137,6 +176,22 @@ public:
      * @return false no cycle found
      */
     bool is_cycle();
+
+    /**
+     * @brief Check that the graph is connected (no node detached)
+     *
+     * @return true the graph is connected
+     * @return false the graph is not connected
+     */
+    bool is_connected();
+
+    /**
+     * @brief Check that the tail is reachable from the head
+     *
+     * @return true the tail can be reach
+     * @return false the tail can't be reach
+     */
+    bool tail_reachable();
 
     /**
      * Graph structur access
@@ -148,7 +203,7 @@ public:
       * @param node node id which neighbors are return
       * @return std::vector<Id> vector of neighbors ID
       */
-    std::vector<Id> neighbors(const Id& node);
+    std::vector<Id> neighbors(const Id& node_id);
 
     /**
      * @brief Get the edges ID incoming in a node
