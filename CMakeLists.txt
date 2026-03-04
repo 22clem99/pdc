@@ -13,8 +13,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 
 ## Find dependencies
 # find GTK
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GGTKMM REQUIRED IMPORTED_TARGET gtkmm-4.0)
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(GGTKMM REQUIRED IMPORTED_TARGET gtkmm-4.0)
 
 # find Lib Boost
 find_package(Boost REQUIRED COMPONENTS system)

@@ -8,7 +8,6 @@
 #include "graph/GraphEditor.hpp"
 
 
-
 class Project
 {
 private:
