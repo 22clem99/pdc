@@ -7,12 +7,13 @@
 #include <QLabel>
 
 #include "PDCView.hpp"
+#include "PDCMenuBar/PDCMenuBar.hpp"
 
 PDCView::PDCView(QWidget* parent) : QMainWindow(parent)
 {
     setup_user_interface();
 
-    setup_toolbar();
+    setup_MenuBar();
 }
 
 void PDCView::setup_user_interface()
@@ -34,7 +35,8 @@ void PDCView::setup_user_interface()
     setCentralWidget(hsplitter);
 }
 
-void PDCView::setup_toolbar()
+void PDCView::setup_MenuBar()
 {
+    PDCMenuBar* MenuBar = new PDCMenuBar(this);
 
 }

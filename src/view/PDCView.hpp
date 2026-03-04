@@ -29,10 +29,10 @@ private:
     void setup_user_interface();
 
     /**
-     * @brief Setup the toolbar
+     * @brief Setup the MenuBar
      *
      */
-    void setup_toolbar();
+    void setup_MenuBar();
 
     GraphViewer* node_editor;
     QWidget* input_image_view;

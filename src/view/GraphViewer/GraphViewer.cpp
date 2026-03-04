@@ -5,7 +5,7 @@
 
 #include "GraphViewer.hpp"
 
-GraphViewer::GraphViewer(QWidget* parent) : QWidget(parent)
+GraphViewer::GraphViewer(QWidget* parent) : QGraphicsView(parent)
 {
 
 }
