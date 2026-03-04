@@ -3,7 +3,9 @@ project(PointDeCroix LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 enable_testing()
 
@@ -11,10 +13,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 
-## Find dependencies
-# find GTK
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(GGTKMM REQUIRED IMPORTED_TARGET gtkmm-4.0)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 # find Lib Boost
 find_package(Boost REQUIRED COMPONENTS system)
