@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     Log::set_level(LogLevel::DEBUG);
 
-    Project p("My amazing project", "./images/Tux.svg");
+    Project p("My amazing project", std::filesystem::path("./test0/prj"), std::filesystem::path("./images/Tux.svg"));
 
     p.add_node(ImageInputNode::class_name(), -1);
     p.add_node(ImageInputNode::class_name(), -1);

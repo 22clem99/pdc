@@ -10,19 +10,36 @@
 
 #include "project/Project.hpp"
 
+enum class PDCProjectState
+{
+    NoProject,
+    ProjectOpened
+};
+
+
 /**
  * @brief PDCState class is the Model representation of MVC in this project
  *
  */
 class PDCState {
 private:
-    std::unique_ptr<Project> prj;
+    std::unique_ptr<Project> project;
+    PDCProjectState state;
+
 public:
     PDCState();
-    bool createProject(const std::string& name);
-    bool closeProject();
-    bool saveProject();
-    bool renameProject();
+
+    bool create_project(const std::string& prj_name, const std::string& prj_path, const std::string& img_path);
+
+    bool close_project();
+
+    bool save_project();
+
+    bool rename_project(const std::string& prj_name);
+
+    bool can_create_project(const std::string& prj_path, const std::string& img_path);
+
+    bool has_project();
 };
 
 #endif

@@ -1,10 +1,10 @@
 add_subdirectory(project)
 
-add_library(PDCstate
+add_library(PDCState
     PDCState.cpp
 )
 
-target_link_libraries(PDCstate
+target_link_libraries(PDCState
     PUBLIC
         Project
     PRIVATE

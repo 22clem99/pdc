@@ -4,6 +4,8 @@ add_library(PDCMenuBar
 )
 
 target_link_libraries(PDCMenuBar
+    PUBLIC
+        utils
     PRIVATE
         Qt6::Widgets
 )

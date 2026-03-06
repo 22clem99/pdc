@@ -4,6 +4,8 @@ add_library(GraphViewer
 )
 
 target_link_libraries(GraphViewer
+    PUBLIC
+        utils
     PRIVATE
         Qt6::Widgets
 )

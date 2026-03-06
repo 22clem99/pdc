@@ -9,7 +9,12 @@ add_executable(PointDeCroix
     main.cpp
 )
 
-# target_link_libraries(PointDeCroix
-#  PRIVATE
-#    PDCView
-#)
+target_link_libraries(PointDeCroix
+    PUBLIC
+        utils
+    PRIVATE
+        PDCController
+        PDCState
+        PDCView
+        Qt6::Widgets
+)

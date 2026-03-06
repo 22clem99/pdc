@@ -1,12 +1,13 @@
-#include <iostream>
+#include <QApplication>
+
+#include <utils/Log.hpp>
+#include "controller/PDCController.hpp"
 
 int main(int argc, char *argv[])
 {
-    // // TODO: Implement here PointDeCroix
-    // std::cout << "Work in progress" << std::endl;
+    QApplication app(argc, argv);
 
-    // auto app = Gtk::Application::create("point.de.croix");
+    PDCController controller;
 
-    // //Shows the window and returns when it is closed.
-    // return app->make_window_and_run<PDCView>(argc, argv);
+    return app.exec();
 }

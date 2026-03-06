@@ -9,6 +9,7 @@
 #include <QMainWindow>
 
 #include "GraphViewer/GraphViewer.hpp"
+#include "PDCMenuBar/PDCMenuBar.hpp"
 
 /**
  * @brief This class represent the GUI of the PDC project based on Qt
@@ -21,7 +22,6 @@ class PDCView : public QMainWindow
 public:
     explicit PDCView(QWidget* parent = nullptr);
 
-private:
     /**
      * @brief Setup the main user ineterface
      *
@@ -37,6 +37,7 @@ private:
     GraphViewer* node_editor;
     QWidget* input_image_view;
     QWidget* output_image_view;
+    PDCMenuBar* menu_bar;
 };
 
 #endif
