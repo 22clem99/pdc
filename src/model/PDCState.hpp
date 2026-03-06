@@ -16,6 +16,12 @@ enum class PDCProjectState
     ProjectOpened
 };
 
+enum class CreateProjectStatus
+{
+    Valid,
+    ProjectPathAlreadyExist,
+    ImageDoNotExist
+};
 
 /**
  * @brief PDCState class is the Model representation of MVC in this project
@@ -37,9 +43,11 @@ public:
 
     bool rename_project(const std::string& prj_name);
 
-    bool can_create_project(const std::string& prj_path, const std::string& img_path);
+    CreateProjectStatus can_create_project(const std::string& prj_path, const std::string& img_path);
 
     bool has_project();
+
+    std::unique_ptr<Project>& get_project();
 };
 
 #endif

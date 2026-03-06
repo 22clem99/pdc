@@ -2,7 +2,6 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -46,14 +45,17 @@ NewProjectDialog::NewProjectDialog(QWidget* parent) : QDialog(parent)
 
     layout->addLayout(path_img_Layout);
 
+    // Project creation preview
+    preview = new QLabel();
+    layout->addWidget(preview);
 
     connect(browse_button_path, &QPushButton::clicked, this, [this]()
     {
-        QString file = QFileDialog::getSaveFileName(
+        QString file = QFileDialog::getExistingDirectory(
             this,
-            "Choose project file",
+            "Choose a project folder",
             "",
-            "Project (*.pdc)"
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
         );
 
         if (!file.isEmpty())
@@ -70,8 +72,17 @@ NewProjectDialog::NewProjectDialog(QWidget* parent) : QDialog(parent)
         );
 
         if (!img.isEmpty())
-            path_edit->setText(img);
+            image_edit->setText(img);
     });
+
+    auto update_preview = [this]()
+    {
+        preview->setText(path_edit->text() + std::filesystem::path::preferred_separator + name_edit->text() + ".pdc");
+    };
+
+    connect(path_edit, &QLineEdit::textChanged, this, update_preview);
+    connect(name_edit, &QLineEdit::textChanged, this, update_preview);
+
 
     // OK Cancel
     QDialogButtonBox* buttons =

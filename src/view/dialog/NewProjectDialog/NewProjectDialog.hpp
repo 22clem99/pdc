@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QLineEdit>
+#include <QLabel>
 
 class NewProjectDialog : public QDialog
 {
@@ -19,6 +20,7 @@ private:
     QLineEdit* name_edit;
     QLineEdit* path_edit;
     QLineEdit* image_edit;
+    QLabel* preview;
 };
 
 

@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <filesystem>
+#include <string>
 
 #include "graph/GraphEditor.hpp"
 
@@ -33,6 +34,8 @@ public:
 
     std::string get_str();
     std::string get_str(const unsigned int tab);
+
+    static std::string get_extension();
 
 };
 

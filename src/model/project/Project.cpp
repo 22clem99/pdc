@@ -48,3 +48,8 @@ std::string Project::get_str(const unsigned int tab)
 
     return s;
 }
+
+std::string Project::get_extension()
+{
+    return ".pdc";
+}

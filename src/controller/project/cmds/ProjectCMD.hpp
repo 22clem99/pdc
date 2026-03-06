@@ -17,11 +17,11 @@ public:
 
     void undo() override
     {
-        model->create_project(name, path, img_path);
     }
 
     void redo() override
     {
+        model->create_project(name, path, img_path);
     }
 
 private:
