@@ -5,6 +5,11 @@
 
 #include "GraphEditor.hpp"
 
+GraphEditor::GraphEditor(const nlohmann::json& j)
+{
+    //TODO
+}
+
 Id GraphEditor::add_node(const std::string& node_type, unsigned int position)
 {
     //TODO manage position
@@ -24,4 +29,9 @@ std::string GraphEditor::get_str(void)
 std::string GraphEditor::get_str(const unsigned int tab)
 {
     return node_graph.get_str(tab);
+}
+
+nlohmann::json GraphEditor::to_json(void)
+{
+    return node_graph.to_json();
 }

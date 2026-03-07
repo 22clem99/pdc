@@ -13,6 +13,7 @@
 #include <utils/Types.hpp>
 #include <utils/Identifiable.hpp>
 #include <utils/Tab.hpp>
+#include <utils/JSONPrintable.hpp>
 
 /**
  * @brief Object Edge each edge created is unique
@@ -46,6 +47,12 @@ public:
         to_input = to_i;
     }
 
+    Edge(const nlohmann::json& j)
+    {
+        //TODO
+    }
+
+
     ~Edge() = default;
 
     /**
@@ -72,6 +79,11 @@ public:
     static std::string class_name()
     {
         return "Edge";
+    }
+
+    nlohmann::json to_json(void)
+    {
+        return {{"id", id}, {"from_node", from_node}, {"from_output", from_output}, {"to_node", to_node}, {"to_input", to_input}};
     }
 };
 

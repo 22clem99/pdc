@@ -17,6 +17,7 @@
 #include <utils/Types.hpp>
 #include "Port.hpp"
 #include <utils/Identifiable.hpp>
+#include <utils/JSONPrintable.hpp>
 
 /**
  * @brief Kind of node
@@ -104,6 +105,9 @@ public:
      * @param dir direction of ports
      */
     std::vector<Id> get_ports_from_direction(PortDirection dir);
+
+
+    nlohmann::json to_json(void);
 
 };
 

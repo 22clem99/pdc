@@ -41,7 +41,7 @@ public:
     std::string get_str(const unsigned int tab);
 
     // Method to construc recursivly the json project file
-    nlohmann::json print_json(void);
+    nlohmann::json to_json(void);
 
     static std::string get_extension();
 

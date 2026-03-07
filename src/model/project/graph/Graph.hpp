@@ -13,6 +13,7 @@
 #include <utils/Types.hpp>
 #include "../node/Node.hpp"
 #include "../edge/Edge.hpp"
+#include <utils/JSONPrintable.hpp>
 
 /**
  * @brief Provide the result abstraction result of the graph analyze
@@ -56,6 +57,7 @@ public:
     std::optional<Id> tail_id;
 
     Graph() = default;
+    Graph(const nlohmann::json& j);
 
     /**
      *  Nodes manipulation
@@ -244,6 +246,9 @@ public:
      * @return std::string graph representation
      */
     std::string get_str(const unsigned int tab);
+
+    // Method to construc recursivly the json project file
+    nlohmann::json to_json(void);
 };
 
 #endif

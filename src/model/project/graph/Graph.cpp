@@ -9,6 +9,11 @@
 #include "../node/NodeAllocator.hpp"
 #include <utils/Tab.hpp>
 
+Graph::Graph(const nlohmann::json& j)
+{
+
+}
+
 Id Graph::add_node(const std::string& node_type)
 {
     // Get factory configuration by the name
@@ -479,4 +484,29 @@ std::string Graph::get_str(const unsigned int tab)
     s += s_tab + "}";
 
     return s;
+}
+
+nlohmann::json Graph::to_json(void)
+{
+    using nlohmann::json;
+
+    json graph_as_json;
+
+    // First append nodes
+    json nodes_array = json::array();
+
+    for (auto& node : nodes)
+    {
+        nodes_array.push_back(node.second->to_json());
+    }
+
+    // Then append edges
+    json edges_array = json::array();
+
+    for (auto& edge : edges)
+    {
+        edges_array.push_back(edge.second->to_json());
+    }
+
+    return {{"edges", nodes_array}, {"nodes", edges_array}};
 }

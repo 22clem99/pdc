@@ -18,6 +18,7 @@
 
 #include <utils/Identifiable.hpp>
 #include <utils/Tab.hpp>
+#include <utils/JSONPrintable.hpp>
 
 /**
  * @brief describe the direction of the Port
@@ -27,6 +28,11 @@ enum class PortDirection {
     Input,
     Output
 };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(PortDirection, {
+    {PortDirection::Input, "Input"},
+    {PortDirection::Output, "Output"}
+})
 
 /**
  * @brief Describe the connection mode
@@ -40,6 +46,12 @@ enum class ConnectionMode {
     Single,
     Multiple
 };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(ConnectionMode, {
+    {ConnectionMode::None, "None"},
+    {ConnectionMode::Single, "Single"},
+    {ConnectionMode::Multiple, "Multiple"}
+})
 
 /**
  * @brief The class ValueConstraints describe a generic interface to provite value constraint for Port
@@ -92,6 +104,40 @@ public:
         return true;
     }
 
+    nlohmann::json to_json(void)
+    {
+        nlohmann::json constraint_json = {};
+
+        if (min)
+        {
+            constraint_json["min"] = min.value();
+        }
+
+        if (max)
+        {
+            constraint_json["max"] = max.value();
+        }
+
+        if (step)
+        {
+            constraint_json["step"] = step.value();
+        }
+
+        if (allowed_values)
+        {
+            nlohmann::json allowed_values_array = nlohmann::json::array();
+
+            for (auto& allowed_value : allowed_values)
+            {
+                allowed_values_array.push_back(allowed_value.value());
+            }
+
+            constraint_json["allowed_values"] = allowed_values_array;
+        }
+
+        // TODO add value and add type management
+        return {constraint_json};
+    }
 };
 
 /**
@@ -177,6 +223,8 @@ public:
     {
         return a.value_type() == b.value_type();
     }
+
+    virtual nlohmann::json to_json(void) = 0;
 };
 
 /**
@@ -209,7 +257,9 @@ using Identifiable<Port<T>>::id;
     enum PortDirection dir;
     enum ConnectionMode mode;
 
-    std::optional<ValueConstraints<T>> constraints;
+    using ConstraintType = std::conditional_t<Constrainable<T>, std::optional<ValueConstraints<T>>,std::monostate>;
+
+    ConstraintType constraints;
 
     std::vector<Id> connected_edges;
 
@@ -309,6 +359,22 @@ using Identifiable<Port<T>>::id;
     bool remove_connected_edge(const Id& edge_id) override
     {
         return (std::erase(connected_edges, edge_id) == 1);
+    }
+
+    nlohmann::json to_json(void)
+    {
+        nlohmann::json port_json = {{"id", id}, {"type", T::class_name()}, {"dir", dir}, {"mode", mode}};
+
+        // TODO add value and add type management
+        if constexpr (Constrainable<T>)
+        {
+            if (constraints)
+            {
+                port_json["constraints"] = constraints.value().to_json();
+            }
+        }
+
+        return port_json;
     }
 };
 

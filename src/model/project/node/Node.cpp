@@ -64,3 +64,17 @@ std::vector<Id> Node::get_ports_from_direction(PortDirection dir)
 
     return (ports_dir);
 }
+
+nlohmann::json Node::to_json(void)
+{
+    using nlohmann::json;
+
+    json ports_array = json::array();
+
+    for (auto& port : ports)
+    {
+        ports_array.push_back(port.second->to_json());
+    }
+
+    return {{"id", id}, {"node_type", class_name()}, {"ports", ports_array}};
+}

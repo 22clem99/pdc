@@ -57,7 +57,7 @@ void ProjectController::on_save_project(void)
     Log::debug("Save requested");
 
     // first get the project json configuration
-    nlohmann::json project_as_json = model->get_project()->print_json();
+    nlohmann::json project_as_json = model->get_project()->to_json();
 
     Log::debug("Will create a project with the json :\n" + project_as_json.dump(4));
 }

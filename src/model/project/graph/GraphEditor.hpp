@@ -10,6 +10,7 @@
 
 #include "Graph.hpp"
 #include <utils/Types.hpp>
+#include <utils/JSONPrintable.hpp>
 
 class GraphEditor
 {
@@ -18,6 +19,9 @@ private:
 
 public:
     GraphEditor() = default;
+
+    // Constructor when laoding a project from a file
+    GraphEditor(const nlohmann::json& j);
 
     Id add_node(const std::string& node_type, unsigned int position);
 
@@ -37,6 +41,9 @@ public:
      * @return std::string GraphEditor representation
      */
     std::string get_str(const unsigned int tab);
+
+    // Method to construc recursivly the json project file
+    nlohmann::json to_json(void);
 };
 
 #endif

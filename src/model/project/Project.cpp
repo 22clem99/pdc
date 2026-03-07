@@ -67,9 +67,11 @@ std::string Project::get_str(const unsigned int tab)
 }
 
 
-nlohmann::json Project::print_json(void)
+nlohmann::json Project::to_json(void)
 {
-    nlohmann::json json_file = {{"name", name}, {"PDCVersion", PROJECT_VERSION}};
+    nlohmann::json json_file = {{"name", name},
+                                {"PDCVersion", PROJECT_VERSION},
+                                {"graph", node_graph.to_json()}};
 
     return json_file;
 }
