@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
-project(PointDeCroix LANGUAGES CXX)
+project(PointDeCroix VERSION 0.0.1 LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -59,3 +60,16 @@ if(CPPCHECK_EXECUTABLE)
 else()
     message(WARNING "cppcheck not found: cppcheck-run and cppcheck-test will be skipped")
 endif()
+
+# Génère version.hpp à partir de version.hpp.in
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/version.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/src/version.hpp
+    @ONLY
+)
+
+# Crée une librairie INTERFACE pour exposer le chemin vers le header généré
+add_library(version INTERFACE)
+target_include_directories(version INTERFACE
+    ${CMAKE_CURRENT_BINARY_DIR}/src/  # <-- c'est ici que le header généré est
+)

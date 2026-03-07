@@ -14,6 +14,7 @@ public:
     ProjectController(PDCState* model, PDCView* view, QUndoStack* stack);
 
     void on_create_project(void);
+    void on_save_project(void);
 };
 
 

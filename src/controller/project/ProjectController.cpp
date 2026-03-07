@@ -8,6 +8,7 @@
 ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack* stack) : GenericPDCController(model, view, stack)
 {
     connect(view->menu_bar, &PDCMenuBar::new_requested, this, &ProjectController::on_create_project);
+    connect(view->menu_bar, &PDCMenuBar::save_requested, this, &ProjectController::on_save_project);
 }
 
 void ProjectController::on_create_project(void)
@@ -18,9 +19,7 @@ void ProjectController::on_create_project(void)
     {
         if (model->get_project()->is_dirty())
         {
-
-            QMessageBox::warning(nullptr, "Error",
-                            "Save the project before to open a new one");
+            QMessageBox::warning(nullptr, "Error", "Save the project before to open a new one");
             return;
         }
     }
@@ -36,16 +35,29 @@ void ProjectController::on_create_project(void)
 
     if (create_status == CreateProjectStatus::ImageDoNotExist)
     {
-        QMessageBox::warning(nullptr, "Error",
-                             "Image does not exist");
+        QMessageBox::warning(nullptr, "Error", "Image does not exist");
         return;
     }
     else if (create_status == CreateProjectStatus::ProjectPathAlreadyExist)
     {
-        QMessageBox::warning(nullptr, "Error",
-                             "Project already exists");
+        QMessageBox::warning(nullptr, "Error", "Project already exists");
         return;
     }
 
     undo_stack.push(new CreateProjectCommand(model, name, prj_path, img_path));
+
+    // Update title of the mainwindow :
+    // auto window_name = new QString(name);
+
+    view->setWindowTitle(QString::fromStdString(name) + " (not saved)");
+}
+
+void ProjectController::on_save_project(void)
+{
+    Log::debug("Save requested");
+
+    // first get the project json configuration
+    nlohmann::json project_as_json = model->get_project()->print_json();
+
+    Log::debug("Will create a project with the json :\n" + project_as_json.dump(4));
 }

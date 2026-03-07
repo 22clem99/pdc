@@ -9,6 +9,7 @@ add_library(Project
 target_link_libraries(Project
     PUBLIC
         Graph
+        version
     PRIVATE
         utils
 )

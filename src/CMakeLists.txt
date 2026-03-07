@@ -1,3 +1,4 @@
+add_subdirectory(third_parts)
 add_subdirectory(utils)
 add_subdirectory(model)
 add_subdirectory(view)
@@ -17,4 +18,5 @@ target_link_libraries(PointDeCroix
         PDCState
         PDCView
         Qt6::Widgets
+        version
 )
