@@ -2,6 +2,7 @@
 
 #include "ProjectController.hpp"
 #include "../../view/dialog/NewProjectDialog/NewProjectDialog.hpp"
+#include "../../view/dialog/OpenProjectDialog/OpenProjectDialog.hpp"
 #include "../../view/PDCMenuBar/PDCMenuBar.hpp"
 #include "cmds/ProjectCMD.hpp"
 
@@ -9,6 +10,7 @@ ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack*
 {
     connect(view->menu_bar, &PDCMenuBar::new_requested, this, &ProjectController::on_create_project);
     connect(view->menu_bar, &PDCMenuBar::save_requested, this, &ProjectController::on_save_project);
+    connect(view->menu_bar, &PDCMenuBar::open_requested, this, &ProjectController::on_open_project);
 }
 
 void ProjectController::on_create_project(void)
@@ -76,4 +78,27 @@ void ProjectController::on_save_project(void)
             break;
         }
     }
+}
+
+void ProjectController::on_open_project(void)
+{
+    OpenProjectDialog dialog;
+
+    // Ask the file to open
+    if (model->has_project())
+    {
+        if (model->get_project()->is_dirty())
+        {
+            QMessageBox::warning(nullptr, "Error", "Save the project before to open a new one");
+            return;
+        }
+    }
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+
+    auto path = dialog.project_path().toStdString();
+
+    Log::debug("Will try to open the file :" + path);
 }
