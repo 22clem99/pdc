@@ -44,9 +44,9 @@ bool PDCState::close_project()
     return false;
 }
 
-bool PDCState::save_project()
+SaveProjectStatus PDCState::save_project()
 {
-    return false;
+    return project->save();
 }
 
 bool PDCState::rename_project(const std::string& prj_name)

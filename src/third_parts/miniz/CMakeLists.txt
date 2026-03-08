@@ -1,5 +1,6 @@
-add_library(miniz
+add_library(miniz STATIC
     miniz.c
+    miniz.h
 )
 
 target_include_directories(miniz

@@ -8,8 +8,10 @@ add_library(Project
 
 target_link_libraries(Project
     PUBLIC
+        ZipUtils
         Graph
         version
     PRIVATE
         utils
+        json
 )

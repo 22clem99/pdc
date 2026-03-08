@@ -4,6 +4,6 @@ add_library(ZipUtils
 )
 
 target_link_libraries(ZipUtils
-    PUBLIC
+    PRIVATE
         miniz
 )

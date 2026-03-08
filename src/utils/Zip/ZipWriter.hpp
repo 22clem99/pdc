@@ -7,6 +7,13 @@
 
 #include <miniz/miniz.h>
 
+enum class ZipWriterReturnStatus {
+    OK,
+    UNABLE_TO_CREATE_FILE,
+    UNABLE_TO_ADD_FILE,
+    UNABLE_TO_WRITE_IN_FILE
+};
+
 class ZipWriter
 {
 public:
@@ -16,6 +23,8 @@ public:
 
     void add_string(const std::string& filename, const std::string& content);
 
+    ZipWriterReturnStatus get_return_status(void);
+
     ~ZipWriter();
 
 private:
@@ -23,6 +32,7 @@ private:
 
     mz_zip_archive archive {};
     bool opened = false;
+    ZipWriterReturnStatus status;
 };
 
 

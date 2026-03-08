@@ -16,6 +16,14 @@ enum class ProjectState
     Dirty
 };
 
+enum class SaveProjectStatus
+{
+    SAVED,
+    FAILED_TO_CREATE_TEMP,
+    FAILED_TO_ADD_FILE,
+    FAILED_TO_RENAME_TEMP
+};
+
 class Project
 {
 private:
@@ -39,12 +47,14 @@ public:
 
     std::string get_str();
     std::string get_str(const unsigned int tab);
+    std::string get_name();
 
     // Method to construc recursivly the json project file
     nlohmann::json to_json(void);
 
     static std::string get_extension();
 
+    SaveProjectStatus save(void);
 };
 
 #endif

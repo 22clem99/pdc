@@ -55,9 +55,25 @@ void ProjectController::on_create_project(void)
 void ProjectController::on_save_project(void)
 {
     Log::debug("Save requested");
+    if (model->has_project())
+    {
+        switch(model->save_project())
+        {
+        case SaveProjectStatus::FAILED_TO_CREATE_TEMP:
+            QMessageBox::warning(nullptr, "Error", "Unable to create temporary project file");
+            break;
+        case SaveProjectStatus::FAILED_TO_ADD_FILE:
+            QMessageBox::warning(nullptr, "Error", "Unable to write file in project");
+            break;
+        case SaveProjectStatus::FAILED_TO_RENAME_TEMP:
+            QMessageBox::warning(nullptr, "Error", "Unable to create final project file");
+            break;
+        case SaveProjectStatus::SAVED:
+            view->setWindowTitle(QString::fromStdString(model->get_project()->get_name()));
+            break;
 
-    // first get the project json configuration
-    nlohmann::json project_as_json = model->get_project()->to_json();
-
-    Log::debug("Will create a project with the json :\n" + project_as_json.dump(4));
+        default:
+            break;
+        }
+    }
 }

@@ -2,6 +2,7 @@
 #include <utils/Log.hpp>
 #include <utils/Tab.hpp>
 #include "version.hpp"
+#include "utils/Zip/ZipWriter.hpp"
 
 Project::Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path)
 {
@@ -66,6 +67,11 @@ std::string Project::get_str(const unsigned int tab)
     return s;
 }
 
+std::string Project::get_name()
+{
+    return name;
+}
+
 
 nlohmann::json Project::to_json(void)
 {
@@ -79,4 +85,49 @@ nlohmann::json Project::to_json(void)
 std::string Project::get_extension()
 {
     return ".pdc";
+}
+
+
+SaveProjectStatus Project::save(void)
+{
+    std::filesystem::path tmp_file = file;
+    tmp_file.replace_extension("pdc.tmp");
+
+    ZipWriter zip = ZipWriter::create(tmp_file);
+
+    if(zip.get_return_status() != ZipWriterReturnStatus::OK)
+    {
+        Log::error("Unable to create the temporary project file at: " + tmp_file.string());
+        return SaveProjectStatus::FAILED_TO_CREATE_TEMP;
+    }
+
+    // first get the project json configuration
+    nlohmann::json project_as_json = to_json();
+
+    Log::debug("Will create a project with the json :\n" + project_as_json.dump(4));
+
+    // Then write the json to the project manifest
+    zip.add_string("manifest.json", project_as_json.dump(4));
+
+    if(zip.get_return_status() != ZipWriterReturnStatus::OK)
+    {
+        Log::error("Unable to add the file manifest.json to the project file: " + tmp_file.string());
+        return SaveProjectStatus::FAILED_TO_ADD_FILE;
+    }
+
+    // Write over the project file with the temporary file
+    std::error_code ec;
+
+    // Remove the old project
+    std::filesystem::remove(file, ec);
+    // and rename the temporary project
+    Log::debug("Trying to rename: " + tmp_file.string() + "to: " + file.string());
+    std::filesystem::rename(tmp_file, file);
+
+    if (ec)
+    {
+        return SaveProjectStatus::FAILED_TO_RENAME_TEMP;
+    }
+
+    return SaveProjectStatus::SAVED;
 }

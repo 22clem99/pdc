@@ -39,7 +39,7 @@ public:
 
     bool close_project();
 
-    bool save_project();
+    SaveProjectStatus save_project();
 
     bool rename_project(const std::string& prj_name);
 

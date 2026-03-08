@@ -12,40 +12,36 @@ ZipWriter ZipWriter::create(const std::filesystem::path& path)
 
     if (!mz_zip_writer_init_file(&writer.archive, path.string().c_str(), 0))
     {
-        throw std::runtime_error("Failed to create zip archive: " + path.string());
+        writer.status = ZipWriterReturnStatus::UNABLE_TO_CREATE_FILE;
     }
 
     writer.opened = true;
+    writer.status = ZipWriterReturnStatus::OK;
 
     return writer;
 }
 
-void ZipWriter::add_file(const std::string& filename,
-                         const std::vector<char>& data)
+void ZipWriter::add_file(const std::string& filename, const std::vector<char>& data)
 {
-    if (!mz_zip_writer_add_mem(
-            &archive,
-            filename.c_str(),
-            data.data(),
-            data.size(),
-            MZ_BEST_COMPRESSION))
+    if (!mz_zip_writer_add_mem(&archive, filename.c_str(), data.data(), data.size(), MZ_BEST_COMPRESSION))
     {
-        throw std::runtime_error("Failed to add file to archive: " + filename);
+        status = ZipWriterReturnStatus::UNABLE_TO_CREATE_FILE;
     }
+    status = ZipWriterReturnStatus::OK;
 }
 
-void ZipWriter::add_string(const std::string& filename,
-                           const std::string& content)
+void ZipWriter::add_string(const std::string& filename, const std::string& content)
 {
-    if (!mz_zip_writer_add_mem(
-            &archive,
-            filename.c_str(),
-            content.data(),
-            content.size(),
-            MZ_BEST_COMPRESSION))
+    if (!mz_zip_writer_add_mem(&archive, filename.c_str(), content.data(), content.size(), MZ_BEST_COMPRESSION))
     {
         throw std::runtime_error("Failed to add string to archive: " + filename);
     }
+    status = ZipWriterReturnStatus::OK;
+}
+
+ZipWriterReturnStatus ZipWriter::get_return_status(void)
+{
+    return status;
 }
 
 ZipWriter::~ZipWriter()
