@@ -16,6 +16,13 @@ PDCState::PDCState()
     state = PDCProjectState::NoProject;
 }
 
+
+PDCState::PDCState(const nlohmann::json& j)
+{
+
+}
+
+
 bool PDCState::create_project(const std::string& prj_name, const std::string& prj_path, const std::string& img_path)
 {
     namespace fs = std::filesystem;
@@ -83,4 +90,9 @@ bool PDCState::has_project()
 std::unique_ptr<Project>& PDCState::get_project()
 {
     return project;
+}
+
+OpenProjectStatus PDCState::is_project_file_valid(const std::filesystem::path& path)
+{
+    return Project::is_project_file_valid(path);
 }

@@ -5,6 +5,7 @@
 
 #include "Node.hpp"
 #include <utils/Tab.hpp>
+#include "utils/JSONWrapper.hpp"
 
 std::string Node::class_name()
 {
@@ -77,4 +78,27 @@ nlohmann::json Node::to_json(void)
     }
 
     return {{"id", id}, {"node_type", class_name()}, {"ports", ports_array}};
+}
+
+
+bool Node::is_json_valid(const nlohmann::json& j)
+{
+    if (!j.is_object())
+    {
+        return false;
+    }
+
+    JSON_REQUIRED_FIELD(j, "id", is_string);
+    JSON_REQUIRED_FIELD(j, "node_type", is_string);
+    JSON_REQUIRED_FIELD(j, "ports", is_array);
+
+    // Iterate on each node
+    for (const auto& port : j["ports"])
+    {
+        // TODO
+        // if (!IPortBase::is_json_valid(port))
+        //     return false;
+    }
+
+    return true;
 }

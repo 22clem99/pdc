@@ -249,6 +249,8 @@ public:
 
     // Method to construc recursivly the json project file
     nlohmann::json to_json(void);
+
+    static bool is_json_valid(const nlohmann::json& j);
 };
 
 #endif

@@ -140,6 +140,12 @@ public:
         // TODO add value and add type management
         return {constraint_json};
     }
+
+    bool is_json_valid(const nlohmann::json& j)
+    {
+        return false;
+    }
+
 };
 
 /**
@@ -225,6 +231,8 @@ public:
     {
         return a.value_type() == b.value_type();
     }
+
+    // virtual bool is_json_valid(const nlohmann::json& j);
 
     virtual nlohmann::json to_json(void) = 0;
 };
@@ -378,6 +386,11 @@ using Identifiable<Port<T>>::id;
 
         return port_json;
     }
+
+    // static bool is_json_valid(const nlohmann::json& j)
+    // {
+    //     return false;
+    // }
 
 private:
     inline static PortRegister<T> reg;

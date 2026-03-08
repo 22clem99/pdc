@@ -8,6 +8,7 @@
 #include "Graph.hpp"
 #include "../node/NodeAllocator.hpp"
 #include <utils/Tab.hpp>
+#include "utils/JSONWrapper.hpp"
 
 Graph::Graph(const nlohmann::json& j)
 {
@@ -510,4 +511,32 @@ nlohmann::json Graph::to_json(void)
     }
 
     return {{"edges", nodes_array}, {"nodes", edges_array}};
+}
+
+bool Graph::is_json_valid(const nlohmann::json& j)
+{
+    if (!j.is_object())
+    {
+        return false;
+    }
+
+    JSON_REQUIRED_FIELD(j, "edges", is_array);
+
+    // Iterate on each node
+    for (const auto& node : j["nodes"])
+    {
+        if (!Node::is_json_valid(node))
+            return false;
+    }
+
+    JSON_REQUIRED_FIELD(j, "nodes", is_array);
+
+    // Iterate on each node
+    for (const auto& edge : j["edges"])
+    {
+        if (!Edge::is_json_valid(edge))
+            return false;
+    }
+
+    return true;
 }

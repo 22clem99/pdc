@@ -34,7 +34,8 @@ void ZipWriter::add_string(const std::string& filename, const std::string& conte
 {
     if (!mz_zip_writer_add_mem(&archive, filename.c_str(), content.data(), content.size(), MZ_BEST_COMPRESSION))
     {
-        throw std::runtime_error("Failed to add string to archive: " + filename);
+        status = ZipWriterReturnStatus::UNABLE_TO_WRITE_IN_FILE;
+        return;
     }
     status = ZipWriterReturnStatus::OK;
 }

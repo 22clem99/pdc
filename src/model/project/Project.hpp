@@ -24,6 +24,15 @@ enum class SaveProjectStatus
     FAILED_TO_RENAME_TEMP
 };
 
+enum class OpenProjectStatus
+{
+    Opened,
+    ProjectDoesNotExist,
+    CantOpenArchive,
+    ManifestNotFound,
+    ManifestParsingError
+};
+
 class Project
 {
 private:
@@ -55,6 +64,10 @@ public:
     static std::string get_extension();
 
     SaveProjectStatus save(void);
+
+    static OpenProjectStatus is_project_file_valid(const std::filesystem::path& path);
+
+    static bool is_json_valid(const nlohmann::json& j);
 };
 
 #endif

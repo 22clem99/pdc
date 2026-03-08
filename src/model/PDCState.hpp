@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "project/Project.hpp"
+#include <utils/JSONPrintable.hpp>
 
 enum class PDCProjectState
 {
@@ -35,6 +36,8 @@ private:
 public:
     PDCState();
 
+    PDCState(const nlohmann::json& j);
+
     bool create_project(const std::string& prj_name, const std::string& prj_path, const std::string& img_path);
 
     bool close_project();
@@ -48,6 +51,8 @@ public:
     bool has_project();
 
     std::unique_ptr<Project>& get_project();
+
+    OpenProjectStatus is_project_file_valid(const std::filesystem::path& path);
 };
 
 #endif

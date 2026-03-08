@@ -48,9 +48,6 @@ void ProjectController::on_create_project(void)
 
     undo_stack.push(new CreateProjectCommand(model, name, prj_path, img_path));
 
-    // Update title of the mainwindow :
-    // auto window_name = new QString(name);
-
     view->setWindowTitle(QString::fromStdString(name) + " (not saved)");
 }
 
@@ -97,8 +94,31 @@ void ProjectController::on_open_project(void)
     if (dialog.exec() != QDialog::Accepted)
         return;
 
-
     auto path = dialog.project_path().toStdString();
 
     Log::debug("Will try to open the file :" + path);
+
+    OpenProjectStatus status = Project::is_project_file_valid(std::filesystem::path(path));
+
+    switch(status)
+    {
+    case OpenProjectStatus::CantOpenArchive:
+        QMessageBox::warning(nullptr, "Error", "Unable to open the project file");
+        return;
+    case OpenProjectStatus::ManifestNotFound:
+        QMessageBox::warning(nullptr, "Error", "Manifest not found in the project");
+        return;
+    case OpenProjectStatus::ManifestParsingError:
+        QMessageBox::warning(nullptr, "Error", "Unable to parse the manifest from the project file");
+        return;
+    case OpenProjectStatus::ProjectDoesNotExist:
+        QMessageBox::warning(nullptr, "Error", "Unable to locate the file");
+        return;
+    case OpenProjectStatus::Opened:
+        break;
+    default:
+        break;
+    }
+
+    Log::debug("Project file:" + path + " is valid");
 }

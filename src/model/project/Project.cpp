@@ -3,6 +3,8 @@
 #include <utils/Tab.hpp>
 #include "version.hpp"
 #include "utils/Zip/ZipWriter.hpp"
+#include "utils/Zip/ZipReader.hpp"
+#include "utils/JSONWrapper.hpp"
 
 Project::Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path)
 {
@@ -72,7 +74,6 @@ std::string Project::get_name()
     return name;
 }
 
-
 nlohmann::json Project::to_json(void)
 {
     nlohmann::json json_file = {{"name", name},
@@ -86,7 +87,6 @@ std::string Project::get_extension()
 {
     return ".pdc";
 }
-
 
 SaveProjectStatus Project::save(void)
 {
@@ -130,4 +130,58 @@ SaveProjectStatus Project::save(void)
     }
 
     return SaveProjectStatus::SAVED;
+}
+
+OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& path)
+{
+    namespace fs = std::filesystem;
+
+    // First check that the file exist
+    if (!fs::exists(path))
+    {
+        return OpenProjectStatus::ProjectDoesNotExist;
+    }
+
+    // Check it can be open as ZIP file
+    ZipReader zip = ZipReader::open(path);
+
+    if (zip.get_return_status() != ZipReaderReturnStatus::OK)
+    {
+        return OpenProjectStatus::CantOpenArchive;
+    }
+
+    // Check that the manifest is embedded in the project file
+    auto manifest = zip.read_test_file(std::filesystem::path("manifest.json"));
+
+    if (zip.get_return_status() != ZipReaderReturnStatus::OK)
+    {
+        return OpenProjectStatus::ManifestNotFound;
+    }
+
+    // Finally test that the manifest is valid
+    nlohmann::json manifest_as_json = nlohmann::json::parse(manifest);
+
+    Log::info(manifest_as_json.dump(4));
+
+    if(!is_json_valid(manifest_as_json))
+    {
+        return OpenProjectStatus::ManifestParsingError;
+    }
+
+    return OpenProjectStatus::Opened;
+}
+
+bool Project::is_json_valid(const nlohmann::json& j)
+{
+    // first check that it is a JSON object
+    if (!j.is_object())
+    {
+        return false;
+    }
+
+    JSON_REQUIRED_FIELD(j, "name", is_string);
+    JSON_REQUIRED_FIELD(j, "PDCVersion", is_string);
+    JSON_REQUIRED_FIELD(j, "graph", is_object);
+
+    return Graph::is_json_valid(j["graph"]);
 }

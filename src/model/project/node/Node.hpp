@@ -109,6 +109,8 @@ public:
 
     nlohmann::json to_json(void);
 
+    static bool is_json_valid(const nlohmann::json& j);
+
 };
 
 #endif

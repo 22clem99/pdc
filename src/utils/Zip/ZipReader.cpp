@@ -11,10 +11,11 @@ ZipReader ZipReader::open(const std::filesystem::path& path)
 
     if (!mz_zip_reader_init_file(&reader.archive, path.string().c_str(), 0))
     {
-        throw std::runtime_error("Failed to open zip archive: " + path.string());
+        reader.status = ZipReaderReturnStatus::UNABLE_TO_OPEN_ARCHIVE;
     }
 
     reader.opened = true;
+    reader.status = ZipReaderReturnStatus::OK;
 
     return reader;
 }
@@ -27,13 +28,14 @@ std::vector<char> ZipReader::read_file(const std::string& filename)
 
     if (!data)
     {
-        throw std::runtime_error("File not found in archive: " + filename);
+        status = ZipReaderReturnStatus::UNABLE_TO_FIND_FILE_IN_ARCHIVE;
     }
 
     std::vector<char> buffer(size);
     std::memcpy(buffer.data(), data, size);
 
     mz_free(data);
+    status = ZipReaderReturnStatus::OK;
 
     return buffer;
 }
@@ -65,12 +67,13 @@ std::string ZipReader::read_test_file(const std::string& filename)
 
     if (!data)
     {
-        throw std::runtime_error("Cannot read file from archive: " + filename);
+        status = ZipReaderReturnStatus::UNABLE_TO_READ_FILE_IN_ARCHIVE;
     }
 
     std::string result(static_cast<char*>(data), size);
 
     mz_free(data);
+    status = ZipReaderReturnStatus::OK;
 
     return result;
 }
@@ -82,11 +85,14 @@ std::vector<uint8_t> ZipReader::read_binary_file(const std::string& filename)
     void* data = mz_zip_reader_extract_file_to_heap(&archive, filename.c_str(), &size, 0);
 
     if (!data)
-        throw std::runtime_error("Cannot read file from archive: " + filename);
+    {
+        status = ZipReaderReturnStatus::UNABLE_TO_READ_FILE_IN_ARCHIVE;
+    }
 
     std::vector<uint8_t> result(static_cast<uint8_t*>(data), static_cast<uint8_t*>(data) + size);
 
     mz_free(data);
+    status = ZipReaderReturnStatus::OK;
 
     return result;
 }
@@ -94,6 +100,12 @@ std::vector<uint8_t> ZipReader::read_binary_file(const std::string& filename)
 bool ZipReader::has_file(const std::string& filename)
 {
     return mz_zip_reader_locate_file(&archive, filename.c_str(), nullptr, 0) != -1;
+}
+
+
+ZipReaderReturnStatus ZipReader::get_return_status(void)
+{
+    return status;
 }
 
 ZipReader::~ZipReader()

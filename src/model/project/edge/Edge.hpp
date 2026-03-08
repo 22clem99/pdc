@@ -14,6 +14,7 @@
 #include <utils/Identifiable.hpp>
 #include <utils/Tab.hpp>
 #include <utils/JSONPrintable.hpp>
+#include <utils/JSONWrapper.hpp>
 
 /**
  * @brief Object Edge each edge created is unique
@@ -84,6 +85,22 @@ public:
     nlohmann::json to_json(void)
     {
         return {{"id", id}, {"from_node", from_node}, {"from_output", from_output}, {"to_node", to_node}, {"to_input", to_input}};
+    }
+
+    static bool is_json_valid(const nlohmann::json& j)
+    {
+        if (!j.is_object())
+        {
+            return false;
+        }
+
+        JSON_REQUIRED_FIELD(j, "id", is_string);
+        JSON_REQUIRED_FIELD(j, "from_node", is_string);
+        JSON_REQUIRED_FIELD(j, "from_output", is_string);
+        JSON_REQUIRED_FIELD(j, "to_node", is_string);
+        JSON_REQUIRED_FIELD(j, "to_input", is_string);
+
+        return false;
     }
 };
 

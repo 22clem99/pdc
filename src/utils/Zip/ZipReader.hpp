@@ -7,6 +7,13 @@
 
 #include <miniz/miniz.h>
 
+enum class ZipReaderReturnStatus {
+    OK,
+    UNABLE_TO_OPEN_ARCHIVE,
+    UNABLE_TO_FIND_FILE_IN_ARCHIVE,
+    UNABLE_TO_READ_FILE_IN_ARCHIVE
+};
+
 class ZipReader
 {
 public:
@@ -22,6 +29,8 @@ public:
 
     bool has_file(const std::string& filename);
 
+    ZipReaderReturnStatus get_return_status(void);
+
     ~ZipReader();
 
 
@@ -30,6 +39,7 @@ private:
 
     mz_zip_archive archive {};
     bool opened = false;
+    ZipReaderReturnStatus status;
 };
 
 
