@@ -274,7 +274,7 @@ bool Graph::validate_graph()
     // Test that the tail can be reach from the head
     if (!tail_reachable())
     {
-        Log::debug("The graph is not connected");
+        Log::debug("The tail can't be reach from the head");
         return false;
     }
 
@@ -308,6 +308,7 @@ bool Graph::run_DFS_analyse()
     }
 
     // Check that tail was visited, yes it is redundant with the previous test
+    analysis.tail_reachable = true;
     if (nodes[tail_id.value()]->get_visit_status() == VisitState::NotVisited)
     {
         analysis.tail_reachable = false;

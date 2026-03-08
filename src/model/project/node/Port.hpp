@@ -19,6 +19,8 @@
 #include <utils/Identifiable.hpp>
 #include <utils/Tab.hpp>
 #include <utils/JSONPrintable.hpp>
+#include <utils/Types.hpp>
+#include "PortRegister.hpp"
 
 /**
  * @brief describe the direction of the Port
@@ -376,6 +378,9 @@ using Identifiable<Port<T>>::id;
 
         return port_json;
     }
+
+private:
+    inline static PortRegister<T> reg;
 };
 
 #endif

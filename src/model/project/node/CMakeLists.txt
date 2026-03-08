@@ -2,6 +2,7 @@
 # add_subdirectory(output)
 
 add_library(Node SHARED
+    PortAllocator.cpp
     Node.cpp
     NodeAllocator.cpp
     ImageInputNode.cpp

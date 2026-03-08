@@ -14,7 +14,7 @@
  * @brief This define is just to rename more consisly the allocation method call
  *
  */
-typedef std::function<std::unique_ptr<Node>()> CreatorFunc;
+typedef std::function<std::unique_ptr<Node>()> CreatorFuncNode;
 
 /**
  * @brief NodeProperty is a class to provide to the factory the allocator and data to manage allocation
@@ -24,7 +24,7 @@ class NodeProperty
 {
 public:
     NodeKind kind;
-    CreatorFunc factory;
+    CreatorFuncNode factory;
 };
 
 #endif
