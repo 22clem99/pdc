@@ -56,6 +56,9 @@ public:
 
     VisitState visite_state;
 
+    Node() {}
+    Node(const nlohmann::json& j) {}
+
     virtual ~Node() = default;
 
     static std::string class_name();
@@ -105,7 +108,6 @@ public:
      * @param dir direction of ports
      */
     std::vector<Id> get_ports_from_direction(PortDirection dir);
-
 
     nlohmann::json to_json(void);
 

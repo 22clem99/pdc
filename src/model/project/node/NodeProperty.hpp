@@ -17,6 +17,12 @@
 typedef std::function<std::unique_ptr<Node>()> CreatorFuncNode;
 
 /**
+ * @brief This define is just to rename more consisly the allocation method call with json param
+ *
+ */
+typedef std::function<std::unique_ptr<Node>(const nlohmann::json&)> CreatorFuncNodeJson;
+
+/**
  * @brief NodeProperty is a class to provide to the factory the allocator and data to manage allocation
  *
  */
@@ -25,6 +31,7 @@ class NodeProperty
 public:
     NodeKind kind;
     CreatorFuncNode factory;
+    CreatorFuncNodeJson factory_json;
 };
 
 #endif

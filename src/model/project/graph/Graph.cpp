@@ -12,7 +12,42 @@
 
 Graph::Graph(const nlohmann::json& j)
 {
+    // Iterate on each node
+    for (const auto& node : j["nodes"])
+    {
+        std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_json(node["node_type"], node);
 
+        if(new_node == nullptr) {
+           Log::error("Can't allocate node of type \"" + node["node_type"].get<std::string>() + "\"");
+        }
+
+        Id id = new_node->id;
+        nodes.insert({id, std::move(new_node)});
+    }
+
+    // Iterate on each edge
+    for (const auto& edge : j["edges"])
+    {
+        auto new_edge = std::make_unique<Edge>(edge);
+
+        if(new_edge == nullptr) {
+            Log::error("Can't allocate edge");
+        }
+
+        Id new_edge_id = new_edge->id;
+
+        auto& from_node_obj = *nodes[new_edge->from_node];
+        auto& to_node_obj = *nodes[new_edge->to_node];
+
+        auto& from_output_obj = *from_node_obj.ports[new_edge->from_output];
+        auto& to_input_obj = *to_node_obj.ports[new_edge->to_input];
+
+        from_output_obj.add_connected_edge(new_edge_id);
+        to_input_obj.add_connected_edge(new_edge_id);
+
+        // Add edge in the edges vector
+        edges.emplace(new_edge_id, std::move(new_edge));
+    }
 }
 
 Id Graph::add_node(const std::string& node_type)
@@ -26,22 +61,23 @@ Id Graph::add_node(const std::string& node_type)
     }
 
     if (prop->kind == NodeKind::Head && head_id) {
-        Log::error("Can't allocate node of type \"" + node_type +"\", head node already exist");
+        Log::error("Can't allocate node of type \"" + node_type + "\", head node already exist");
         return nullid;
     }
 
     if (prop->kind == NodeKind::Tail && tail_id) {
-        Log::error("Can't allocate node of type \"" + node_type +"\", tail node already exist");
+        Log::error("Can't allocate node of type \"" + node_type + "\", tail node already exist");
         return nullid;
     }
 
     // Allocation is done there
     std::unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type);
-    Id id = new_node->id;
 
     if(new_node == nullptr) {
-        Log::error("Can't allocate node of type \"" + node_type +"\"");
+        Log::error("Can't allocate node of type \"" + node_type + "\"");
     }
+
+    Id id = new_node->id;
 
     if(prop->kind == NodeKind::Head) {
         head_id = id;
@@ -168,6 +204,11 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
 
     // All test OK, now we can create the edge
     auto new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input);
+
+    if(new_edge == nullptr) {
+        Log::error("Can't allocate edge");
+    }
+
     Id new_edge_id = new_edge->id;
 
     // Add edge in the edges vector
@@ -531,7 +572,7 @@ bool Graph::is_json_valid(const nlohmann::json& j)
 
     JSON_REQUIRED_FIELD(j, "nodes", is_array);
 
-    // Iterate on each node
+    // Iterate on each edge
     for (const auto& edge : j["edges"])
     {
         if (!Edge::is_json_valid(edge))

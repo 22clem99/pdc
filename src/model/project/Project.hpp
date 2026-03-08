@@ -47,7 +47,7 @@ public:
     Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path);
 
     // Constructor when laoding a project from a file
-    Project(const nlohmann::json& j);
+    Project(const std::filesystem::path& path);
 
     int add_node(const std::string& node_type, unsigned int position);
     int remove_node(const std::string& node_type);

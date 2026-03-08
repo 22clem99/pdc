@@ -36,8 +36,6 @@ private:
 public:
     PDCState();
 
-    PDCState(const nlohmann::json& j);
-
     bool create_project(const std::string& prj_name, const std::string& prj_path, const std::string& img_path);
 
     bool close_project();
@@ -53,6 +51,8 @@ public:
     std::unique_ptr<Project>& get_project();
 
     OpenProjectStatus is_project_file_valid(const std::filesystem::path& path);
+
+    bool open_project(const std::filesystem::path& path);
 };
 
 #endif

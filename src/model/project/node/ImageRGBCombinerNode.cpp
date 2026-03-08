@@ -25,6 +25,11 @@ ImageRGBCombinerNode::ImageRGBCombinerNode()
     ports.emplace(img_input_B->id, std::move(img_input_B));
 }
 
+ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j)
+{
+
+}
+
 
 std::string ImageRGBCombinerNode::class_name()
 {

@@ -120,5 +120,14 @@ void ProjectController::on_open_project(void)
         break;
     }
 
-    Log::debug("Project file:" + path + " is valid");
+    Log::debug("Project file:" + path + " is valid, now load it!");
+
+    if(!model->open_project(path))
+    {
+        QMessageBox::warning(nullptr, "Error", "Something went wrong when the project has been allocate");
+        return;
+    }
+
+    Log::info("File: " + path + "has been successfully loaded");
+    view->setWindowTitle(QString::fromStdString(model->get_project()->get_name()));
 }

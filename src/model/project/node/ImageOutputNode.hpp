@@ -37,6 +37,8 @@ public:
      */
     ImageOutputNode();
 
+    ImageOutputNode(const nlohmann::json& j);
+
     static std::string class_name();
 
     std::string get_class_name() const override { return class_name(); }

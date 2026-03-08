@@ -7,7 +7,7 @@
 
 GraphEditor::GraphEditor(const nlohmann::json& j)
 {
-    //TODO
+    node_graph = Graph(j);
 }
 
 Id GraphEditor::add_node(const std::string& node_type, unsigned int position)

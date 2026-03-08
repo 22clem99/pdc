@@ -25,6 +25,11 @@ ImageRGBSplitterNode::ImageRGBSplitterNode()
     ports.emplace(img_output_B->id, std::move(img_output_B));
 }
 
+ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j)
+{
+
+}
+
 
 std::string ImageRGBSplitterNode::class_name()
 {

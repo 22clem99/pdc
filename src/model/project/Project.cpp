@@ -15,20 +15,24 @@ Project::Project(const std::string& project_name, const std::filesystem::path fi
     // Create the file
 }
 
-Project::Project(const nlohmann::json& j)
+Project::Project(const std::filesystem::path& path)
 {
-    Log::debug("Load a project from a .pdc file");
+    namespace fs = std::filesystem;
 
-    // if (j.contains("name") && j["name"].is_string())
-    //     name = j["name"];
-    // else
-    //     throw std::runtime_error("Node: missing or invalid 'name'");
+    Log::debug("Load the project from: " + path.string());
 
-    // if (j.contains("id") && j["id"].is_number_integer())
-    //     id = j["id"];
-    // else
-    //     throw std::runtime_error("Node: missing or invalid 'id'");
+    // Open the ZIP project
+    ZipReader zip = ZipReader::open(path);
+    // get manifest file content
+    auto manifest = zip.read_test_file(std::filesystem::path("manifest.json"));
+    // parse manifest as a JSON
+    nlohmann::json manifest_as_json = nlohmann::json::parse(manifest);
 
+    // extract data from json
+    name = manifest_as_json["name"];
+    node_graph = GraphEditor(manifest_as_json["graph"]);
+    // use the file parsed
+    file = path;
 }
 
 int Project::add_node(const std::string& node_type, unsigned int position)

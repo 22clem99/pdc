@@ -50,7 +50,11 @@ public:
 
     Edge(const nlohmann::json& j)
     {
-        //TODO
+        id          = j["id"].get<std::string>();
+        from_node   = j["from_node"].get<std::string>();
+        from_output = j["from_output"].get<std::string>();
+        to_node     = j["to_node"].get<std::string>();
+        to_input    = j["to_input"].get<std::string>();
     }
 
 

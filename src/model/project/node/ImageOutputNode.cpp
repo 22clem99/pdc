@@ -19,6 +19,10 @@ ImageOutputNode::ImageOutputNode()
     ports.emplace(img_output->id, std::move(img_output));
 }
 
+ImageOutputNode::ImageOutputNode(const nlohmann::json& j)
+{
+
+}
 
 std::string ImageOutputNode::class_name()
 {

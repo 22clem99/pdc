@@ -19,6 +19,7 @@
 #include "Node.hpp"
 #include "NodeRegister.hpp"
 #include "Port.hpp"
+#include <utils/JSONPrintable.hpp>
 
 /**
  * @brief Define ImageInputNode, a specific Node
@@ -36,6 +37,8 @@ public:
      * This constructor append all port need by the node
      */
     ImageInputNode();
+
+    ImageInputNode(const nlohmann::json& j);
 
     static std::string class_name();
 

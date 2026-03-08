@@ -44,6 +44,15 @@ public:
     static std::unique_ptr<Node> alloc_node(const std::string& node_type);
 
     /**
+     * @brief Method to allocate an object of kind Node registerd in the factory
+     *
+     * @param node_type keyword of the node to allocate
+     * @param json json file
+     * @return std::unique_ptr<Node> pointer on the new object allocate
+     */
+    static std::unique_ptr<Node> alloc_node_json(const std::string& node_type, const nlohmann::json& j);
+
+    /**
      * @brief Get the property object depending of the node keyword
      *
      * @param node_type node keyword
