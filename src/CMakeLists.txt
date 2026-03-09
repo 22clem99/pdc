@@ -18,5 +18,6 @@ target_link_libraries(PointDeCroix
         PDCState
         PDCView
         Qt6::Widgets
+        Qt6::Gui
         version
 )

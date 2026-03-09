@@ -8,4 +8,5 @@ target_link_libraries(CMDs
         PDCView
     PRIVATE
         Qt6::Widgets
+        Qt6::Gui
 )

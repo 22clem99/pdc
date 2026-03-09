@@ -6,9 +6,11 @@
 #include <memory>
 #include <filesystem>
 #include <string>
+#include <QObject>
 
 #include "graph/GraphEditor.hpp"
 #include <utils/JSONPrintable.hpp>
+#include <utils/Types.hpp>
 
 enum class ProjectState
 {
@@ -18,10 +20,13 @@ enum class ProjectState
 
 enum class SaveProjectStatus
 {
-    SAVED,
-    FAILED_TO_CREATE_TEMP,
-    FAILED_TO_ADD_FILE,
-    FAILED_TO_RENAME_TEMP
+    Saved,
+    FailedToCreateTemp,
+    FailedToAddFile,
+    FailedToRenameTemp,
+    FailedToGetImgExtension,
+    FailedToEncodeImg,
+    EncodeErrorUnknow
 };
 
 enum class OpenProjectStatus
@@ -33,8 +38,10 @@ enum class OpenProjectStatus
     ManifestParsingError
 };
 
-class Project
+class Project : public QObject
 {
+    Q_OBJECT
+
 private:
     std::string name;
     std::filesystem::path file;
@@ -42,6 +49,8 @@ private:
     ProjectState state;
 
     GraphEditor node_graph;
+
+    Image input_image;
 
 public:
     Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path);
@@ -68,6 +77,11 @@ public:
     static OpenProjectStatus is_project_file_valid(const std::filesystem::path& path);
 
     static bool is_json_valid(const nlohmann::json& j);
+
+    Image get_input_image(void);
+
+signals:
+    void image_changed(const Image& img);
 };
 
 #endif

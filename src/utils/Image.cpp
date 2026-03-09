@@ -4,6 +4,29 @@
  */
 #include "Image.hpp"
 #include <utils/Tab.hpp>
+#include <utils/Log.hpp>
+
+
+Image::Image(const std::filesystem::path& path)
+{
+    Log::debug("Trying to open the image:" + path.string());
+    data = cv::imread(path.string(), cv::IMREAD_UNCHANGED);
+
+    extension = path.extension().string();
+
+    Log::debug("Mat type: " + std::to_string(data.type()) + " channels: " + std::to_string(data.channels()) + " depth: " + std::to_string(data.depth()));
+
+    if (data.empty())
+    {
+        status = ImgStatus::ImgReadError;
+    }
+    status = ImgStatus::ImgReadSuccessfully;
+}
+
+QImage Image::to_QImage(void) const
+{
+    return mat_to_QImage(data);
+}
 
 std::string Image::class_name(void)
 {
@@ -18,4 +41,41 @@ std::string Image::get_str(void) const
 std::string Image::get_str(const unsigned int tab) const
 {
     return Tab::tab(tab) + "Image, value=TODO";
+}
+
+
+std::optional<std::string> Image::get_extension(void)
+{
+    return extension;
+}
+
+std::vector<char> Image::encode_img(void)
+{
+    std::vector<uchar> buffer;
+
+    if (!extension)
+    {
+        encode_status = ImgEncodeStatus::ImgEncodeErrorNoExtension;
+        return std::vector<char>();
+    }
+
+    if (!cv::imencode(extension.value(), data, buffer))
+    {
+        encode_status = ImgEncodeStatus::ImgEncodeError;
+        return std::vector<char>();
+    }
+
+    encode_status = ImgEncodeStatus::ImgEncodeSuccessfully;
+
+    return std::vector<char>(buffer.begin(), buffer.end());
+}
+
+ImgStatus Image::get_img_status(void)
+{
+    return status;
+}
+
+ImgEncodeStatus Image::get_encode_status(void)
+{
+    return encode_status;
 }

@@ -8,10 +8,10 @@
 #include <miniz/miniz.h>
 
 enum class ZipWriterReturnStatus {
-    OK,
-    UNABLE_TO_CREATE_FILE,
-    UNABLE_TO_ADD_FILE,
-    UNABLE_TO_WRITE_IN_FILE
+    Ok,
+    UnableToCreateFile,
+    UnableToAddFile,
+    UnableToWriteInFile
 };
 
 class ZipWriter

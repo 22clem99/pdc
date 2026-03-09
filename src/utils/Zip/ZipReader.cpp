@@ -11,11 +11,11 @@ ZipReader ZipReader::open(const std::filesystem::path& path)
 
     if (!mz_zip_reader_init_file(&reader.archive, path.string().c_str(), 0))
     {
-        reader.status = ZipReaderReturnStatus::UNABLE_TO_OPEN_ARCHIVE;
+        reader.status = ZipReaderReturnStatus::UnableToOpenArchive;
     }
 
     reader.opened = true;
-    reader.status = ZipReaderReturnStatus::OK;
+    reader.status = ZipReaderReturnStatus::Ok;
 
     return reader;
 }
@@ -28,14 +28,14 @@ std::vector<char> ZipReader::read_file(const std::string& filename)
 
     if (!data)
     {
-        status = ZipReaderReturnStatus::UNABLE_TO_FIND_FILE_IN_ARCHIVE;
+        status = ZipReaderReturnStatus::UnableToFindFileInArchive;
     }
 
     std::vector<char> buffer(size);
     std::memcpy(buffer.data(), data, size);
 
     mz_free(data);
-    status = ZipReaderReturnStatus::OK;
+    status = ZipReaderReturnStatus::Ok;
 
     return buffer;
 }
@@ -67,13 +67,13 @@ std::string ZipReader::read_test_file(const std::string& filename)
 
     if (!data)
     {
-        status = ZipReaderReturnStatus::UNABLE_TO_READ_FILE_IN_ARCHIVE;
+        status = ZipReaderReturnStatus::UnableToReadFileInArchive;
     }
 
     std::string result(static_cast<char*>(data), size);
 
     mz_free(data);
-    status = ZipReaderReturnStatus::OK;
+    status = ZipReaderReturnStatus::Ok;
 
     return result;
 }
@@ -86,13 +86,13 @@ std::vector<uint8_t> ZipReader::read_binary_file(const std::string& filename)
 
     if (!data)
     {
-        status = ZipReaderReturnStatus::UNABLE_TO_READ_FILE_IN_ARCHIVE;
+        status = ZipReaderReturnStatus::UnableToReadFileInArchive;
     }
 
     std::vector<uint8_t> result(static_cast<uint8_t*>(data), static_cast<uint8_t*>(data) + size);
 
     mz_free(data);
-    status = ZipReaderReturnStatus::OK;
+    status = ZipReaderReturnStatus::Ok;
 
     return result;
 }

@@ -11,8 +11,7 @@ Project::Project(const std::string& project_name, const std::filesystem::path fi
     Log::info("Create a new project with (Name: \"" + project_name + "\"), (file: \"" + file_path.string() + "\")");
     name = project_name;
     file = file_path;
-
-    // Create the file
+    input_image = Image(img_path);
 }
 
 Project::Project(const std::filesystem::path& path)
@@ -99,10 +98,10 @@ SaveProjectStatus Project::save(void)
 
     ZipWriter zip = ZipWriter::create(tmp_file);
 
-    if(zip.get_return_status() != ZipWriterReturnStatus::OK)
+    if(zip.get_return_status() != ZipWriterReturnStatus::Ok)
     {
         Log::error("Unable to create the temporary project file at: " + tmp_file.string());
-        return SaveProjectStatus::FAILED_TO_CREATE_TEMP;
+        return SaveProjectStatus::FailedToCreateTemp;
     }
 
     // first get the project json configuration
@@ -113,10 +112,36 @@ SaveProjectStatus Project::save(void)
     // Then write the json to the project manifest
     zip.add_string("manifest.json", project_as_json.dump(4));
 
-    if(zip.get_return_status() != ZipWriterReturnStatus::OK)
+    if(zip.get_return_status() != ZipWriterReturnStatus::Ok)
     {
         Log::error("Unable to add the file manifest.json to the project file: " + tmp_file.string());
-        return SaveProjectStatus::FAILED_TO_ADD_FILE;
+        return SaveProjectStatus::FailedToAddFile;
+    }
+
+    // write the project image
+    auto image_bin = input_image.encode_img();
+
+    switch (input_image.get_encode_status())
+    {
+    case ImgEncodeStatus::ImgEncodeErrorNoExtension:
+        Log::error("Unable to get the image extension");
+        return SaveProjectStatus::FailedToGetImgExtension;
+    case ImgEncodeStatus::ImgEncodeError:
+        Log::error("Unable to encode the image");
+        return SaveProjectStatus::FailedToEncodeImg;
+    case ImgEncodeStatus::ImgEncodeSuccessfully:
+        break;
+    default:
+        Log::error("Encode error unknow");
+        return SaveProjectStatus::EncodeErrorUnknow;
+    }
+
+    zip.add_file("image" + input_image.get_extension().value(), image_bin);
+
+    if (zip.get_return_status() != ZipWriterReturnStatus::Ok)
+    {
+        Log::error("Unable to add Image to the archive");
+        return SaveProjectStatus::FailedToAddFile;
     }
 
     // Write over the project file with the temporary file
@@ -130,10 +155,10 @@ SaveProjectStatus Project::save(void)
 
     if (ec)
     {
-        return SaveProjectStatus::FAILED_TO_RENAME_TEMP;
+        return SaveProjectStatus::FailedToRenameTemp;
     }
 
-    return SaveProjectStatus::SAVED;
+    return SaveProjectStatus::Saved;
 }
 
 OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& path)
@@ -149,7 +174,7 @@ OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& pa
     // Check it can be open as ZIP file
     ZipReader zip = ZipReader::open(path);
 
-    if (zip.get_return_status() != ZipReaderReturnStatus::OK)
+    if (zip.get_return_status() != ZipReaderReturnStatus::Ok)
     {
         return OpenProjectStatus::CantOpenArchive;
     }
@@ -157,7 +182,7 @@ OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& pa
     // Check that the manifest is embedded in the project file
     auto manifest = zip.read_test_file(std::filesystem::path("manifest.json"));
 
-    if (zip.get_return_status() != ZipReaderReturnStatus::OK)
+    if (zip.get_return_status() != ZipReaderReturnStatus::Ok)
     {
         return OpenProjectStatus::ManifestNotFound;
     }
@@ -188,4 +213,9 @@ bool Project::is_json_valid(const nlohmann::json& j)
     JSON_REQUIRED_FIELD(j, "graph", is_object);
 
     return Graph::is_json_valid(j["graph"]);
+}
+
+Image Project::get_input_image(void)
+{
+    return input_image;
 }

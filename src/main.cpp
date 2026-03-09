@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    Log::set_level(LogLevel::DEBUG);
+    Log::set_level(LogLevel::Debug);
     QApplication app(argc, argv);
 
     PDCController controller;

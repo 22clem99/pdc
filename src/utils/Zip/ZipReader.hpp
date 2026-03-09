@@ -8,10 +8,10 @@
 #include <miniz/miniz.h>
 
 enum class ZipReaderReturnStatus {
-    OK,
-    UNABLE_TO_OPEN_ARCHIVE,
-    UNABLE_TO_FIND_FILE_IN_ARCHIVE,
-    UNABLE_TO_READ_FILE_IN_ARCHIVE
+    Ok,
+    UnableToOpenArchive,
+    UnableToFindFileInArchive,
+    UnableToReadFileInArchive
 };
 
 class ZipReader

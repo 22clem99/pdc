@@ -13,4 +13,5 @@ target_link_libraries(PDCController
 
     PRIVATE
         Qt6::Widgets
+        Qt6::Gui
 )

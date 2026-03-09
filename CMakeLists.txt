@@ -14,10 +14,14 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-# find Lib Boost
+# Find Lib Boost
 find_package(Boost REQUIRED COMPONENTS system)
+
+# Find openCV
+find_package(OpenCV REQUIRED)
+
 
 add_subdirectory(src)
 

@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    Log::set_level(LogLevel::DEBUG);
+    Log::set_level(LogLevel::Debug);
 
     Project p("My amazing project", std::filesystem::path("./test0/prj"), std::filesystem::path("./images/Tux.svg"));
 

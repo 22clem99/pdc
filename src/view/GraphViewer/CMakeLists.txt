@@ -8,4 +8,5 @@ target_link_libraries(GraphViewer
         utils
     PRIVATE
         Qt6::Widgets
+        Qt6::Gui
 )

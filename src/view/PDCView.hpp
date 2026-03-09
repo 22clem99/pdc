@@ -10,6 +10,7 @@
 
 #include "GraphViewer/GraphViewer.hpp"
 #include "PDCMenuBar/PDCMenuBar.hpp"
+#include "ImageView.hpp"
 
 /**
  * @brief This class represent the GUI of the PDC project based on Qt
@@ -35,8 +36,8 @@ public:
     void setup_MenuBar();
 
     GraphViewer* node_editor;
-    QWidget* input_image_view;
-    QWidget* output_image_view;
+    ImageView* input_image_view;
+    ImageView* output_image_view;
     PDCMenuBar* menu_bar;
 };
 

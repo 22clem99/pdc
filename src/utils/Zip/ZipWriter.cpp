@@ -12,11 +12,11 @@ ZipWriter ZipWriter::create(const std::filesystem::path& path)
 
     if (!mz_zip_writer_init_file(&writer.archive, path.string().c_str(), 0))
     {
-        writer.status = ZipWriterReturnStatus::UNABLE_TO_CREATE_FILE;
+        writer.status = ZipWriterReturnStatus::UnableToCreateFile;
     }
 
     writer.opened = true;
-    writer.status = ZipWriterReturnStatus::OK;
+    writer.status = ZipWriterReturnStatus::Ok;
 
     return writer;
 }
@@ -25,19 +25,19 @@ void ZipWriter::add_file(const std::string& filename, const std::vector<char>& d
 {
     if (!mz_zip_writer_add_mem(&archive, filename.c_str(), data.data(), data.size(), MZ_BEST_COMPRESSION))
     {
-        status = ZipWriterReturnStatus::UNABLE_TO_CREATE_FILE;
+        status = ZipWriterReturnStatus::UnableToAddFile;
     }
-    status = ZipWriterReturnStatus::OK;
+    status = ZipWriterReturnStatus::Ok;
 }
 
 void ZipWriter::add_string(const std::string& filename, const std::string& content)
 {
     if (!mz_zip_writer_add_mem(&archive, filename.c_str(), content.data(), content.size(), MZ_BEST_COMPRESSION))
     {
-        status = ZipWriterReturnStatus::UNABLE_TO_WRITE_IN_FILE;
+        status = ZipWriterReturnStatus::UnableToWriteInFile;
         return;
     }
-    status = ZipWriterReturnStatus::OK;
+    status = ZipWriterReturnStatus::Ok;
 }
 
 ZipWriterReturnStatus ZipWriter::get_return_status(void)

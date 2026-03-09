@@ -8,4 +8,5 @@ target_link_libraries(PDCMenuBar
         utils
     PRIVATE
         Qt6::Widgets
+        Qt6::Gui
 )

@@ -16,6 +16,8 @@ public:
     void on_create_project(void);
     void on_save_project(void);
     void on_open_project(void);
+
+    // void load_image(void);
 };
 
 

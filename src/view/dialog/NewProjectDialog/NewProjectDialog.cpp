@@ -68,7 +68,7 @@ NewProjectDialog::NewProjectDialog(QWidget* parent) : QDialog(parent)
             this,
             "Choose image file",
             "",
-            "Images (*.png *.jpg *.jpeg *.tif *.tiff *.svg);;All files (*.*)"
+            "Images (*.png *.jpg *.jpeg *.jpe *.jp2 *.tif *.tiff *.bmp *.dib *.webp *.pbm, *.pgm, *.ppm *.pxm, *.pnm);;All files (*.*)"
         );
 
         if (!img.isEmpty())

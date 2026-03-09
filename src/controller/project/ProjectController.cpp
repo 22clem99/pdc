@@ -49,6 +49,10 @@ void ProjectController::on_create_project(void)
     undo_stack.push(new CreateProjectCommand(model, name, prj_path, img_path));
 
     view->setWindowTitle(QString::fromStdString(name) + " (not saved)");
+
+    connect(model->get_project().get(), &Project::image_changed, view->input_image_view, &ImageView::update_image);
+
+    emit model->get_project()->image_changed(model->get_project()->get_input_image());
 }
 
 void ProjectController::on_save_project(void)
@@ -58,16 +62,16 @@ void ProjectController::on_save_project(void)
     {
         switch(model->save_project())
         {
-        case SaveProjectStatus::FAILED_TO_CREATE_TEMP:
+        case SaveProjectStatus::FailedToCreateTemp:
             QMessageBox::warning(nullptr, "Error", "Unable to create temporary project file");
             break;
-        case SaveProjectStatus::FAILED_TO_ADD_FILE:
+        case SaveProjectStatus::FailedToAddFile:
             QMessageBox::warning(nullptr, "Error", "Unable to write file in project");
             break;
-        case SaveProjectStatus::FAILED_TO_RENAME_TEMP:
+        case SaveProjectStatus::FailedToRenameTemp:
             QMessageBox::warning(nullptr, "Error", "Unable to create final project file");
             break;
-        case SaveProjectStatus::SAVED:
+        case SaveProjectStatus::Saved:
             view->setWindowTitle(QString::fromStdString(model->get_project()->get_name()));
             break;
 
@@ -131,3 +135,8 @@ void ProjectController::on_open_project(void)
     Log::info("File: " + path + "has been successfully loaded");
     view->setWindowTitle(QString::fromStdString(model->get_project()->get_name()));
 }
+
+// void ProjectController::load_image(void)
+// {
+
+// }
