@@ -62,3 +62,15 @@ std::unordered_map<std::string, NodeProperty>& NodeAllocator::registry()
     static std::unordered_map<std::string, NodeProperty> instance;
     return instance;
 }
+
+std::unordered_map<Id, NodeDescriptor> NodeAllocator::get_available_node(void)
+{
+    std::unordered_map<Id, NodeDescriptor> result;
+
+    for (const auto& [id, prop] : registry())
+    {
+        result[id] = NodeDescriptor(prop.descriptor);
+    }
+
+    return result;
+}

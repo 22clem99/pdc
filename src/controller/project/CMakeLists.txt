@@ -3,6 +3,8 @@ add_subdirectory(cmds)
 add_library(ProjectController
     ProjectController.cpp
     ProjectController.hpp
+    GraphController.cpp
+    GraphController.hpp
     GenericPDCController.hpp
 )
 

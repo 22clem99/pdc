@@ -55,3 +55,14 @@ int ImageRGBSplitterNode::compute_output()
 {
     return 0;
 }
+
+std::string ImageRGBSplitterNode::get_pretty_print(void)
+{
+    return "Image RGB spitter node";
+}
+
+std::string ImageRGBSplitterNode::get_description(void)
+{
+    return "This node spit RGB channels into three images\n"
+            "(Output_1 = Input[R], Output_2 = Input[G] and Output_3 = Input[B])";
+}

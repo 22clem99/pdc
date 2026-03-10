@@ -52,6 +52,7 @@ class Node : public Identifiable<Node>
 {
 public:
     std::map<Id, std::unique_ptr<IPortBase>> ports;
+
     NodeKind kind;
 
     VisitState visite_state;
@@ -113,6 +114,9 @@ public:
 
     static bool is_json_valid(const nlohmann::json& j);
 
+    static std::string get_pretty_print(void);
+
+    static std::string get_description(void);
 };
 
 #endif

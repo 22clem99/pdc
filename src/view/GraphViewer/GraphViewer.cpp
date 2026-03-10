@@ -7,5 +7,7 @@
 
 GraphViewer::GraphViewer(QWidget* parent) : QGraphicsView(parent)
 {
-
+    scene = new GraphScene(this);
+    setScene(scene);
+    setInteractive(false);
 }

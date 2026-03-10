@@ -55,3 +55,14 @@ int ImageRGBCombinerNode::compute_output()
 {
     return 0;
 }
+
+std::string ImageRGBCombinerNode::get_pretty_print(void)
+{
+    return "Image RGB combiner node";
+}
+
+std::string ImageRGBCombinerNode::get_description(void)
+{
+    return "This node combine channel RGB of three node to create a new image\n"
+            "(Output = Input_1[R] + Input_2[G]+ Input_3[B])";
+}

@@ -10,12 +10,16 @@
 #include <QMainWindow>
 #include <QWidget>
 
+#include "GraphScene.hpp"
+
 class GraphViewer : public QGraphicsView
 {
     Q_OBJECT
 
 public:
     explicit GraphViewer(QWidget* parent);
+
+    GraphScene * scene;
 };
 
 #endif

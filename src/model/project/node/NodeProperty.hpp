@@ -10,6 +10,19 @@
 
 #include "Node.hpp"
 
+class NodeDescriptor
+{
+public:
+    NodeKind kind;
+    std::string pretty_print;
+    std::string description;
+
+    NodeDescriptor() = default;
+    NodeDescriptor(const NodeDescriptor& other) = default;
+    NodeDescriptor& operator=(const NodeDescriptor& other) = default;
+};
+
+
 /**
  * @brief This define is just to rename more consisly the allocation method call
  *
@@ -29,9 +42,10 @@ typedef std::function<std::unique_ptr<Node>(const nlohmann::json&)> CreatorFuncN
 class NodeProperty
 {
 public:
-    NodeKind kind;
     CreatorFuncNode factory;
     CreatorFuncNodeJson factory_json;
+
+    NodeDescriptor descriptor;
 };
 
 #endif

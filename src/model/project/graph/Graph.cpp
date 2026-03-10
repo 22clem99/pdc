@@ -60,12 +60,12 @@ Id Graph::add_node(const std::string& node_type)
         return nullid;
     }
 
-    if (prop->kind == NodeKind::Head && head_id) {
+    if (prop->descriptor.kind == NodeKind::Head && head_id) {
         Log::error("Can't allocate node of type \"" + node_type + "\", head node already exist");
         return nullid;
     }
 
-    if (prop->kind == NodeKind::Tail && tail_id) {
+    if (prop->descriptor.kind == NodeKind::Tail && tail_id) {
         Log::error("Can't allocate node of type \"" + node_type + "\", tail node already exist");
         return nullid;
     }
@@ -79,12 +79,12 @@ Id Graph::add_node(const std::string& node_type)
 
     Id id = new_node->id;
 
-    if(prop->kind == NodeKind::Head) {
+    if(prop->descriptor.kind == NodeKind::Head) {
         head_id = id;
         Log::debug("The node:\"" + id + "\" is set as the head");
     }
 
-    if(prop->kind == NodeKind::Tail) {
+    if(prop->descriptor.kind == NodeKind::Tail) {
         tail_id = id;
         Log::debug("The node:\"" + id + "\" is set as the tail");
     }

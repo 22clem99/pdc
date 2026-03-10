@@ -17,6 +17,7 @@ public:
     void on_save_project(void);
     void on_open_project(void);
     void on_close_project(void);
+    void on_export_project(void);
 };
 
 

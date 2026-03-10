@@ -73,6 +73,10 @@ public:
      */
     int compute_output();
 
+    static std::string get_pretty_print(void);
+
+    static std::string get_description(void);
+
 private:
     inline static NodeRegister<ImageInputNode> reg;
 };

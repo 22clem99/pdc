@@ -48,3 +48,13 @@ int ImageOutputNode::compute_output()
 {
     return 0;
 }
+
+std::string ImageOutputNode::get_pretty_print(void)
+{
+    return "Image output node";
+}
+
+std::string ImageOutputNode::get_description(void)
+{
+    return "This node is a simple output node, it is the node used to export the PDC project";
+}

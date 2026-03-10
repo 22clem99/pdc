@@ -47,3 +47,12 @@ int ImageInputNode::compute_output()
 {
     return 0;
 }
+std::string ImageInputNode::get_pretty_print(void)
+{
+    return "Image input node";
+}
+
+std::string ImageInputNode::get_description(void)
+{
+    return "This node is a simple input node, it is the node used to inject in the PDC project";
+}

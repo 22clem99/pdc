@@ -13,6 +13,7 @@ ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack*
     connect(view->menu_bar, &PDCMenuBar::save_requested, this, &ProjectController::on_save_project);
     connect(view->menu_bar, &PDCMenuBar::open_requested, this, &ProjectController::on_open_project);
     connect(view->menu_bar, &PDCMenuBar::close_requested, this, &ProjectController::on_close_project);
+    connect(view->menu_bar, &PDCMenuBar::export_requested, this, &ProjectController::on_export_project);
 }
 
 void ProjectController::on_create_project(void)
@@ -48,6 +49,10 @@ void ProjectController::on_create_project(void)
     connect(model->get_project().get(), &Project::image_changed, view->input_image_view, &ImageView::update_image);
 
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
+
+    // TODO print graph
+
+    view->node_editor->setInteractive(true);
 }
 
 void ProjectController::on_save_project(void)
@@ -130,6 +135,9 @@ void ProjectController::on_open_project(void)
     connect(model->get_project().get(), &Project::image_changed, view->input_image_view, &ImageView::update_image);
 
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
+
+    // TODO print graph
+    view->node_editor->setInteractive(true);
 }
 
 void ProjectController::on_close_project(void)
@@ -162,6 +170,9 @@ void ProjectController::on_close_project(void)
     disconnect(model->get_project().get(), nullptr, nullptr, nullptr);
     disconnect(nullptr, nullptr, model->get_project().get(), nullptr);
 
+    // TODO clear graph
+    view->node_editor->setInteractive(false);
+
     // Then remove Project
     model->close_project();
 
@@ -172,4 +183,9 @@ void ProjectController::on_close_project(void)
     // Clear title
     view->setWindowTitle(QString::fromStdString(""));
 
+}
+
+void ProjectController::on_export_project(void)
+{
+    Log::info("Export feature not implemented (yet)");
 }
