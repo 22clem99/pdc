@@ -1,7 +1,9 @@
 #include <stdexcept>
 #include <cstring>
+#include <optional>
 
 #include "ZipReader.hpp"
+#include <utils/Log.hpp>
 
 ZipReader ZipReader::open(const std::filesystem::path& path)
 {
@@ -59,7 +61,7 @@ std::vector<std::string> ZipReader::list_files()
     return files;
 }
 
-std::string ZipReader::read_test_file(const std::string& filename)
+std::string ZipReader::read_text_file(const std::string& filename)
 {
     size_t size = 0;
 
@@ -102,10 +104,53 @@ bool ZipReader::has_file(const std::string& filename)
     return mz_zip_reader_locate_file(&archive, filename.c_str(), nullptr, 0) != -1;
 }
 
+bool ZipReader::find_file_with_unknown_extension(const std::string& base_name)
+{
+    mz_uint num_files = mz_zip_reader_get_num_files(&archive);
+
+    for (mz_uint i = 0; i < num_files; ++i)
+    {
+        mz_zip_archive_file_stat stat;
+
+        if (!mz_zip_reader_file_stat(&archive, i, &stat))
+            continue;
+
+        std::string filename = stat.m_filename;
+
+        std::filesystem::path p(filename);
+
+        Log::debug("p = " + p.string());
+        Log::debug("p.stem() = " + p.replace_extension("").string());
+
+        // check name
+        if (p.replace_extension("").string() != base_name)
+        {
+            Log::debug("The file: + " + base_name + " is not the one we are looking for (" + p.replace_extension("").string() + ")");
+            continue;
+        }
+
+        std::string ext = std::filesystem::path(filename).extension().string();
+
+        Log::debug("ext = " + ext);
+
+        ext_status = ImageExtension::string_to_extension(ext);
+
+        if(ext_status != ImgExtensions::Unknown)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 ZipReaderReturnStatus ZipReader::get_return_status(void)
 {
     return status;
+}
+
+ImgExtensions ZipReader::get_extension_status(void)
+{
+    return ext_status;
 }
 
 ZipReader::~ZipReader()

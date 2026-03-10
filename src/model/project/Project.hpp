@@ -35,8 +35,21 @@ enum class OpenProjectStatus
     ProjectDoesNotExist,
     CantOpenArchive,
     ManifestNotFound,
-    ManifestParsingError
+    ManifestParsingError,
+    ImageNotFound
 };
+
+/**
+ * @brief static variable with the formated name of the image with the separator depending of the OS
+ *
+ */
+inline const std::string ArchiveImagePath = std::string(".") + std::filesystem::path::preferred_separator + "image";
+
+/**
+ * @brief static variable with the formated name of the manifest with the separator depending of the OS
+ *
+ */
+inline const std::string ArchiveManifestPath = std::string(".") + std::filesystem::path::preferred_separator + "manifest.json";
 
 class Project : public QObject
 {
@@ -53,23 +66,76 @@ private:
     Image input_image;
 
 public:
+
+    /**
+     * @brief Construct a new Project object used when a new project is build from a location and with a name
+     *
+     * @param project_name
+     * @param file_path
+     * @param img_path
+     */
     Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path);
 
-    // Constructor when laoding a project from a file
+    /**
+     * @brief Construct a new Project object used when a project is load from a .pdc file
+     *
+     * @param path path od the .pdc file
+     */
     Project(const std::filesystem::path& path);
 
+    /** TODO
+     * @brief Used to add a node to the project
+     *
+     * @param node_type keyword of the node to add
+     * @param position
+     * @return int
+     */
     int add_node(const std::string& node_type, unsigned int position);
+
+    /** TODO
+     * @brief remove a node from the project, will also remove edges
+     *
+     * @param node_type
+     * @return int
+     */
     int remove_node(const std::string& node_type);
 
+    /**
+     * @brief get the dirtiness of the project
+     *
+     * @return true the project is dirty (i.e modified and not saved)
+     * @return false the project is saved
+     */
     bool is_dirty(void);
+
+    /**
+     * @brief set the project dirty as it has been modify
+     *
+     */
+    void set_dirty(void);
+
+    /**
+     * @brief set the project saved as it has been save
+     *
+     */
+    void clear_dirty(void);
 
     std::string get_str();
     std::string get_str(const unsigned int tab);
     std::string get_name();
 
-    // Method to construc recursivly the json project file
+    /**
+     * @brief use to construct the manifest, it will generate recursively the project as a JSON file
+     *
+     * @return nlohmann::json project as a JSON
+     */
     nlohmann::json to_json(void);
 
+    /**
+     * @brief Get the extension of pdc project
+     *
+     * @return std::string return ".pdc"
+     */
     static std::string get_extension();
 
     SaveProjectStatus save(void);

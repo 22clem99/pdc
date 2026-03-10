@@ -23,7 +23,7 @@ Project::Project(const std::filesystem::path& path)
     // Open the ZIP project
     ZipReader zip = ZipReader::open(path);
     // get manifest file content
-    auto manifest = zip.read_test_file(std::filesystem::path("manifest.json"));
+    auto manifest = zip.read_text_file(std::filesystem::path(ArchiveManifestPath));
     // parse manifest as a JSON
     nlohmann::json manifest_as_json = nlohmann::json::parse(manifest);
 
@@ -32,6 +32,11 @@ Project::Project(const std::filesystem::path& path)
     node_graph = GraphEditor(manifest_as_json["graph"]);
     // use the file parsed
     file = path;
+
+    // extract the image
+    zip.find_file_with_unknown_extension(ArchiveImagePath);
+    auto image_from_archive = zip.read_binary_file(std::filesystem::path(ArchiveImagePath + ImageExtension::extension_to_string(zip.get_extension_status())));
+    input_image = Image(image_from_archive, zip.get_extension_status());
 }
 
 int Project::add_node(const std::string& node_type, unsigned int position)
@@ -51,6 +56,16 @@ bool Project::is_dirty(void)
         return true;
 
     return false;
+}
+
+void Project::set_dirty(void)
+{
+    state = ProjectState::Dirty;
+}
+
+void Project::clear_dirty(void)
+{
+    state = ProjectState::Saved;
 }
 
 std::string Project::get_str()
@@ -110,7 +125,7 @@ SaveProjectStatus Project::save(void)
     Log::debug("Will create a project with the json :\n" + project_as_json.dump(4));
 
     // Then write the json to the project manifest
-    zip.add_string("manifest.json", project_as_json.dump(4));
+    zip.add_string(ArchiveManifestPath, project_as_json.dump(4));
 
     if(zip.get_return_status() != ZipWriterReturnStatus::Ok)
     {
@@ -136,7 +151,7 @@ SaveProjectStatus Project::save(void)
         return SaveProjectStatus::EncodeErrorUnknow;
     }
 
-    zip.add_file("image" + input_image.get_extension().value(), image_bin);
+    zip.add_file(ArchiveImagePath + input_image.get_extension().value(), image_bin);
 
     if (zip.get_return_status() != ZipWriterReturnStatus::Ok)
     {
@@ -179,13 +194,24 @@ OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& pa
         return OpenProjectStatus::CantOpenArchive;
     }
 
+    // Check that the image is embedded
+    if (!zip.find_file_with_unknown_extension(ArchiveImagePath))
+    {
+        Log::debug("Image not found");
+        return OpenProjectStatus::ImageNotFound;
+    }
+    Log::debug("Image found with extension " + ImageExtension::extension_to_string(zip.get_extension_status()));
+
     // Check that the manifest is embedded in the project file
-    auto manifest = zip.read_test_file(std::filesystem::path("manifest.json"));
+    auto manifest = zip.read_text_file(std::filesystem::path(ArchiveManifestPath));
 
     if (zip.get_return_status() != ZipReaderReturnStatus::Ok)
     {
+        Log::debug("Unable to read the file " + ArchiveManifestPath + " from project archive");
         return OpenProjectStatus::ManifestNotFound;
     }
+
+    Log::debug("File " + ArchiveManifestPath + " read successfully with the content: " + manifest);
 
     // Finally test that the manifest is valid
     nlohmann::json manifest_as_json = nlohmann::json::parse(manifest);

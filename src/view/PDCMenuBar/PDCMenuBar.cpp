@@ -11,9 +11,11 @@ PDCMenuBar::PDCMenuBar(QMainWindow* window): QObject(window)
     QAction* open_action = projectMenu->addAction("Open");
     QAction* save_action = projectMenu->addAction("Save");
     QAction* export_action = projectMenu->addAction("Export");
+    QAction* close_action = projectMenu->addAction("Close");
 
     connect(new_action, &QAction::triggered, this, &PDCMenuBar::new_requested);
     connect(open_action, &QAction::triggered, this, &PDCMenuBar::open_requested);
     connect(save_action, &QAction::triggered, this, &PDCMenuBar::save_requested);
     connect(export_action, &QAction::triggered, this, &PDCMenuBar::export_requested);
+    connect(close_action, &QAction::triggered, this, &PDCMenuBar::close_requested);
 }

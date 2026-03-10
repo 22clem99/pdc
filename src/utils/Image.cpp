@@ -12,7 +12,23 @@ Image::Image(const std::filesystem::path& path)
     Log::debug("Trying to open the image:" + path.string());
     data = cv::imread(path.string(), cv::IMREAD_UNCHANGED);
 
-    extension = path.extension().string();
+    extension = ImageExtension::string_to_extension(path.extension().string());
+
+    Log::debug("Mat type: " + std::to_string(data.type()) + " channels: " + std::to_string(data.channels()) + " depth: " + std::to_string(data.depth()));
+
+    if (data.empty())
+    {
+        status = ImgStatus::ImgReadError;
+    }
+    status = ImgStatus::ImgReadSuccessfully;
+}
+
+Image::Image(const std::vector<uchar> image, ImgExtensions ext)
+{
+    Log::debug("Open a " + ImageExtension::extension_to_string(ext) + "val: " + std::to_string(image.size()));
+    data = cv::imdecode(image, cv::IMREAD_UNCHANGED);
+
+    extension = ext;
 
     Log::debug("Mat type: " + std::to_string(data.type()) + " channels: " + std::to_string(data.channels()) + " depth: " + std::to_string(data.depth()));
 
@@ -43,10 +59,14 @@ std::string Image::get_str(const unsigned int tab) const
     return Tab::tab(tab) + "Image, value=TODO";
 }
 
-
 std::optional<std::string> Image::get_extension(void)
 {
-    return extension;
+    if (!extension)
+    {
+        return "";
+    }
+
+    return ImageExtension::extension_to_string(extension.value());
 }
 
 std::vector<char> Image::encode_img(void)
@@ -59,7 +79,7 @@ std::vector<char> Image::encode_img(void)
         return std::vector<char>();
     }
 
-    if (!cv::imencode(extension.value(), data, buffer))
+    if (!cv::imencode(ImageExtension::extension_to_string(extension.value()), data, buffer))
     {
         encode_status = ImgEncodeStatus::ImgEncodeError;
         return std::vector<char>();

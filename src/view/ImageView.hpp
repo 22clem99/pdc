@@ -33,6 +33,11 @@ public:
         setTransform(t);
     }
 
+    void clear_view (void)
+    {
+        scene->clear();
+    }
+
 signals:
     void zoomChanged(double scale);
     void scrolled(int dx, int dy);

@@ -16,6 +16,7 @@ signals:
     void open_requested();
     void save_requested();
     void export_requested();
+    void close_requested();
 };
 
 

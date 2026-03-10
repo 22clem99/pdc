@@ -36,17 +36,26 @@ bool PDCState::create_project(const std::string& prj_name, const std::string& pr
         return false;
     }
 
+    project->set_dirty();
+
     return true;
 }
 
 bool PDCState::close_project()
 {
-    return false;
+    project.reset();
+    state = PDCProjectState::NoProject;
+
+    return true;
 }
 
 SaveProjectStatus PDCState::save_project()
 {
-    return project->save();
+    auto retval = project->save();
+
+    project->clear_dirty();
+
+    return retval;
 }
 
 bool PDCState::rename_project(const std::string& prj_name)
@@ -100,5 +109,8 @@ bool PDCState::open_project(const std::filesystem::path& path)
         Log::error("Unable to allocate project object");
         return false;
     }
+
+    project->clear_dirty();
+
     return true;
 }
