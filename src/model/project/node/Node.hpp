@@ -30,6 +30,8 @@ enum class NodeKind {
     Regular
 };
 
+std::string node_kind_to_str(NodeKind kind);
+
 /**
  * @brief Enum type to manage DFS graph visit
  *

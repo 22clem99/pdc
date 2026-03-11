@@ -13,7 +13,7 @@ class GenericPDCController : public QObject
 protected:
     PDCState* model;
     PDCView* view;
-    QUndoStack undo_stack;
+    QUndoStack* undo_stack;
 
 public:
     GenericPDCController(PDCState* model, PDCView* view, QUndoStack* undoStack, QObject* parent = nullptr)

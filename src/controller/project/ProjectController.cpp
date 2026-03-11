@@ -42,7 +42,7 @@ void ProjectController::on_create_project(void)
 
     on_close_project();
 
-    undo_stack.push(new CreateProjectCommand(model, name, prj_path, img_path));
+    undo_stack->push(new CreateProjectCommand(model, name, prj_path, img_path));
 
     view->setWindowTitle(QString::fromStdString(name) + " (not saved)");
 
@@ -51,13 +51,13 @@ void ProjectController::on_create_project(void)
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
 
     // TODO print graph
-
+    graph_con = new GraphController(model, view, undo_stack);
     view->node_editor->setInteractive(true);
 }
 
 void ProjectController::on_save_project(void)
 {
-    Log::debug("Save requested");
+    Log::debug("Controller received a save requested");
     if (model->has_project())
     {
         switch(model->save_project())
@@ -95,7 +95,7 @@ void ProjectController::on_open_project(void)
 
     auto path = dialog.project_path().toStdString();
 
-    Log::debug("Will try to open the file :" + path);
+    Log::debug("Will try to open the file: " + path);
 
     OpenProjectStatus status = Project::is_project_file_valid(std::filesystem::path(path));
 
@@ -119,7 +119,7 @@ void ProjectController::on_open_project(void)
         break;
     }
 
-    Log::debug("Project file:" + path + " is valid, now load it!");
+    Log::debug("Project file: " + path + " is valid, now load it!");
 
     on_close_project();
 
@@ -137,6 +137,7 @@ void ProjectController::on_open_project(void)
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
 
     // TODO print graph
+    graph_con = new GraphController(model, view, undo_stack);
     view->node_editor->setInteractive(true);
 }
 
@@ -171,6 +172,7 @@ void ProjectController::on_close_project(void)
     disconnect(nullptr, nullptr, model->get_project().get(), nullptr);
 
     // TODO clear graph
+    delete graph_con;
     view->node_editor->setInteractive(false);
 
     // Then remove Project

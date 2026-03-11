@@ -1,12 +1,28 @@
 #include "GraphController.hpp"
+#include "../../view/dialog/NodePickerDialog/NodePickerDialog.hpp"
+#include "../../model/project/node/NodeAllocator.hpp"
 
 
 GraphController::GraphController(PDCState* model, PDCView* view, QUndoStack* stack) : GenericPDCController(model, view, stack)
 {
+    Log::debug("Create graph controller");
     connect(view->node_editor->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
+}
+
+GraphController::~GraphController()
+{
+    Log::debug("Delete graph controller");
+    disconnect(this, nullptr, nullptr, nullptr);
+    disconnect(nullptr, nullptr, this, nullptr);
 }
 
 void GraphController::on_open_node_picker(void)
 {
+    Log::info("Ask to add a node");
 
+    NodePickerDialog dialog(NodeAllocator::get_available_node(), nullptr);
+
+    // Then create the view of the NodePicker
+    if (dialog.exec() != QDialog::Accepted)
+        return;
 }

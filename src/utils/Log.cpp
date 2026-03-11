@@ -1,9 +1,10 @@
 #include <iostream>
+#include <filesystem>
 
 #include "Log.hpp"
 
-void Log::debug(const std::string& msg) {
-    instance().debug_impl(msg);
+void Log::debug(const std::string& msg, const std::source_location& loc) {
+    instance().debug_impl(msg, loc);
 }
 
 void Log::info(const std::string& msg) {
@@ -27,9 +28,17 @@ void Log::set_level(LogLevel new_level) {
 }
 
 // Implementation methods
-void Log::debug_impl(const std::string& msg) const {
-    if (level <= LogLevel::Debug) {
-        std::cout << "DEBUG: " << msg << std::endl;
+void Log::debug_impl(const std::string& msg, const std::source_location& loc) const {
+    if (level <= LogLevel::Debug0) {
+        std::filesystem::path p(loc.file_name());
+
+        std::cout << "DEBUG In [" << p.filename().string() << ":" << loc.line();
+
+        if (level <= LogLevel::Debug1) {
+            std::cout << ":" << loc.function_name();
+        }
+
+        std::cout << "] " << msg << std::endl;
     }
 }
 

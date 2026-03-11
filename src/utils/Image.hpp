@@ -84,7 +84,7 @@ public:
         std::string lower = s;
         std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-        Log::debug("lower " + lower);
+        Log::debug("Remove caps from extension [ " + s + " -> " + lower + " ]");
 
         if (lower == ".bpm") return ImgExtensions::Bmp;
         if (lower == ".dib") return ImgExtensions::Dib;

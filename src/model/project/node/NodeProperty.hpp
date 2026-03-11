@@ -19,6 +19,8 @@ public:
 
     NodeDescriptor() = default;
     NodeDescriptor(const NodeDescriptor& other) = default;
+    NodeDescriptor(NodeKind k, std::string pp, std::string desc)
+        : kind(k), pretty_print(std::move(pp)), description(std::move(desc)) {}
     NodeDescriptor& operator=(const NodeDescriptor& other) = default;
 };
 

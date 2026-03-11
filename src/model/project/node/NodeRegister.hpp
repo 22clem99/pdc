@@ -20,12 +20,18 @@ class NodeRegister
 public:
     NodeRegister()
     {
-        NodeAllocator::register_node(node::class_name(),
-            { [](){return std::make_unique<node>();},
-            [](const nlohmann::json& j){return std::make_unique<node>(j);},
-            {node::kind,
-            node::get_pretty_print(),
-            node::get_description()}});
+        NodeAllocator::register_node(
+            node::class_name(),
+            NodeProperty{
+                [](){return std::make_unique<node>();},
+                [](const nlohmann::json& j){return std::make_unique<node>(j);},
+                NodeDescriptor{
+                    node::kind,
+                    node::get_pretty_print(),
+                    node::get_description()
+                }
+            }
+        );
     }
 };
 

@@ -216,8 +216,6 @@ OpenProjectStatus Project::is_project_file_valid(const std::filesystem::path& pa
     // Finally test that the manifest is valid
     nlohmann::json manifest_as_json = nlohmann::json::parse(manifest);
 
-    Log::info(manifest_as_json.dump(4));
-
     if(!is_json_valid(manifest_as_json))
     {
         return OpenProjectStatus::ManifestParsingError;

@@ -4,6 +4,7 @@
 #include "GenericPDCController.hpp"
 #include "../../view/PDCView.hpp"
 #include "../../model/PDCState.hpp"
+#include "GraphController.hpp"
 
 
 class ProjectController : public GenericPDCController
@@ -18,6 +19,8 @@ public:
     void on_open_project(void);
     void on_close_project(void);
     void on_export_project(void);
+
+    GraphController * graph_con;
 };
 
 

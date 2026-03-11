@@ -102,3 +102,19 @@ bool Node::is_json_valid(const nlohmann::json& j)
 
     return true;
 }
+
+std::string node_kind_to_str(NodeKind kind)
+{
+    switch (kind)
+    {
+    case NodeKind::Head:
+        return "Input";
+    case NodeKind::Tail:
+        return "Output";
+    case NodeKind::Regular:
+        return "Regular";
+    default:
+        break;
+    }
+    return "";
+}

@@ -13,6 +13,8 @@ class GraphController : public GenericPDCController
 public:
     GraphController(PDCState* model, PDCView* view, QUndoStack* stack);
 
+    ~GraphController();
+
     void on_open_node_picker(void);
 };
 

@@ -119,19 +119,13 @@ bool ZipReader::find_file_with_unknown_extension(const std::string& base_name)
 
         std::filesystem::path p(filename);
 
-        Log::debug("p = " + p.string());
-        Log::debug("p.stem() = " + p.replace_extension("").string());
-
         // check name
         if (p.replace_extension("").string() != base_name)
         {
-            Log::debug("The file: + " + base_name + " is not the one we are looking for (" + p.replace_extension("").string() + ")");
             continue;
         }
 
         std::string ext = std::filesystem::path(filename).extension().string();
-
-        Log::debug("ext = " + ext);
 
         ext_status = ImageExtension::string_to_extension(ext);
 

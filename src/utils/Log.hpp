@@ -2,14 +2,18 @@
 #define LOG_H
 
 #include <string>
+#include <source_location>
 
 enum LogLevel
 {
-    Debug    = 0,
-    Info     = 1,
-    Warning  = 2,
-    Error    = 3,
-    Critical = 4
+    Debug2   = 0,
+    Debug1   = 1,
+    Debug0   = 2,
+    Debug    = 2,
+    Info     = 3,
+    Warning  = 4,
+    Error    = 5,
+    Critical = 6
 };
 
 class Log
@@ -25,7 +29,7 @@ private:
 
 public:
     // Public interface to log messages
-    static void debug(const std::string& msg);
+    static void debug(const std::string& msg, const std::source_location& loc = std::source_location::current());
     static void info(const std::string& msg);
     static void warning(const std::string& msg);
     static void error(const std::string& msg);
@@ -34,7 +38,7 @@ public:
 
 private:
     // Log methods implementation
-    void debug_impl(const std::string& msg) const;
+    void debug_impl(const std::string& msg, const std::source_location& loc) const;
     void info_impl(const std::string& msg) const;
     void warning_impl(const std::string& msg) const;
     void error_impl(const std::string& msg) const;

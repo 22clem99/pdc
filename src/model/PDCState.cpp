@@ -79,7 +79,7 @@ CreateProjectStatus PDCState::can_create_project(const std::string& prj_path, co
     if (!fs::exists(img_to_test))
         return CreateProjectStatus::ImageDoNotExist;
 
-    Log::debug("Can create project with: prj_path:\"" + prj_path + "\" and img_path: \"" + img_path + "\"");
+    Log::debug("Can create project with: prj_path: \"" + prj_path + "\" and img_path: \"" + img_path + "\"");
 
     return CreateProjectStatus::Valid;
 }
