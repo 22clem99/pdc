@@ -63,6 +63,6 @@ std::string ImageRGBSplitterNode::get_pretty_print(void)
 
 std::string ImageRGBSplitterNode::get_description(void)
 {
-    return "This node spit RGB channels into three images\n"
+    return "This node spit RGB channels into three images"
             "(Output_1 = Input[R], Output_2 = Input[G] and Output_3 = Input[B])";
 }

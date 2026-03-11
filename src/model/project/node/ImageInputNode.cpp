@@ -49,7 +49,7 @@ int ImageInputNode::compute_output()
 }
 std::string ImageInputNode::get_pretty_print(void)
 {
-    return "Image input node";
+    return "Image input";
 }
 
 std::string ImageInputNode::get_description(void)

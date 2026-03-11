@@ -51,7 +51,7 @@ int ImageOutputNode::compute_output()
 
 std::string ImageOutputNode::get_pretty_print(void)
 {
-    return "Image output node";
+    return "Image output";
 }
 
 std::string ImageOutputNode::get_description(void)

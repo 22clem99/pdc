@@ -25,4 +25,12 @@ void GraphController::on_open_node_picker(void)
     // Then create the view of the NodePicker
     if (dialog.exec() != QDialog::Accepted)
         return;
+
+
+    auto selected_nodes = dialog.get_selected_node_id();
+
+    for (auto id : selected_nodes)
+    {
+        Log::info("View requested to create nodes: " + id);
+    }
 }
