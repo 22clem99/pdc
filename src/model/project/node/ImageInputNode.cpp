@@ -10,17 +10,21 @@
 
 #include <utils/Log.hpp>
 #include <utils/Types.hpp>
+#include <json/json.hpp>
+#include "utils/JSONWrapper.hpp"
 
-ImageInputNode::ImageInputNode()
+const std::vector<PortDef> ImageInputNode::port_defs = {
+    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple)
+};
+
+ImageInputNode::ImageInputNode() : Node(port_defs)
 {
-    auto img_output = std::make_unique<Port<Image>>(PortDirection::Output, ConnectionMode::Multiple);
-
-    ports.emplace(img_output->id, std::move(img_output));
+    // Nothing to do here
 }
 
-ImageInputNode::ImageInputNode(const nlohmann::json& j)
+ImageInputNode::ImageInputNode(const nlohmann::json& j) : Node(j, port_defs)
 {
-    //TODO
+    // Nothing to do here
 }
 
 std::string ImageInputNode::class_name()
@@ -55,4 +59,9 @@ std::string ImageInputNode::get_pretty_print(void)
 std::string ImageInputNode::get_description(void)
 {
     return "This node is a simple input node, it is the node used to inject in the PDC project";
+}
+
+bool ImageInputNode::is_json_valid(const nlohmann::json& j)
+{
+    return Node::is_json_valid(j, port_defs);
 }

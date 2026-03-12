@@ -19,7 +19,7 @@ public:
 
     void on_tree_clicked(QTreeWidgetItem* item, int column);
 
-    std::vector<Id> get_selected_node_id(void);
+    std::vector<std::string> get_selected_node_id(void);
 
 private:
     std::unordered_map<Id, NodeDescriptor> nodes_desc;

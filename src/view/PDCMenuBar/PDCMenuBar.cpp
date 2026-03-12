@@ -3,15 +3,30 @@
 #include "PDCMenuBar.hpp"
 
 
-PDCMenuBar::PDCMenuBar(QMainWindow* window): QObject(window)
+PDCMenuBar::PDCMenuBar(QUndoStack* undo_stack, QMainWindow* window): QObject(window)
 {
-    QMenu* projectMenu = window->menuBar()->addMenu("Project");
+    stack = undo_stack;
 
-    QAction* new_action = projectMenu->addAction("New");
-    QAction* open_action = projectMenu->addAction("Open");
-    QAction* save_action = projectMenu->addAction("Save");
-    QAction* export_action = projectMenu->addAction("Export");
-    QAction* close_action = projectMenu->addAction("Close");
+    QMenu* project_menu = window->menuBar()->addMenu("Project");
+
+    QAction* new_action = project_menu->addAction("New");
+    QAction* open_action = project_menu->addAction("Open");
+    QAction* save_action = project_menu->addAction("Save");
+    QAction* export_action = project_menu->addAction("Export");
+    QAction* close_action = project_menu->addAction("Close");
+
+    // Add undo/redo buttons
+    QAction *undo_action = stack->createUndoAction(this);
+    QAction *redo_action = stack->createRedoAction(this);
+
+    undo_action->setIcon(QIcon::fromTheme("edit-undo"));
+    redo_action->setIcon(QIcon::fromTheme("edit-redo"));
+
+    undo_action->setShortcut(QKeySequence::Undo);
+    redo_action->setShortcut(QKeySequence::Redo);
+
+    window->menuBar()->addAction(undo_action);
+    window->menuBar()->addAction(redo_action);
 
     connect(new_action, &QAction::triggered, this, &PDCMenuBar::new_requested);
     connect(open_action, &QAction::triggered, this, &PDCMenuBar::open_requested);

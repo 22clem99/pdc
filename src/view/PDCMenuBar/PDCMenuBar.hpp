@@ -3,13 +3,14 @@
 
 #include <QMenuBar>
 #include <QMainWindow>
+#include <QUndoStack>
 
 class PDCMenuBar : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PDCMenuBar(QMainWindow* window);
+    explicit PDCMenuBar(QUndoStack* undo_stack, QMainWindow* window);
 
 signals:
     void new_requested();
@@ -17,6 +18,9 @@ signals:
     void save_requested();
     void export_requested();
     void close_requested();
+
+private:
+    QUndoStack* stack;
 };
 
 

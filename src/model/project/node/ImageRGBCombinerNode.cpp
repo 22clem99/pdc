@@ -10,26 +10,25 @@
 
 #include <utils/Log.hpp>
 #include <utils/Types.hpp>
+#include <json/json.hpp>
+#include "utils/JSONWrapper.hpp"
 
+const std::vector<PortDef> ImageRGBCombinerNode::port_defs = {
+    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple),
+    NODE_PORT("R_input", Image, PortDirection::Input, ConnectionMode::Single),
+    NODE_PORT("G_input", Image, PortDirection::Input, ConnectionMode::Single),
+    NODE_PORT("B_input", Image, PortDirection::Input, ConnectionMode::Single)
+};
 
-ImageRGBCombinerNode::ImageRGBCombinerNode()
+ImageRGBCombinerNode::ImageRGBCombinerNode() : Node(port_defs)
 {
-    auto img_output = std::make_unique<Port<Image>>(PortDirection::Output, ConnectionMode::Multiple);
-    auto img_input_R = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
-    auto img_input_G = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
-    auto img_input_B = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
-
-    ports.emplace(img_output->id, std::move(img_output));
-    ports.emplace(img_input_R->id, std::move(img_input_R));
-    ports.emplace(img_input_G->id, std::move(img_input_G));
-    ports.emplace(img_input_B->id, std::move(img_input_B));
+    // Nothing to do here
 }
 
-ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j)
+ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j) : Node(j, port_defs)
 {
-
+    // Nothing to do here
 }
-
 
 std::string ImageRGBCombinerNode::class_name()
 {
@@ -65,4 +64,9 @@ std::string ImageRGBCombinerNode::get_description(void)
 {
     return "This node combine channel RGB of three node to create a new image"
             "(Output = Input_1[R] + Input_2[G]+ Input_3[B])";
+}
+
+bool ImageRGBCombinerNode::is_json_valid(const nlohmann::json& j)
+{
+    return Node::is_json_valid(j, port_defs);
 }

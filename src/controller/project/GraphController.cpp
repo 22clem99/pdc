@@ -1,6 +1,8 @@
 #include "GraphController.hpp"
 #include "../../view/dialog/NodePickerDialog/NodePickerDialog.hpp"
 #include "../../model/project/node/NodeAllocator.hpp"
+#include "cmds/GraphCMD.hpp"
+
 
 
 GraphController::GraphController(PDCState* model, PDCView* view, QUndoStack* stack) : GenericPDCController(model, view, stack)
@@ -16,7 +18,7 @@ GraphController::~GraphController()
     disconnect(nullptr, nullptr, this, nullptr);
 }
 
-void GraphController::on_open_node_picker(void)
+void GraphController::on_open_node_picker(const QPointF& scene_pos)
 {
     Log::info("Ask to add a node");
 
@@ -32,5 +34,6 @@ void GraphController::on_open_node_picker(void)
     for (auto id : selected_nodes)
     {
         Log::info("View requested to create nodes: " + id);
+        undo_stack->push(new AddNodeCommand(model->get_project()->get_graph_editor(), id, scene_pos));
     }
 }

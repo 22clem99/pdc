@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
 
     Graph g;
 
-    Id id_in = g.add_node(ImageInputNode::class_name());
-    Id id_out = g.add_node(ImageOutputNode::class_name());
-    Id id_split = g.add_node(ImageRGBSplitterNode::class_name());
+    Id id_in = g.add_node(ImageInputNode::class_name(), QPointF(0, 0));
+    Id id_out = g.add_node(ImageOutputNode::class_name(), QPointF(0, 0));
+    Id id_split = g.add_node(ImageRGBSplitterNode::class_name(), QPointF(0, 0));
 
     auto& in_ports  = g.nodes[id_in]->ports;
     auto& split_ports = g.nodes[id_split]->ports;

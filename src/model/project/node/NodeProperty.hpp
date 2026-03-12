@@ -38,6 +38,12 @@ typedef std::function<std::unique_ptr<Node>()> CreatorFuncNode;
 typedef std::function<std::unique_ptr<Node>(const nlohmann::json&)> CreatorFuncNodeJson;
 
 /**
+ * @brief This define is just to rename more consisly the JSON test method
+ *
+ */
+typedef std::function<bool(const nlohmann::json&)> JsonValidator;
+
+/**
  * @brief NodeProperty is a class to provide to the factory the allocator and data to manage allocation
  *
  */
@@ -46,6 +52,7 @@ class NodeProperty
 public:
     CreatorFuncNode factory;
     CreatorFuncNodeJson factory_json;
+    JsonValidator json_validator;
 
     NodeDescriptor descriptor;
 };

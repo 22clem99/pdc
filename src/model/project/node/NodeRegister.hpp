@@ -25,6 +25,7 @@ public:
             NodeProperty{
                 [](){return std::make_unique<node>();},
                 [](const nlohmann::json& j){return std::make_unique<node>(j);},
+                [](const nlohmann::json& j){return node::is_json_valid(j);},
                 NodeDescriptor{
                     node::kind,
                     node::get_pretty_print(),

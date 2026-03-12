@@ -20,6 +20,8 @@ public:
     void on_close_project(void);
     void on_export_project(void);
 
+    bool on_close_window(void);
+
     GraphController * graph_con;
 };
 

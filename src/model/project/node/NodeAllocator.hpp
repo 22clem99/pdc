@@ -61,6 +61,8 @@ public:
     static std::optional<NodeProperty> get_property(const std::string& node_type);
 
     static std::unordered_map<Id, NodeDescriptor> get_available_node(void);
+
+    static bool is_json_valid(const std::string& node_type, const nlohmann::json& j);
 private:
     /**
      * @brief private function to get map corresponding to the factory registred items

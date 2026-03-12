@@ -50,7 +50,7 @@ Graph::Graph(const nlohmann::json& j)
     }
 }
 
-Id Graph::add_node(const std::string& node_type)
+Id Graph::add_node(const std::string& node_type, const QPointF& pos)
 {
     // Get factory configuration by the name
     std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
@@ -88,6 +88,8 @@ Id Graph::add_node(const std::string& node_type)
         tail_id = id;
         Log::debug("The node:\"" + id + "\" is set as the tail");
     }
+
+    new_node->position = pos;
 
     nodes.insert({id, std::move(new_node)});
     analysis.analysis_dirty = true;
@@ -551,7 +553,7 @@ nlohmann::json Graph::to_json(void)
         edges_array.push_back(edge.second->to_json());
     }
 
-    return {{"edges", nodes_array}, {"nodes", edges_array}};
+    return {{"nodes", nodes_array}, {"edges", edges_array}};
 }
 
 bool Graph::is_json_valid(const nlohmann::json& j)
@@ -561,16 +563,33 @@ bool Graph::is_json_valid(const nlohmann::json& j)
         return false;
     }
 
-    JSON_REQUIRED_FIELD(j, "edges", is_array);
+    JSON_REQUIRED_FIELD(j, "nodes", is_array);
+
+
+    Log::debug("Json parsing: Nodes list is there, continue with the node list analyse");
 
     // Iterate on each node
     for (const auto& node : j["nodes"])
     {
-        if (!Node::is_json_valid(node))
+        JSON_REQUIRED_FIELD(node, "id", is_string);
+        JSON_REQUIRED_FIELD(node, "node_type", is_string);
+        JSON_REQUIRED_FIELD(node, "ports", is_array);
+
+        Log::debug("Json parsing: node id, type and ports are there, continue with the port analyse");
+
+        // First get the node_type
+        auto node_type = node["node_type"];
+
+        Log::debug("Node type read: " + node_type.dump());
+
+        // then call the verification with the node allocator
+        if (!NodeAllocator::is_json_valid(node_type, node))
+        {
             return false;
+        }
     }
 
-    JSON_REQUIRED_FIELD(j, "nodes", is_array);
+    JSON_REQUIRED_FIELD(j, "edges", is_array);
 
     // Iterate on each edge
     for (const auto& edge : j["edges"])

@@ -25,7 +25,7 @@ Image::Image(const std::filesystem::path& path)
 
 Image::Image(const std::vector<uchar> image, ImgExtensions ext)
 {
-    Log::debug("Open a " + ImageExtension::extension_to_string(ext) + "val: " + std::to_string(image.size()));
+    Log::debug("Open a " + ImageExtension::extension_to_string(ext) + ", image size: " + std::to_string(image.size()));
     data = cv::imdecode(image, cv::IMREAD_UNCHANGED);
 
     extension = ext;

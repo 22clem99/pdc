@@ -7,6 +7,7 @@
 #define PDC_VIEW_H
 
 #include <QMainWindow>
+#include <QUndoStack>
 
 #include "GraphViewer/GraphViewer.hpp"
 #include "PDCMenuBar/PDCMenuBar.hpp"
@@ -21,7 +22,7 @@ class PDCView : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit PDCView(QWidget* parent = nullptr);
+    explicit PDCView(QUndoStack* undo_stack, QWidget* parent = nullptr);
 
     /**
      * @brief Setup the main user ineterface
@@ -39,6 +40,14 @@ public:
     ImageView* input_image_view;
     ImageView* output_image_view;
     PDCMenuBar* menu_bar;
+
+    QUndoStack* stack;
+
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
+signals:
+    bool request_close_window(void);
 };
 
 #endif

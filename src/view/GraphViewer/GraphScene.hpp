@@ -19,7 +19,7 @@ public:
     explicit GraphScene(QObject* parent = nullptr);
 
 signals:
-    void request_add_node(QPointF scene_pos);
+    void request_add_node(const QPointF& scene_pos);
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;

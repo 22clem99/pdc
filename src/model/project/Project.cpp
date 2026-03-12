@@ -39,7 +39,7 @@ Project::Project(const std::filesystem::path& path)
     input_image = Image(image_from_archive, zip.get_extension_status());
 }
 
-int Project::add_node(const std::string& node_type, unsigned int position)
+int Project::add_node(const std::string& node_type, const QPointF& position)
 {
     return (node_graph.add_node(node_type, position) != "" ? -1 : 0);
 }
@@ -236,10 +236,18 @@ bool Project::is_json_valid(const nlohmann::json& j)
     JSON_REQUIRED_FIELD(j, "PDCVersion", is_string);
     JSON_REQUIRED_FIELD(j, "graph", is_object);
 
+    Log::debug("Json parsing: name, PDCVersion and graph fields are there, continue with the graph analyse");
+
     return Graph::is_json_valid(j["graph"]);
 }
 
 Image Project::get_input_image(void)
 {
     return input_image;
+}
+
+
+GraphEditor* Project::get_graph_editor(void)
+{
+    return &node_graph;
 }

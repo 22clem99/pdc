@@ -31,6 +31,8 @@ class ImageInputNode : public Node
 public:
     static constexpr NodeKind kind = NodeKind::Head;
 
+    static const std::vector<PortDef> port_defs;
+
     /**
      * @brief Construct a new Image Input Node object
      *
@@ -76,6 +78,8 @@ public:
     static std::string get_pretty_print(void);
 
     static std::string get_description(void);
+
+    static bool is_json_valid(const nlohmann::json& j);
 
 private:
     inline static NodeRegister<ImageInputNode> reg;

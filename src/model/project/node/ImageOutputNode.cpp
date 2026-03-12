@@ -10,18 +10,21 @@
 
 #include <utils/Log.hpp>
 #include <utils/Types.hpp>
+#include <json/json.hpp>
+#include "utils/JSONWrapper.hpp"
 
+const std::vector<PortDef> ImageOutputNode::port_defs = {
+    NODE_PORT("input", Image, PortDirection::Input, ConnectionMode::Single)
+};
 
-ImageOutputNode::ImageOutputNode()
+ImageOutputNode::ImageOutputNode() : Node(port_defs)
 {
-    auto img_output = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
-
-    ports.emplace(img_output->id, std::move(img_output));
+    // Nothing to do here
 }
 
-ImageOutputNode::ImageOutputNode(const nlohmann::json& j)
+ImageOutputNode::ImageOutputNode(const nlohmann::json& j) : Node(j, port_defs)
 {
-
+    // Nothing to do here
 }
 
 std::string ImageOutputNode::class_name()
@@ -57,4 +60,9 @@ std::string ImageOutputNode::get_pretty_print(void)
 std::string ImageOutputNode::get_description(void)
 {
     return "This node is a simple output node, it is the node used to export the PDC project";
+}
+
+bool ImageOutputNode::is_json_valid(const nlohmann::json& j)
+{
+    return Node::is_json_valid(j, port_defs);
 }

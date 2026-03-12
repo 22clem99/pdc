@@ -90,7 +90,7 @@ public:
      * @param position
      * @return int
      */
-    int add_node(const std::string& node_type, unsigned int position);
+    int add_node(const std::string& node_type, const QPointF& position);
 
     /** TODO
      * @brief remove a node from the project, will also remove edges
@@ -145,6 +145,8 @@ public:
     static bool is_json_valid(const nlohmann::json& j);
 
     Image get_input_image(void);
+
+    GraphEditor* get_graph_editor(void);
 
 signals:
     void image_changed(const Image& img);

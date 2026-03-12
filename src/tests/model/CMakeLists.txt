@@ -25,6 +25,8 @@ foreach(src_file ${src_files})
         Project
     PRIVATE
         utils
+        Qt6::Widgets
+        Qt6::Gui
     )
 
     add_test(NAME ${test_name}

@@ -10,10 +10,10 @@ GraphEditor::GraphEditor(const nlohmann::json& j)
     node_graph = Graph(j);
 }
 
-Id GraphEditor::add_node(const std::string& node_type, unsigned int position)
+Id GraphEditor::add_node(const std::string& node_type, const QPointF& pos)
 {
     //TODO manage position
-    return node_graph.add_node(node_type);
+    return node_graph.add_node(node_type, pos);
 }
 
 bool GraphEditor::remove_node(const Id& node_id)

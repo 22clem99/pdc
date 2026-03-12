@@ -74,3 +74,15 @@ std::unordered_map<Id, NodeDescriptor> NodeAllocator::get_available_node(void)
 
     return result;
 }
+
+bool NodeAllocator::is_json_valid(const std::string& node_type, const nlohmann::json& j)
+{
+    auto it = registry().find(node_type);
+
+    if (it == registry().end()) {
+        Log::debug("Node type \"" + node_type + "\" doesn't exist, return false");
+        return false;
+    }
+
+    return it->second.json_validator(j);
+}

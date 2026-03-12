@@ -5,11 +5,14 @@
 
 #include <QSplitter>
 #include <QLabel>
+#include <QCloseEvent>
 
 #include "PDCView.hpp"
 
-PDCView::PDCView(QWidget* parent) : QMainWindow(parent)
+PDCView::PDCView(QUndoStack* undo_stack, QWidget* parent) : QMainWindow(parent)
 {
+    stack = undo_stack;
+
     setup_user_interface();
 
     setup_MenuBar();
@@ -50,5 +53,19 @@ void PDCView::setup_user_interface()
 
 void PDCView::setup_MenuBar()
 {
-    menu_bar = new PDCMenuBar(this);
+    menu_bar = new PDCMenuBar(stack, this);
+}
+
+void PDCView::closeEvent(QCloseEvent* event)
+{
+    Log::info("View ask to close the window");
+
+    if(request_close_window())
+    {
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }

@@ -38,6 +38,8 @@ class ImageRGBCombinerNode : public Node
 public:
     static constexpr NodeKind kind = NodeKind::Regular;
 
+    static const std::vector<PortDef> port_defs;
+
     /**
      * @brief Construct a new ImageRGBCombinerNode Object
      *
@@ -83,6 +85,9 @@ public:
     static std::string get_pretty_print(void);
 
     static std::string get_description(void);
+
+    static bool is_json_valid(const nlohmann::json& j);
+
 
 private:
     inline static NodeRegister<ImageRGBCombinerNode> reg;

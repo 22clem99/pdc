@@ -30,6 +30,8 @@ class ImageOutputNode : public Node
 public:
     static constexpr NodeKind kind = NodeKind::Tail;
 
+    static const std::vector<PortDef> port_defs;
+
     /**
      * @brief Construct a new Image Output Node object
      *
@@ -76,6 +78,7 @@ public:
 
     static std::string get_description(void);
 
+    static bool is_json_valid(const nlohmann::json& j);
 private:
     inline static NodeRegister<ImageOutputNode> reg;
 };

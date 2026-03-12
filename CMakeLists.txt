@@ -25,6 +25,12 @@ find_package(OpenCV REQUIRED)
 
 add_subdirectory(src)
 
+add_custom_target(run
+    COMMAND LSAN_OPTIONS=suppressions=${CMAKE_SOURCE_DIR}/cmake/lsan.supp
+            $<TARGET_FILE:PointDeCroix>
+    DEPENDS PointDeCroix
+)
+
 # Cherche cppcheck
 find_program(CPPCHECK_EXECUTABLE cppcheck)
 if(CPPCHECK_EXECUTABLE)

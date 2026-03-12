@@ -7,6 +7,38 @@
 #include <utils/Tab.hpp>
 #include "utils/JSONWrapper.hpp"
 
+Node::Node(const std::vector<PortDef> ports_def)
+{
+    for (const auto& def : ports_def)
+    {
+        auto port = def.creator();
+
+        ports.emplace(port->get_id(), std::move(port));
+    }
+}
+
+Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def)
+{
+    Log::debug(" Will tried to decode json: \n" + j.dump(4));
+
+    id = j["id"];
+
+    for (auto port : j["ports"])
+    {
+        for (const auto& def : ports_def)
+        {
+            if (port["alias"] == def.alias)
+            {
+                auto new_port = def.creator();
+
+                new_port->set_id(port["id"]);
+
+                ports.emplace(new_port->get_id(), std::move(new_port));
+            }
+        }
+    }
+}
+
 std::string Node::class_name()
 {
     return "Node";
@@ -77,30 +109,7 @@ nlohmann::json Node::to_json(void)
         ports_array.push_back(port.second->to_json());
     }
 
-    return {{"id", id}, {"node_type", class_name()}, {"ports", ports_array}};
-}
-
-
-bool Node::is_json_valid(const nlohmann::json& j)
-{
-    if (!j.is_object())
-    {
-        return false;
-    }
-
-    JSON_REQUIRED_FIELD(j, "id", is_string);
-    JSON_REQUIRED_FIELD(j, "node_type", is_string);
-    JSON_REQUIRED_FIELD(j, "ports", is_array);
-
-    // Iterate on each node
-    for (const auto& port : j["ports"])
-    {
-        // TODO
-        // if (!IPortBase::is_json_valid(port))
-        //     return false;
-    }
-
-    return true;
+    return {{"id", id}, {"node_type", get_class_name()}, {"ports", ports_array}};
 }
 
 std::string node_kind_to_str(NodeKind kind)
@@ -117,4 +126,41 @@ std::string node_kind_to_str(NodeKind kind)
         break;
     }
     return "";
+}
+
+bool Node::is_json_valid(const nlohmann::json& j, const std::vector<PortDef> ports_def)
+{
+    if (!j.is_object())
+    {
+        return false;
+    }
+
+    // No need to check for "id", "node_type" and "ports" as it is already done
+    // from the method caller. We just need to check port(s)
+
+    std::set<std::string> json_alias;
+
+    // Iterate on each node and create a list of all alias used
+    for (const auto& port : j["ports"])
+    {
+        JSON_REQUIRED_FIELD(port, "id", is_string);
+        JSON_REQUIRED_FIELD(port, "alias", is_string);
+
+        Log::debug("Json parsing: port id and alias are there, continue with the alias analyse");
+
+        json_alias.insert(port["alias"]);
+
+        Log::debug("Json parsing: Add alias: " + port["alias"].dump() + " in list");
+    }
+
+    // Review all aliases to check thez are all used
+    for (auto& def : ports_def)
+    {
+        if (!json_alias.contains(def.alias))
+        {
+            Log::debug("Json parsing: alias: " + def.alias + "in not in the list");
+            return false;
+        }
+    }
+    return true;
 }

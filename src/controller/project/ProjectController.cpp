@@ -14,6 +14,7 @@ ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack*
     connect(view->menu_bar, &PDCMenuBar::open_requested, this, &ProjectController::on_open_project);
     connect(view->menu_bar, &PDCMenuBar::close_requested, this, &ProjectController::on_close_project);
     connect(view->menu_bar, &PDCMenuBar::export_requested, this, &ProjectController::on_export_project);
+    connect(view, &PDCView::request_close_window, this, &ProjectController::on_close_window);
 }
 
 void ProjectController::on_create_project(void)
@@ -190,4 +191,12 @@ void ProjectController::on_close_project(void)
 void ProjectController::on_export_project(void)
 {
     Log::info("Export feature not implemented (yet)");
+}
+
+
+bool ProjectController::on_close_window(void)
+{
+    Log::info("View ask to close the application");
+
+    return true;
 }

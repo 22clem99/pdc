@@ -1,3 +1,6 @@
+#include <QPointF>
+#include <cassert>
+
 #include <model/project/Project.hpp>
 
 #include <model/project/graph/Graph.hpp>
@@ -5,7 +8,6 @@
 #include <model/project/node/ImageOutputNode.hpp>
 
 #include <utils/Log.hpp>
-#include <cassert>
 
 int main(int argc, char *argv[])
 {
@@ -13,13 +15,13 @@ int main(int argc, char *argv[])
 
     Graph g;
 
-    Id id_out = g.add_node(ImageOutputNode::class_name());
+    Id id_out = g.add_node(ImageOutputNode::class_name(), QPointF(0, 0));
     auto& outPorts = g.nodes[id_out]->ports;
     Id id_out_port = outPorts.begin()->first;
 
     assert(g.validate_graph() == false);
 
-    Id id_in = g.add_node(ImageInputNode::class_name());
+    Id id_in = g.add_node(ImageInputNode::class_name(), QPointF(0, 0));
     auto& inPorts  = g.nodes[id_in]->ports;
     Id id_in_port = inPorts.begin()->first;
 

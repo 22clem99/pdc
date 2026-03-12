@@ -13,6 +13,7 @@
 #include <map>
 #include <variant>
 #include <memory>
+#include <QPointF>
 
 #include <utils/Types.hpp>
 #include "Port.hpp"
@@ -59,8 +60,13 @@ public:
 
     VisitState visite_state;
 
+    QPointF position;
+
     Node() {}
     Node(const nlohmann::json& j) {}
+
+    Node(const std::vector<PortDef> ports_def);
+    Node(const nlohmann::json& j, const std::vector<PortDef> ports_def);
 
     virtual ~Node() = default;
 
@@ -114,7 +120,7 @@ public:
 
     nlohmann::json to_json(void);
 
-    static bool is_json_valid(const nlohmann::json& j);
+    static bool is_json_valid(const nlohmann::json& j, const std::vector<PortDef> ports_def);
 
     static std::string get_pretty_print(void);
 

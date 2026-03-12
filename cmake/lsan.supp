@@ -1,0 +1,3 @@
+leak:QtWayland
+leak:libwayland-client
+leak:QWaylandDisplay

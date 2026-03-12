@@ -11,17 +11,29 @@
 class PDCController
 {
 public:
-    PDCState model;
-    PDCView view;
-
-    QUndoStack undo_stack;
+    PDCState* model;
+    PDCView* view;
+    QUndoStack* undo_stack;
 
     // Sub controller
-    ProjectController project_controller;
+    ProjectController* project_controller;
 
-    PDCController() : project_controller(&model, &view, &undo_stack)
+    PDCController()
     {
-        view.show();
+        undo_stack = new QUndoStack();
+        view = new PDCView(undo_stack);
+        model = new PDCState();
+        project_controller = new ProjectController(model, view, undo_stack);
+
+        view->show();
+    }
+
+    ~PDCController()
+    {
+        delete project_controller;
+        delete model;
+        delete view;
+        delete undo_stack;
     }
 };
 

@@ -14,7 +14,7 @@ NewProjectDialog::NewProjectDialog(QWidget* parent) : QDialog(parent)
 
     // Name
     QHBoxLayout* name_layout = new QHBoxLayout();
-    name_layout->addWidget(new QLabel("Project path:"));
+    name_layout->addWidget(new QLabel("Project name:"));
 
     name_edit = new QLineEdit();
     name_layout->addWidget(name_edit);

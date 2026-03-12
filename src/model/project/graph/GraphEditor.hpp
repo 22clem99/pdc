@@ -8,6 +8,8 @@
 #ifndef GRAPH_EDITOR_H
 #define GRAPH_EDITOR_H
 
+#include <QPointF>
+
 #include "Graph.hpp"
 #include <utils/Types.hpp>
 #include <utils/JSONPrintable.hpp>
@@ -23,7 +25,7 @@ public:
     // Constructor when laoding a project from a file
     GraphEditor(const nlohmann::json& j);
 
-    Id add_node(const std::string& node_type, unsigned int position);
+    Id add_node(const std::string& node_type, const QPointF& pos);
 
     bool remove_node(const Id& node_id);
 

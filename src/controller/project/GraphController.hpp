@@ -15,7 +15,7 @@ public:
 
     ~GraphController();
 
-    void on_open_node_picker(void);
+    void on_open_node_picker(const QPointF& scene_pos);
 };
 
 

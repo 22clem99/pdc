@@ -111,9 +111,9 @@ void NodePickerDialog::on_tree_clicked(QTreeWidgetItem* item, int column)
     description->setText(QString::fromStdString(nodes_desc[id].description));
 }
 
-std::vector<Id> NodePickerDialog::get_selected_node_id(void)
+std::vector<std::string> NodePickerDialog::get_selected_node_id(void)
 {
-    std::vector<Id> nodes;
+    std::vector<std::string> nodes;
 
     for (auto selected_val : tree->selectedItems())
     {

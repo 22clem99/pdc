@@ -106,41 +106,6 @@ public:
         return true;
     }
 
-    nlohmann::json to_json(void)
-    {
-        nlohmann::json constraint_json = {};
-
-        if (min)
-        {
-            constraint_json["min"] = min.value();
-        }
-
-        if (max)
-        {
-            constraint_json["max"] = max.value();
-        }
-
-        if (step)
-        {
-            constraint_json["step"] = step.value();
-        }
-
-        if (allowed_values)
-        {
-            nlohmann::json allowed_values_array = nlohmann::json::array();
-
-            for (auto& allowed_value : allowed_values)
-            {
-                allowed_values_array.push_back(allowed_value.value());
-            }
-
-            constraint_json["allowed_values"] = allowed_values_array;
-        }
-
-        // TODO add value and add type management
-        return {constraint_json};
-    }
-
     bool is_json_valid(const nlohmann::json& j)
     {
         return false;
@@ -232,9 +197,11 @@ public:
         return a.value_type() == b.value_type();
     }
 
-    // virtual bool is_json_valid(const nlohmann::json& j);
-
     virtual nlohmann::json to_json(void) = 0;
+
+    virtual const Id get_id() const = 0;
+
+    virtual void set_id(Id new_id) = 0;
 };
 
 /**
@@ -251,12 +218,13 @@ class Port : public Identifiable<Port<T>>, public IPortBase
 public:
 using Identifiable<Port<T>>::id;
 
-    Port(PortDirection p_dir, ConnectionMode p_mode)
+    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias)
     {
         data = T();
         dir = p_dir;
         mode = p_mode;
         connected_edges = {};
+        port_alias = alias;
     }
 
     const std::type_info& value_type() const {
@@ -272,6 +240,8 @@ using Identifiable<Port<T>>::id;
     ConstraintType constraints;
 
     std::vector<Id> connected_edges;
+
+    std::string port_alias;
 
     bool set_value(const T& value)
     {
@@ -373,27 +343,41 @@ using Identifiable<Port<T>>::id;
 
     nlohmann::json to_json(void)
     {
-        nlohmann::json port_json = {{"id", id}, {"type", T::class_name()}, {"dir", dir}, {"mode", mode}};
+        nlohmann::json port_json = {{"id", id}, {"alias", port_alias}};
 
         // TODO add value and add type management
-        if constexpr (Constrainable<T>)
-        {
-            if (constraints)
-            {
-                port_json["constraints"] = constraints.value().to_json();
-            }
-        }
+        // if constexpr (Constrainable<T>)
+        // {
+        //     if (constraints)
+        //     {
+        //         port_json["constraints"] = constraints.value().to_json();
+        //     }
+        // }
 
         return port_json;
     }
 
-    // static bool is_json_valid(const nlohmann::json& j)
-    // {
-    //     return false;
-    // }
+    const Id get_id(void) const override
+    {
+        return this->id;
+    }
+
+    void set_id(Id new_id) override
+    {
+        this->id = new_id;
+    }
 
 private:
     inline static PortRegister<T> reg;
 };
+
+struct PortDef
+{
+    std::string alias;
+    std::function<std::unique_ptr<IPortBase>()> creator;
+};
+
+#define NODE_PORT(alias, type, dir, mode) \
+    { alias, [](){ return std::make_unique<Port<type>>(dir, mode, alias); } }
 
 #endif

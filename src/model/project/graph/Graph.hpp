@@ -69,7 +69,7 @@ public:
      * @param node_type node name to allocate, it will be used by the factory
      * @return Id generate for this new Node
      */
-    Id add_node(const std::string& node_type);
+    Id add_node(const std::string& node_type, const QPointF& pos);
 
     /**
      * @brief remove the node and edges bind to it

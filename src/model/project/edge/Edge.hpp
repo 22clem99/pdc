@@ -104,6 +104,9 @@ public:
         JSON_REQUIRED_FIELD(j, "to_node", is_string);
         JSON_REQUIRED_FIELD(j, "to_input", is_string);
 
+
+        Log::debug("Json parsing: edge is valid");
+
         return false;
     }
 };

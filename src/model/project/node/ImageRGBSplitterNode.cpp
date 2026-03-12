@@ -10,24 +10,24 @@
 
 #include <utils/Log.hpp>
 #include <utils/Types.hpp>
+#include <json/json.hpp>
+#include "utils/JSONWrapper.hpp"
 
+const std::vector<PortDef> ImageRGBSplitterNode::port_defs = {
+    NODE_PORT("input", Image, PortDirection::Input, ConnectionMode::Single),
+    NODE_PORT("R_output", Image, PortDirection::Output, ConnectionMode::Multiple),
+    NODE_PORT("G_output", Image, PortDirection::Output, ConnectionMode::Multiple),
+    NODE_PORT("B_output", Image, PortDirection::Output, ConnectionMode::Multiple)
+};
 
-ImageRGBSplitterNode::ImageRGBSplitterNode()
+ImageRGBSplitterNode::ImageRGBSplitterNode() : Node(port_defs)
 {
-    auto img_input = std::make_unique<Port<Image>>(PortDirection::Input, ConnectionMode::Single);
-    auto img_output_R = std::make_unique<Port<Image>>(PortDirection::Output, ConnectionMode::Multiple);
-    auto img_output_G = std::make_unique<Port<Image>>(PortDirection::Output, ConnectionMode::Multiple);
-    auto img_output_B = std::make_unique<Port<Image>>(PortDirection::Output, ConnectionMode::Multiple);
-
-    ports.emplace(img_input->id, std::move(img_input));
-    ports.emplace(img_output_R->id, std::move(img_output_R));
-    ports.emplace(img_output_G->id, std::move(img_output_G));
-    ports.emplace(img_output_B->id, std::move(img_output_B));
+    // Nothing to do here
 }
 
-ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j)
+ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j) : Node(j, port_defs)
 {
-
+    // Nothing to do here
 }
 
 
@@ -65,4 +65,9 @@ std::string ImageRGBSplitterNode::get_description(void)
 {
     return "This node spit RGB channels into three images"
             "(Output_1 = Input[R], Output_2 = Input[G] and Output_3 = Input[B])";
+}
+
+bool ImageRGBSplitterNode::is_json_valid(const nlohmann::json& j)
+{
+    return Node::is_json_valid(j, port_defs);
 }

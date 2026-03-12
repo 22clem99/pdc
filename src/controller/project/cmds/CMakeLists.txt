@@ -1,5 +1,6 @@
 add_library(CMDs
-    ProjectCMD.cpp
+    GraphCMD.hpp
+    ProjectCMD.hpp
 )
 
 target_link_libraries(CMDs
