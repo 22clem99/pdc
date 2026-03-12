@@ -20,7 +20,6 @@
 #include <utils/Tab.hpp>
 #include <utils/JSONPrintable.hpp>
 #include <utils/Types.hpp>
-#include "PortRegister.hpp"
 
 /**
  * @brief describe the direction of the Port
@@ -366,9 +365,6 @@ using Identifiable<Port<T>>::id;
     {
         this->id = new_id;
     }
-
-private:
-    inline static PortRegister<T> reg;
 };
 
 struct PortDef
