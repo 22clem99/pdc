@@ -9,23 +9,30 @@
 #define GRAPH_EDITOR_H
 
 #include <QPointF>
+#include <QObject>
 
 #include "Graph.hpp"
 #include <utils/Types.hpp>
 #include <utils/JSONPrintable.hpp>
+#include <dto/NodeData.hpp>
+#include "../node/NodeAllocator.hpp"
 
-class GraphEditor
+class GraphEditor : public QObject
 {
+    Q_OBJECT
+
 private:
     Graph node_graph;
 
 public:
-    GraphEditor() = default;
+    GraphEditor();
 
     // Constructor when laoding a project from a file
     GraphEditor(const nlohmann::json& j);
 
-    Id add_node(const std::string& node_type, const QPointF& pos);
+    ~GraphEditor();
+
+    NodeData add_node(const std::string& node_type, const QPointF& pos);
 
     bool remove_node(const Id& node_id);
 
@@ -46,6 +53,12 @@ public:
 
     // Method to construc recursivly the json project file
     nlohmann::json to_json(void);
+
+    void set_node_position(const Id& id, const QPointF& position);
+    QPointF get_node_position(const Id& id);
+
+signals:
+    void node_position_changed(const Id& id, const QPointF& pos);
 };
 
 #endif

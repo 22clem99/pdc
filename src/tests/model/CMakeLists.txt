@@ -19,14 +19,13 @@ foreach(src_file ${src_files})
     )
 
     target_link_libraries(${test_name}
-    PUBLIC
-        Node
-        Graph
-        Project
     PRIVATE
         utils
         Qt6::Widgets
         Qt6::Gui
+        Node
+        Graph
+        Project
     )
 
     add_test(NAME ${test_name}

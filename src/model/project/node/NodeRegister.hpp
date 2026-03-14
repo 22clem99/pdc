@@ -6,6 +6,8 @@
 #ifndef NODE_REGISTER_H
 #define NODE_REGISTER_H
 
+#include <QObject>
+
 #include "NodeAllocator.hpp"
 #include "NodeProperty.hpp"
 
@@ -23,8 +25,8 @@ public:
         NodeAllocator::register_node(
             node::class_name(),
             NodeProperty{
-                [](){return std::make_unique<node>();},
-                [](const nlohmann::json& j){return std::make_unique<node>(j);},
+                [](QObject* parent){return std::make_unique<node>(parent);},
+                [](const nlohmann::json& j, QObject* parent){return std::make_unique<node>(j, parent);},
                 [](const nlohmann::json& j){return node::is_json_valid(j);},
                 NodeDescriptor{
                     node::kind,

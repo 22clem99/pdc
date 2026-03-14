@@ -13,6 +13,7 @@ target_link_libraries(ProjectController
         CMDs
         utils
         PDCView
+        dto
     PRIVATE
         Qt6::Widgets
         Qt6::Gui

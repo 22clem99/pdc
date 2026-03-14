@@ -20,12 +20,12 @@ const std::vector<PortDef> ImageRGBCombinerNode::port_defs = {
     NODE_PORT("B_input", Image, PortDirection::Input, ConnectionMode::Single)
 };
 
-ImageRGBCombinerNode::ImageRGBCombinerNode() : Node(port_defs)
+ImageRGBCombinerNode::ImageRGBCombinerNode(QObject* parent) : Node(port_defs, parent)
 {
     // Nothing to do here
 }
 
-ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j) : Node(j, port_defs)
+ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here
 }

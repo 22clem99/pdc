@@ -14,6 +14,9 @@
 #include "NodeProperty.hpp"
 #include <utils/Singleton.hpp>
 
+// forward declaration
+class Graph;
+
 /**
  * @brief NodeAllocator is a registerd factory implementation class
  *
@@ -41,7 +44,7 @@ public:
      * @param node_type keyword of the node to allocate
      * @return std::unique_ptr<Node> pointer on the new object allocate
      */
-    static std::unique_ptr<Node> alloc_node(const std::string& node_type);
+    static std::unique_ptr<Node> alloc_node(const std::string& node_type, Graph* g);
 
     /**
      * @brief Method to allocate an object of kind Node registerd in the factory
@@ -50,7 +53,7 @@ public:
      * @param json json file
      * @return std::unique_ptr<Node> pointer on the new object allocate
      */
-    static std::unique_ptr<Node> alloc_node_json(const std::string& node_type, const nlohmann::json& j);
+    static std::unique_ptr<Node> alloc_node_json(const std::string& node_type, const nlohmann::json& j, Graph* g);
 
     /**
      * @brief Get the property object depending of the node keyword
@@ -61,6 +64,8 @@ public:
     static std::optional<NodeProperty> get_property(const std::string& node_type);
 
     static std::unordered_map<Id, NodeDescriptor> get_available_node(void);
+
+    static std::string get_pretty_print(const std::string& node_type);
 
     static bool is_json_valid(const std::string& node_type, const nlohmann::json& j);
 private:

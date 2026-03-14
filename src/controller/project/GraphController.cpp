@@ -9,10 +9,16 @@ GraphController::GraphController(PDCState* model, PDCView* view, QUndoStack* sta
 {
     Log::debug("Create graph controller");
     connect(view->node_editor->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
+    connect(this, &GraphController::add_node_to_view, view->node_editor->scene, &GraphScene::add_node_to_graph);
+    connect(this, &GraphController::ask_clear_scene, view->node_editor->scene, &GraphScene::clear_scene);
+    connect(view->node_editor->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
+    connect(model->get_project().get(), &Project::node_position_changed, view->node_editor->scene, &GraphScene::update_node_view);
 }
 
 GraphController::~GraphController()
 {
+    emit ask_clear_scene();
+
     Log::debug("Delete graph controller");
     disconnect(this, nullptr, nullptr, nullptr);
     disconnect(nullptr, nullptr, this, nullptr);
@@ -31,9 +37,26 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
 
     auto selected_nodes = dialog.get_selected_node_id();
 
-    for (auto id : selected_nodes)
+    for (auto node_type : selected_nodes)
     {
-        Log::info("View requested to create nodes: " + id);
-        undo_stack->push(new AddNodeCommand(model->get_project()->get_graph_editor(), id, scene_pos));
+        Log::info("View requested to create nodes: " + node_type);
+
+        // Create the cmd
+        auto cmd = new AddNodeCommand(model->get_project()->get_graph_editor(), node_type, scene_pos);
+        // push the cmd to the undo stack
+        undo_stack->push(cmd);
+
+        // Get the data returned by the add node cmd
+        auto data = cmd->data;
+
+        // Generate a signal to the view to print the node
+        emit add_node_to_view(data);
     }
+}
+
+void GraphController::on_move_node(const Id& id, const QPointF& position)
+{
+    Log::debug("Node " + id + " position change, update the model");
+
+    undo_stack->push(new MoveNodeCommand(model->get_project()->get_graph_editor(), id, position));
 }

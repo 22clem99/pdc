@@ -20,12 +20,12 @@ const std::vector<PortDef> ImageRGBSplitterNode::port_defs = {
     NODE_PORT("B_output", Image, PortDirection::Output, ConnectionMode::Multiple)
 };
 
-ImageRGBSplitterNode::ImageRGBSplitterNode() : Node(port_defs)
+ImageRGBSplitterNode::ImageRGBSplitterNode(QObject* parent) : Node(port_defs, parent)
 {
     // Nothing to do here
 }
 
-ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j) : Node(j, port_defs)
+ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here
 }

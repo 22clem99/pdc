@@ -34,6 +34,8 @@ void PDCView::setup_user_interface()
     hsplitter->addWidget(vsplitter);
     hsplitter->addWidget(node_editor);
 
+    hsplitter->setSizes({300, 700});
+
     setCentralWidget(hsplitter);
 
     // suppose input_image_view et output_image_view sont ImageView*

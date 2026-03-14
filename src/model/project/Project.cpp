@@ -12,6 +12,8 @@ Project::Project(const std::string& project_name, const std::filesystem::path fi
     name = project_name;
     file = file_path;
     input_image = Image(img_path);
+    node_graph = std::make_unique<GraphEditor>();
+    connect(node_graph.get(), &GraphEditor::node_position_changed, this, &Project::node_position_changed);
 }
 
 Project::Project(const std::filesystem::path& path)
@@ -29,7 +31,8 @@ Project::Project(const std::filesystem::path& path)
 
     // extract data from json
     name = manifest_as_json["name"];
-    node_graph = GraphEditor(manifest_as_json["graph"]);
+    node_graph = std::make_unique<GraphEditor>(manifest_as_json["graph"]);
+    connect(node_graph.get(), &GraphEditor::node_position_changed, this, &Project::node_position_changed);
     // use the file parsed
     file = path;
 
@@ -39,15 +42,19 @@ Project::Project(const std::filesystem::path& path)
     input_image = Image(image_from_archive, zip.get_extension_status());
 }
 
-int Project::add_node(const std::string& node_type, const QPointF& position)
+Project::~Project()
 {
-    return (node_graph.add_node(node_type, position) != "" ? -1 : 0);
+    disconnect(nullptr, nullptr, this, nullptr);
+}
+
+NodeData Project::add_node(const std::string& node_type, const QPointF& position)
+{
+    return node_graph->add_node(node_type, position);
 }
 
 int Project::remove_node(const std::string& node_type)
 {
-
-    return (node_graph.remove_node(node_type) ? -1 : 0);
+    return (node_graph->remove_node(node_type) ? -1 : 0);
 }
 
 bool Project::is_dirty(void)
@@ -81,7 +88,7 @@ std::string Project::get_str(const unsigned int tab)
     s   += s_tab + "Project {\n"
         + s_tab + "\tname: \"" + name + "\",\n"
         + s_tab +  "\tfile: \"" + file.string() + "\",\n"
-        + s_tab + node_graph.get_str(tab + 1) + "\n"
+        + s_tab + node_graph->get_str(tab + 1) + "\n"
         + s_tab + "}";
 
     return s;
@@ -96,7 +103,7 @@ nlohmann::json Project::to_json(void)
 {
     nlohmann::json json_file = {{"name", name},
                                 {"PDCVersion", PROJECT_VERSION},
-                                {"graph", node_graph.to_json()}};
+                                {"graph", node_graph->to_json()}};
 
     return json_file;
 }
@@ -246,8 +253,12 @@ Image Project::get_input_image(void)
     return input_image;
 }
 
-
 GraphEditor* Project::get_graph_editor(void)
 {
-    return &node_graph;
+    return node_graph.get();
+}
+
+void Project::set_node_position(const Id& id, const QPointF& position)
+{
+    node_graph->set_node_position(id, position);
 }

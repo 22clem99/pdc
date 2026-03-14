@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <QObject>
 
 #include <utils/Types.hpp>
 #include "../node/Node.hpp"
@@ -38,8 +39,9 @@ public:
  * - single-entry single-exit graph (named head and tail)
  * - acyclic
  */
-class Graph
+class Graph : public QObject
 {
+    Q_OBJECT
 private:
     GraphAnalyzer analysis;
 public:
@@ -251,6 +253,9 @@ public:
     nlohmann::json to_json(void);
 
     static bool is_json_valid(const nlohmann::json& j);
+
+signals:
+    void node_position_changed(const Id& id, const QPointF& pos);
 };
 
 #endif

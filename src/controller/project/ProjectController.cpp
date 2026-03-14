@@ -172,7 +172,6 @@ void ProjectController::on_close_project(void)
     disconnect(model->get_project().get(), nullptr, nullptr, nullptr);
     disconnect(nullptr, nullptr, model->get_project().get(), nullptr);
 
-    // TODO clear graph
     delete graph_con;
     view->node_editor->setInteractive(false);
 

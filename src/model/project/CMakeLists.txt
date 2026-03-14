@@ -13,6 +13,7 @@ target_link_libraries(Project
         version
     PRIVATE
         utils
+        dto
         json
         Qt6::Widgets
         Qt6::Gui

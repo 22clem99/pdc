@@ -22,6 +22,7 @@
 #define IMAGE_RGB_SPLITTER_NODE_H
 
 #include <string>
+#include <QObject>
 
 #include "Node.hpp"
 #include "NodeRegister.hpp"
@@ -34,6 +35,7 @@
  */
 class ImageRGBSplitterNode : public Node
 {
+    Q_OBJECT
 public:
     static constexpr NodeKind kind = NodeKind::Regular;
 
@@ -44,9 +46,9 @@ public:
      *
      * This constructor append all port need by the node
      */
-    ImageRGBSplitterNode();
+    ImageRGBSplitterNode(QObject* parent = nullptr);
 
-    ImageRGBSplitterNode(const nlohmann::json& j);
+    ImageRGBSplitterNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();
 

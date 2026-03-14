@@ -6,8 +6,9 @@
 #include "Node.hpp"
 #include <utils/Tab.hpp>
 #include "utils/JSONWrapper.hpp"
+#include <QString>
 
-Node::Node(const std::vector<PortDef> ports_def)
+Node::Node(const std::vector<PortDef> ports_def, QObject* parent) : QObject(parent)
 {
     for (const auto& def : ports_def)
     {
@@ -17,7 +18,7 @@ Node::Node(const std::vector<PortDef> ports_def)
     }
 }
 
-Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def)
+Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObject* parent) : QObject(parent)
 {
     Log::debug(" Will tried to decode json: \n" + j.dump(4));
 
@@ -36,6 +37,24 @@ Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def)
                 ports.emplace(new_port->get_id(), std::move(new_port));
             }
         }
+    }
+
+    if (!j.contains("x_pos") || !j["x_pos"].is_number_float())
+    {
+        position.setX(j["y_pos"].get<double>());
+    }
+    else
+    {
+        position.setX(0);
+    }
+
+    if (!j.contains("y_pos") || !j["y_pos"].is_number_float())
+    {
+        position.setY(j["y_pos"].get<double>());
+    }
+    else
+    {
+        position.setY(0);
     }
 }
 
@@ -109,7 +128,7 @@ nlohmann::json Node::to_json(void)
         ports_array.push_back(port.second->to_json());
     }
 
-    return {{"id", id}, {"node_type", get_class_name()}, {"ports", ports_array}};
+    return {{"id", id}, {"node_type", get_class_name()}, {"ports", ports_array}, {"x_pos", position.x()}, {"y_pos", position.y()}};
 }
 
 std::string node_kind_to_str(NodeKind kind)
@@ -163,4 +182,30 @@ bool Node::is_json_valid(const nlohmann::json& j, const std::vector<PortDef> por
         }
     }
     return true;
+}
+
+void Node::set_position(const QPointF& pos)
+{
+    position = pos;
+
+    if(notifier)
+    {
+        notifier->node_position_changed(id, pos);
+    }
+}
+
+QPointF Node::get_position(void)
+{
+    return position;
+}
+
+void Node::set_notifier(NodeNotifier* n)
+{
+    notifier = n;
+}
+
+
+NodeNotifier* Node::get_notifier(void)
+{
+    return notifier;
 }

@@ -15,7 +15,7 @@ Graph::Graph(const nlohmann::json& j)
     // Iterate on each node
     for (const auto& node : j["nodes"])
     {
-        std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_json(node["node_type"], node);
+        std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_json(node["node_type"], node, this);
 
         if(new_node == nullptr) {
            Log::error("Can't allocate node of type \"" + node["node_type"].get<std::string>() + "\"");
@@ -71,7 +71,8 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
     }
 
     // Allocation is done there
-    std::unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type);
+    std::unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type, this);
+    QObject::connect(new_node->get_notifier(), &NodeNotifier::node_position_changed, this, &Graph::node_position_changed);
 
     if(new_node == nullptr) {
         Log::error("Can't allocate node of type \"" + node_type + "\"");
@@ -115,6 +116,9 @@ bool Graph::remove_node(const Id& node_id)
     // If the node is the tail, remove the tail
     if (tail_id == node_id)
         tail_id.reset();
+
+    // Remove Qt signals
+    QObject::disconnect(nodes[node_id].get(), nullptr, nullptr, nullptr);
 
     // Then remove the node from the node list
     if (nodes.erase(node_id) != 1)

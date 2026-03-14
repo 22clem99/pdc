@@ -23,6 +23,7 @@
 #define IMAGE_RGB_COMBINER_NODE_H
 
 #include <string>
+#include <QObject>
 
 #include "Node.hpp"
 #include "NodeRegister.hpp"
@@ -35,6 +36,7 @@
  */
 class ImageRGBCombinerNode : public Node
 {
+    Q_OBJECT
 public:
     static constexpr NodeKind kind = NodeKind::Regular;
 
@@ -45,9 +47,9 @@ public:
      *
      * This constructor append all port need by the node
      */
-    ImageRGBCombinerNode();
+    ImageRGBCombinerNode(QObject* parent = nullptr);
 
-    ImageRGBCombinerNode(const nlohmann::json& j);
+    ImageRGBCombinerNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();
 

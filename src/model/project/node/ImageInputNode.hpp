@@ -15,6 +15,7 @@
 #define IMAGE_INPUT_NODE_H
 
 #include <string>
+#include <QObject>
 
 #include "Node.hpp"
 #include "NodeRegister.hpp"
@@ -28,6 +29,7 @@
  */
 class ImageInputNode : public Node
 {
+    Q_OBJECT
 public:
     static constexpr NodeKind kind = NodeKind::Head;
 
@@ -38,9 +40,9 @@ public:
      *
      * This constructor append all port need by the node
      */
-    ImageInputNode();
+    ImageInputNode(QObject* parent = nullptr);
 
-    ImageInputNode(const nlohmann::json& j);
+    ImageInputNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();
 

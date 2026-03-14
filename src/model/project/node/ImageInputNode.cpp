@@ -17,12 +17,12 @@ const std::vector<PortDef> ImageInputNode::port_defs = {
     NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple)
 };
 
-ImageInputNode::ImageInputNode() : Node(port_defs)
+ImageInputNode::ImageInputNode(QObject* parent) : Node(port_defs, parent)
 {
     // Nothing to do here
 }
 
-ImageInputNode::ImageInputNode(const nlohmann::json& j) : Node(j, port_defs)
+ImageInputNode::ImageInputNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here
 }

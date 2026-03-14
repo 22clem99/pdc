@@ -15,6 +15,7 @@
 #define IMAGE_OUTPUT_NODE_H
 
 #include <string>
+#include <QObject>
 
 #include "Node.hpp"
 #include "NodeRegister.hpp"
@@ -27,6 +28,7 @@
  */
 class ImageOutputNode : public Node
 {
+    Q_OBJECT
 public:
     static constexpr NodeKind kind = NodeKind::Tail;
 
@@ -37,9 +39,9 @@ public:
      *
      * This constructor append all port need by the node
      */
-    ImageOutputNode();
+    ImageOutputNode(QObject* parent = nullptr);
 
-    ImageOutputNode(const nlohmann::json& j);
+    ImageOutputNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();
 

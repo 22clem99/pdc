@@ -14,11 +14,13 @@
 #include <variant>
 #include <memory>
 #include <QPointF>
+#include <QObject>
 
 #include <utils/Types.hpp>
 #include "Port.hpp"
 #include <utils/Identifiable.hpp>
 #include <utils/JSONPrintable.hpp>
+#include "NodeNotifier.hpp"
 
 /**
  * @brief Kind of node
@@ -51,8 +53,9 @@ enum class VisitState
  * Each object allocate of kind Node inherit the
  * Identifiable class to provide a unique identifier
  */
-class Node : public Identifiable<Node>
+class Node : public QObject, public Identifiable<Node>
 {
+    Q_OBJECT
 public:
     std::map<Id, std::unique_ptr<IPortBase>> ports;
 
@@ -62,11 +65,13 @@ public:
 
     QPointF position;
 
-    Node() {}
-    Node(const nlohmann::json& j) {}
+    NodeNotifier* notifier = nullptr;
 
-    Node(const std::vector<PortDef> ports_def);
-    Node(const nlohmann::json& j, const std::vector<PortDef> ports_def);
+    Node(QObject* parent = nullptr) : QObject(parent) {}
+    Node(const nlohmann::json& j, QObject* parent = nullptr) : QObject(parent) {}
+
+    Node(const std::vector<PortDef> ports_def, QObject* parent = nullptr);
+    Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObject* parent = nullptr);
 
     virtual ~Node() = default;
 
@@ -125,6 +130,14 @@ public:
     static std::string get_pretty_print(void);
 
     static std::string get_description(void);
+
+    void set_position(const QPointF& pos);
+    QPointF get_position(void);
+
+    void set_notifier(NodeNotifier* n);
+    NodeNotifier* get_notifier(void);
+signals:
+    void position_changed(const std::string& id, const QPointF& pos);
 };
 
 #endif

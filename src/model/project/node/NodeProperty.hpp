@@ -29,13 +29,13 @@ public:
  * @brief This define is just to rename more consisly the allocation method call
  *
  */
-typedef std::function<std::unique_ptr<Node>()> CreatorFuncNode;
+typedef std::function<std::unique_ptr<Node>(QObject*)> CreatorFuncNode;
 
 /**
  * @brief This define is just to rename more consisly the allocation method call with json param
  *
  */
-typedef std::function<std::unique_ptr<Node>(const nlohmann::json&)> CreatorFuncNodeJson;
+typedef std::function<std::unique_ptr<Node>(const nlohmann::json&, QObject*)> CreatorFuncNodeJson;
 
 /**
  * @brief This define is just to rename more consisly the JSON test method

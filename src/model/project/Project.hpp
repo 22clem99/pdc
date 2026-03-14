@@ -61,7 +61,7 @@ private:
 
     ProjectState state;
 
-    GraphEditor node_graph;
+    std::unique_ptr<GraphEditor> node_graph;
 
     Image input_image;
 
@@ -83,6 +83,8 @@ public:
      */
     Project(const std::filesystem::path& path);
 
+    ~Project();
+
     /** TODO
      * @brief Used to add a node to the project
      *
@@ -90,7 +92,7 @@ public:
      * @param position
      * @return int
      */
-    int add_node(const std::string& node_type, const QPointF& position);
+    NodeData add_node(const std::string& node_type, const QPointF& position);
 
     /** TODO
      * @brief remove a node from the project, will also remove edges
@@ -148,8 +150,11 @@ public:
 
     GraphEditor* get_graph_editor(void);
 
+    void set_node_position(const Id& id, const QPointF& position);
+
 signals:
     void image_changed(const Image& img);
+    void node_position_changed(const Id& id, const QPointF& pos);
 };
 
 #endif

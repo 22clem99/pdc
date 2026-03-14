@@ -1,5 +1,6 @@
 add_subdirectory(third_parts)
 add_subdirectory(utils)
+add_subdirectory(dto)
 add_subdirectory(model)
 add_subdirectory(view)
 add_subdirectory(controller)
