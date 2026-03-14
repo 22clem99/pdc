@@ -11,6 +11,7 @@
 #include "graph/GraphEditor.hpp"
 #include <utils/JSONPrintable.hpp>
 #include <utils/Types.hpp>
+#include <dto/NodeData.hpp>
 
 enum class ProjectState
 {
@@ -101,6 +102,8 @@ public:
      * @return int
      */
     int remove_node(const std::string& node_type);
+
+    NodeCreationTestStatus can_add_node(const std::string& node_type);
 
     /**
      * @brief get the dirtiness of the project

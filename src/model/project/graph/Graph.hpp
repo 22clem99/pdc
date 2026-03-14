@@ -15,6 +15,7 @@
 #include "../node/Node.hpp"
 #include "../edge/Edge.hpp"
 #include <utils/JSONPrintable.hpp>
+#include <dto/NodeData.hpp>
 
 /**
  * @brief Provide the result abstraction result of the graph analyze
@@ -72,6 +73,8 @@ public:
      * @return Id generate for this new Node
      */
     Id add_node(const std::string& node_type, const QPointF& pos);
+
+    NodeCreationTestStatus can_add_node(const std::string& node_type);
 
     /**
      * @brief remove the node and edges bind to it

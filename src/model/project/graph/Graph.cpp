@@ -98,6 +98,30 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
     return id;
 }
 
+
+NodeCreationTestStatus Graph::can_add_node(const std::string& node_type)
+{
+    // Get factory configuration by the name
+    std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
+
+    if (!prop) {
+        Log::error("Can't allocate node of type \"" + node_type +"\"");
+        return NodeCreationTestStatus::TypeDoesNotExist;
+    }
+
+    if (prop->descriptor.kind == NodeKind::Head && head_id) {
+        Log::error("Can't allocate node of type \"" + node_type + "\", head node already exist");
+        return NodeCreationTestStatus::HeadAlreadyExist;
+    }
+
+    if (prop->descriptor.kind == NodeKind::Tail && tail_id) {
+        Log::error("Can't allocate node of type \"" + node_type + "\", tail node already exist");
+        return NodeCreationTestStatus::TailAlreadyExist;
+    }
+
+    return NodeCreationTestStatus::OK;
+}
+
 bool Graph::remove_node(const Id& node_id)
 {
     if (!has_node(node_id))

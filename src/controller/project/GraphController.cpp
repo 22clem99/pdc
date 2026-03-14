@@ -2,6 +2,7 @@
 #include "../../view/dialog/NodePickerDialog/NodePickerDialog.hpp"
 #include "../../model/project/node/NodeAllocator.hpp"
 #include "cmds/GraphCMD.hpp"
+#include <QMessageBox>
 
 
 
@@ -40,6 +41,27 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
     for (auto node_type : selected_nodes)
     {
         Log::info("View requested to create nodes: " + node_type);
+
+        auto test_result = model->get_project()->can_add_node(node_type);
+
+        switch (test_result)
+        {
+        case NodeCreationTestStatus::TypeDoesNotExist:
+            QMessageBox::warning(nullptr, "Error", "The view asked for unknow node type");
+            return;
+        case NodeCreationTestStatus::HeadAlreadyExist:
+            QMessageBox::warning(nullptr, "Warning", "Input node already exist can't be instanciate twice");
+            return;
+        case NodeCreationTestStatus::TailAlreadyExist:
+            QMessageBox::warning(nullptr, "Warning", "Output node already exist can't be instanciate twice");
+            return;
+        case NodeCreationTestStatus::OK:
+            Log::debug("Node can be instanciate");
+            break;
+        default:
+            Log::error("Project return an unkwnow code when ask to create a node");
+            return;
+        }
 
         // Create the cmd
         auto cmd = new AddNodeCommand(model->get_project()->get_graph_editor(), node_type, scene_pos);

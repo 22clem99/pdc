@@ -36,6 +36,8 @@ public:
 
     bool remove_node(const Id& node_id);
 
+    NodeCreationTestStatus can_add_node(const std::string& node_type);
+
     /**
      * @brief Get the string representation of the GraphEditor
      *

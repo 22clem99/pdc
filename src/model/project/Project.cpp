@@ -57,6 +57,11 @@ int Project::remove_node(const std::string& node_type)
     return (node_graph->remove_node(node_type) ? -1 : 0);
 }
 
+NodeCreationTestStatus Project::can_add_node(const std::string& node_type)
+{
+    return node_graph->can_add_node(node_type);
+}
+
 bool Project::is_dirty(void)
 {
     if (state == ProjectState::Dirty)

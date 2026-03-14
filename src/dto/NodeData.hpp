@@ -11,5 +11,12 @@ struct NodeData {
     QPointF position;
 };
 
+enum NodeCreationTestStatus {
+    TypeDoesNotExist,
+    HeadAlreadyExist,
+    TailAlreadyExist,
+    OK
+};
+
 
 #endif

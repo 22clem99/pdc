@@ -36,6 +36,12 @@ bool GraphEditor::remove_node(const Id& node_id)
     return node_graph.remove_node(node_id);
 }
 
+
+NodeCreationTestStatus GraphEditor::can_add_node(const std::string& node_type)
+{
+    return node_graph.can_add_node(node_type);
+}
+
 std::string GraphEditor::get_str(void)
 {
     return get_str(0);
