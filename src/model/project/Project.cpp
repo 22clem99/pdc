@@ -46,21 +46,6 @@ Project::~Project()
     disconnect(nullptr, nullptr, this, nullptr);
 }
 
-NodeData Project::add_node(const std::string& node_type, const QPointF& position)
-{
-    return node_graph->add_node(node_type, position);
-}
-
-int Project::remove_node(const std::string& node_type)
-{
-    return (node_graph->remove_node(node_type) ? -1 : 0);
-}
-
-NodeCreationTestStatus Project::can_add_node(const std::string& node_type)
-{
-    return node_graph->can_add_node(node_type);
-}
-
 bool Project::is_dirty(void)
 {
     if (state == ProjectState::Dirty)
@@ -260,9 +245,4 @@ Image Project::get_input_image(void)
 GraphEditor* Project::get_graph_editor(void)
 {
     return node_graph.get();
-}
-
-void Project::set_node_position(const Id& id, const QPointF& position)
-{
-    node_graph->set_node_position(id, position);
 }

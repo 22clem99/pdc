@@ -13,11 +13,11 @@ int main(int argc, char *argv[])
 
     Project p("My amazing project", std::filesystem::path("./test0/prj"), std::filesystem::path("./images/Tux.svg"));
 
-    p.add_node(ImageInputNode::class_name(), QPointF(0, 0));
-    p.add_node(ImageInputNode::class_name(), QPointF(0, 0));
+    p.get_graph_editor()->add_node(ImageInputNode::class_name(), QPointF(0, 0));
+    p.get_graph_editor()->add_node(ImageInputNode::class_name(), QPointF(0, 0));
 
-    p.add_node(ImageOutputNode::class_name(), QPointF(0, 0));
-    p.add_node(ImageOutputNode::class_name(), QPointF(0, 0));
+    p.get_graph_editor()->add_node(ImageOutputNode::class_name(), QPointF(0, 0));
+    p.get_graph_editor()->add_node(ImageOutputNode::class_name(), QPointF(0, 0));
 
     Log::info(p.get_str());
 

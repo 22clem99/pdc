@@ -86,25 +86,6 @@ public:
 
     ~Project();
 
-    /** TODO
-     * @brief Used to add a node to the project
-     *
-     * @param node_type keyword of the node to add
-     * @param position
-     * @return int
-     */
-    NodeData add_node(const std::string& node_type, const QPointF& position);
-
-    /** TODO
-     * @brief remove a node from the project, will also remove edges
-     *
-     * @param node_type
-     * @return int
-     */
-    int remove_node(const std::string& node_type);
-
-    NodeCreationTestStatus can_add_node(const std::string& node_type);
-
     /**
      * @brief get the dirtiness of the project
      *
@@ -152,8 +133,6 @@ public:
     Image get_input_image(void);
 
     GraphEditor* get_graph_editor(void);
-
-    void set_node_position(const Id& id, const QPointF& position);
 
 signals:
     void image_changed(const Image& img);
