@@ -7,8 +7,11 @@
 #include "../../view/PDCMenuBar/PDCMenuBar.hpp"
 #include "cmds/ProjectCMD.hpp"
 
-ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack* stack) : GenericPDCController(model, view, stack)
+ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack* stack, QObject* parent) : GenericPDCController(stack, parent)
 {
+    this->model = model;
+    this->view = view;
+
     connect(view->menu_bar, &PDCMenuBar::new_requested, this, &ProjectController::on_create_project);
     connect(view->menu_bar, &PDCMenuBar::save_requested, this, &ProjectController::on_save_project);
     connect(view->menu_bar, &PDCMenuBar::open_requested, this, &ProjectController::on_open_project);
@@ -43,7 +46,7 @@ void ProjectController::on_create_project(void)
 
     on_close_project();
 
-    undo_stack->push(new CreateProjectCommand(model, name, prj_path, img_path));
+    model->create_project(name, prj_path, img_path);
 
     view->setWindowTitle(QString::fromStdString(name) + " (not saved)");
 
@@ -52,7 +55,7 @@ void ProjectController::on_create_project(void)
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
 
     // TODO print graph
-    graph_con = new GraphController(model, view, undo_stack);
+    graph_con = new GraphController(model->get_project()->get_graph_editor(), view->node_editor, undo_stack, this);
     view->node_editor->setInteractive(true);
 }
 
@@ -138,7 +141,7 @@ void ProjectController::on_open_project(void)
     emit model->get_project()->image_changed(model->get_project()->get_input_image());
 
     // TODO print graph
-    graph_con = new GraphController(model, view, undo_stack);
+    graph_con = new GraphController(model->get_project()->get_graph_editor(), view->node_editor, undo_stack, this);
     view->node_editor->setInteractive(true);
 }
 

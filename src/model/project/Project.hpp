@@ -157,7 +157,6 @@ public:
 
 signals:
     void image_changed(const Image& img);
-    void node_position_changed(const Id& id, const QPointF& pos);
 };
 
 #endif

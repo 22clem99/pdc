@@ -39,22 +39,23 @@ Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObjec
         }
     }
 
-    if (!j.contains("x_pos") || !j["x_pos"].is_number_float())
+
+    position.setX(0);
+    if (j.contains("x_pos"))
     {
-        position.setX(j["y_pos"].get<double>());
-    }
-    else
-    {
-        position.setX(0);
+        if (j["x_pos"].is_number_float())
+        {
+            position.setX(j["y_pos"].get<double>());
+        }
     }
 
-    if (!j.contains("y_pos") || !j["y_pos"].is_number_float())
+    position.setY(0);
+    if (j.contains("y_pos"))
     {
-        position.setY(j["y_pos"].get<double>());
-    }
-    else
-    {
-        position.setY(0);
+        if( j["y_pos"].is_number_float())
+        {
+            position.setY(j["y_pos"].get<double>());
+        }
     }
 }
 

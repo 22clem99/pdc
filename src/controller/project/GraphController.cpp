@@ -1,19 +1,26 @@
+#include <QMessageBox>
+
 #include "GraphController.hpp"
 #include "../../view/dialog/NodePickerDialog/NodePickerDialog.hpp"
 #include "../../model/project/node/NodeAllocator.hpp"
 #include "cmds/GraphCMD.hpp"
-#include <QMessageBox>
 
 
 
-GraphController::GraphController(PDCState* model, PDCView* view, QUndoStack* stack) : GenericPDCController(model, view, stack)
+GraphController::GraphController(GraphEditor* model, GraphViewer* view, QUndoStack* stack, QObject* parent) : editor(model), view(view), GenericPDCController(stack, parent)
 {
     Log::debug("Create graph controller");
-    connect(view->node_editor->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
-    connect(this, &GraphController::add_node_to_view, view->node_editor->scene, &GraphScene::add_node_to_graph);
-    connect(this, &GraphController::ask_clear_scene, view->node_editor->scene, &GraphScene::clear_scene);
-    connect(view->node_editor->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
-    connect(model->get_project().get(), &Project::node_position_changed, view->node_editor->scene, &GraphScene::update_node_view);
+    connect(view->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
+    connect(view->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
+    connect(this, &GraphController::ask_clear_scene, view->scene, &GraphScene::clear_scene);
+
+    // Connect event from the node editor to the view
+    connect(editor, &GraphEditor::node_has_been_added, view->scene, &GraphScene::add_node_to_graph);
+    connect(editor, &GraphEditor::node_has_been_delete, view->scene, &GraphScene::remove_node_to_graph);
+    connect(editor, &GraphEditor::node_position_changed, view->scene, &GraphScene::update_node_view);
+
+    // Update the view there
+    sync_view_model();
 }
 
 GraphController::~GraphController()
@@ -42,7 +49,7 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
     {
         Log::info("View requested to create nodes: " + node_type);
 
-        auto test_result = model->get_project()->can_add_node(node_type);
+        auto test_result = editor->can_add_node(node_type);
 
         switch (test_result)
         {
@@ -64,15 +71,9 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
         }
 
         // Create the cmd
-        auto cmd = new AddNodeCommand(model->get_project()->get_graph_editor(), node_type, scene_pos);
+        auto cmd = new AddNodeCommand(editor, node_type, scene_pos);
         // push the cmd to the undo stack
         undo_stack->push(cmd);
-
-        // Get the data returned by the add node cmd
-        auto data = cmd->data;
-
-        // Generate a signal to the view to print the node
-        emit add_node_to_view(data);
     }
 }
 
@@ -80,5 +81,20 @@ void GraphController::on_move_node(const Id& id, const QPointF& position)
 {
     Log::debug("Node " + id + " position change, update the model");
 
-    undo_stack->push(new MoveNodeCommand(model->get_project()->get_graph_editor(), id, position));
+    undo_stack->push(new MoveNodeCommand(editor, id, position));
+}
+
+void GraphController::sync_view_model(void)
+{
+    view->scene->clear_scene();
+
+    // Ask to the model the graph
+    auto nodes_data = editor->get_nodes_data();
+
+    for (auto data : nodes_data)
+    {
+        view->scene->add_node_to_graph(data);
+    }
+
+    // Add here edges
 }

@@ -59,8 +59,13 @@ public:
     void set_node_position(const Id& id, const QPointF& position);
     QPointF get_node_position(const Id& id);
 
+    std::vector<NodeData> get_nodes_data(void);
+    // const std::vector<Edge*>& Edges() const
+
 signals:
     void node_position_changed(const Id& id, const QPointF& pos);
+    void node_has_been_delete(const Id& id);
+    void node_has_been_added(const NodeData& data);
 };
 
 #endif

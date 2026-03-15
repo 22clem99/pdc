@@ -65,3 +65,23 @@ void GraphScene::update_node_view(const Id& id, const QPointF& pos)
 
     node_view->setPos(pos);
 }
+
+void GraphScene::remove_node_to_graph(const Id& id)
+{
+    Log::debug("Receive a signal to remove the node " + id + " of the view");
+
+    auto it = node_items.find(id);
+    if (it != node_items.end())
+    {
+        auto item = it->second;
+
+        removeItem(item);
+        node_items.erase(it);
+
+        item->deleteLater();
+    }
+    else
+    {
+        Log::error("View receive a signal to remove the node " + id + " of the view but it doen not exist in the view");
+    }
+}

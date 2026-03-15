@@ -13,7 +13,6 @@ Project::Project(const std::string& project_name, const std::filesystem::path fi
     file = file_path;
     input_image = Image(img_path);
     node_graph = std::make_unique<GraphEditor>();
-    connect(node_graph.get(), &GraphEditor::node_position_changed, this, &Project::node_position_changed);
 }
 
 Project::Project(const std::filesystem::path& path)
@@ -32,7 +31,7 @@ Project::Project(const std::filesystem::path& path)
     // extract data from json
     name = manifest_as_json["name"];
     node_graph = std::make_unique<GraphEditor>(manifest_as_json["graph"]);
-    connect(node_graph.get(), &GraphEditor::node_position_changed, this, &Project::node_position_changed);
+
     // use the file parsed
     file = path;
 

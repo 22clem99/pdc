@@ -8,11 +8,15 @@
 GraphEditor::GraphEditor(void)
 {
     QObject::connect(&node_graph, &Graph::node_position_changed, this, &GraphEditor::node_position_changed);
+    QObject::connect(&node_graph, &Graph::node_has_been_delete, this, &GraphEditor::node_has_been_delete);
+    QObject::connect(&node_graph, &Graph::node_has_been_added, this, &GraphEditor::node_has_been_added);
 }
 
 GraphEditor::GraphEditor(const nlohmann::json& j) : node_graph(j)
 {
     QObject::connect(&node_graph, &Graph::node_position_changed, this, &GraphEditor::node_position_changed);
+    QObject::connect(&node_graph, &Graph::node_has_been_delete, this, &GraphEditor::node_has_been_delete);
+    QObject::connect(&node_graph, &Graph::node_has_been_added, this, &GraphEditor::node_has_been_added);
 }
 
 GraphEditor::~GraphEditor(void)
@@ -69,4 +73,9 @@ QPointF GraphEditor::get_node_position(const Id& id)
     auto& node = node_graph.nodes[id];
 
     return node->get_position();
+}
+
+std::vector<NodeData> GraphEditor::get_nodes_data(void)
+{
+    return node_graph.get_nodes_data();
 }

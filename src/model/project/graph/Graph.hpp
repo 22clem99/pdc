@@ -257,8 +257,12 @@ public:
 
     static bool is_json_valid(const nlohmann::json& j);
 
+    std::vector<NodeData> get_nodes_data(void);
+
 signals:
     void node_position_changed(const Id& id, const QPointF& pos);
+    void node_has_been_delete(const Id& id);
+    void node_has_been_added(const NodeData& data);
 };
 
 #endif

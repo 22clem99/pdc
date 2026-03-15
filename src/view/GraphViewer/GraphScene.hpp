@@ -30,6 +30,8 @@ public:
 
     void update_node_view(const Id& id, const QPointF& pos);
 
+    void remove_node_to_graph(const Id& id);
+
 signals:
     void request_add_node(const QPointF& scene_pos);
     void on_node_move(const Id& id, const QPointF& position);

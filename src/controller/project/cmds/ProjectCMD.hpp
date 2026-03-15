@@ -17,6 +17,7 @@ public:
 
     void undo() override
     {
+        model->close_project();
     }
 
     void redo() override

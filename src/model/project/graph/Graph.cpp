@@ -21,6 +21,7 @@ Graph::Graph(const nlohmann::json& j)
            Log::error("Can't allocate node of type \"" + node["node_type"].get<std::string>() + "\"");
         }
 
+        // override the node ID by the one read from the conf file
         Id id = new_node->id;
         nodes.insert({id, std::move(new_node)});
     }
@@ -93,11 +94,19 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
     new_node->position = pos;
 
     nodes.insert({id, std::move(new_node)});
+
+    // Trigger the node view changement to add the new node
+    NodeData data;
+    data.node_id = id;
+    data.pretty_print = NodeAllocator::get_pretty_print(node_type);
+    data.position = pos;
+
+    emit node_has_been_added(data);
+
     analysis.analysis_dirty = true;
 
     return id;
 }
-
 
 NodeCreationTestStatus Graph::can_add_node(const std::string& node_type)
 {
@@ -143,6 +152,7 @@ bool Graph::remove_node(const Id& node_id)
 
     // Remove Qt signals
     QObject::disconnect(nodes[node_id].get(), nullptr, nullptr, nullptr);
+    emit node_has_been_delete(node_id);
 
     // Then remove the node from the node list
     if (nodes.erase(node_id) != 1)
@@ -627,4 +637,18 @@ bool Graph::is_json_valid(const nlohmann::json& j)
     }
 
     return true;
+}
+
+std::vector<NodeData> Graph::get_nodes_data(void)
+{
+    std::vector<NodeData> data;
+
+    for (auto& [id, node] : nodes)
+    {
+        data.push_back(NodeData{id,
+                        NodeAllocator::get_pretty_print(node->get_class_name()),
+                        node->get_position()});
+    }
+
+    return data;
 }

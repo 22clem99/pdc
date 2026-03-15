@@ -12,7 +12,7 @@ class ProjectController : public GenericPDCController
     Q_OBJECT
 
 public:
-    ProjectController(PDCState* model, PDCView* view, QUndoStack* stack);
+    ProjectController(PDCState* model, PDCView* view, QUndoStack* stack, QObject* parent = nullptr);
 
     void on_create_project(void);
     void on_save_project(void);
@@ -22,7 +22,9 @@ public:
 
     bool on_close_window(void);
 
-    GraphController * graph_con;
+    GraphController* graph_con;
+    PDCView* view;
+    PDCState* model;
 };
 
 
