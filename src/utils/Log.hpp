@@ -6,14 +6,14 @@
 
 enum LogLevel
 {
-    Debug2   = 0,
-    Debug1   = 1,
-    Debug0   = 2,
-    Debug    = 2,
+    Debug2   = 7,
+    Debug1   = 6,
+    Debug0   = 5,
+    Debug    = 4,
     Info     = 3,
-    Warning  = 4,
-    Error    = 5,
-    Critical = 6
+    Warning  = 2,
+    Error    = 1,
+    Critical = 0
 };
 
 class Log

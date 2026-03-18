@@ -99,3 +99,8 @@ ImgEncodeStatus Image::get_encode_status(void)
 {
     return encode_status;
 }
+
+PortTypes Image::get_port_type(void)
+{
+    return PortTypes::Image;
+}

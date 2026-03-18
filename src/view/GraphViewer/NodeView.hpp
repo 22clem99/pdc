@@ -7,18 +7,64 @@
 #include <dto/NodeData.hpp>
 #include <utils/Log.hpp>
 
+#include "PortView.hpp"
+
 class NodeView : public QGraphicsObject
 {
     Q_OBJECT
 
 public:
-    explicit NodeView(const NodeData& data, QGraphicsItem* parent = nullptr): QGraphicsObject(parent), label(QString::fromStdString(data.pretty_print)), rect(-75.0, -25.0, 150.0, 50.0), node_id(data.node_id)
+    explicit NodeView(const NodeData& data, QGraphicsItem* parent = nullptr): QGraphicsObject(parent), label(QString::fromStdString(data.pretty_print)), node_id(data.node_id)
     {
         Log::debug("Add a node " + data.pretty_print + " at (" + std::to_string(data.position.x()) + ")(" + std::to_string(data.position.y()) + ") to the view ");
         setPos(data.position);
         setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemIsSelectable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+
+        // Default size of the rectangle
+        const double min_size_rect = 150.0;
+
+        // Get number of inputs and outputs
+        auto nb_in = data.in_ports_data.size();
+        auto nb_out = data.out_ports_data.size();
+
+        int nb_point;
+
+        if (nb_in > nb_out) {
+            nb_point = nb_in;
+        } else {
+            nb_point = nb_out;
+        }
+
+        double size_rect = ((nb_point * 0.25) + 1) * min_size_rect;
+
+        rect = QRectF(-(size_rect / 2.0), -25.0, size_rect, 50.0);
+
+        // First print all input ports
+        auto input_ports_location = get_ports_locations(nb_in, size_rect);
+
+        for (int i = 0; i < nb_in; i++)
+        {
+            Log::debug("Will add the port " + data.in_ports_data[i].port_id + " to the node view");
+
+            auto port = new PortView(data.in_ports_data[i], this);
+
+            port->setPos(QPointF(input_ports_location[i], -25.0));
+        }
+
+
+        // Then print all output ports
+        auto output_ports_location = get_ports_locations(nb_out, size_rect);
+
+        for (int i = 0; i < nb_out; i++)
+        {
+            Log::debug("Will add the port " + data.out_ports_data[i].port_id + " to the node view");
+
+            auto port = new PortView(data.out_ports_data[i], this);
+
+            port->setPos(QPointF(output_ports_location[i], 25.0));
+        }
     }
 
     QRectF boundingRect() const override
@@ -57,6 +103,30 @@ public:
         return QGraphicsObject::itemChange(change, value);
     }
 
+    std::vector<double> get_ports_locations(int nb_port, double lengh)
+    {
+        std::vector<double> points;
+
+        if (nb_port <= 0)
+        {
+            return points;
+        }
+        else if (nb_port == 1)
+        {
+            points.push_back(0.0);
+            return points;
+        }
+
+        double d = lengh / (nb_port + 1);
+
+        for (int i = 0; i < nb_port; i++)
+        {
+            points.push_back((i + 1) * d - (lengh / 2.0));
+        }
+
+        return points;
+    }
+
 signals:
     void node_moved(const Id& id, const QPointF& position);
 
@@ -64,6 +134,9 @@ private:
     QString label;
     QRectF rect;
     Id node_id;
+
+    std::unordered_map<Id, PortView*> input_ports;
+    std::unordered_map<Id, PortView*> output_ports;
 };
 
 

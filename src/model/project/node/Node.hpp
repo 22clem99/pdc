@@ -21,6 +21,7 @@
 #include <utils/Identifiable.hpp>
 #include <utils/JSONPrintable.hpp>
 #include "NodeNotifier.hpp"
+#include <dto/NodeData.hpp>
 
 /**
  * @brief Kind of node
@@ -136,6 +137,10 @@ public:
 
     void set_notifier(NodeNotifier* n);
     NodeNotifier* get_notifier(void);
+
+    std::vector<PortData> get_ports_data(PortDirection dir);
+
+    virtual NodeKind get_kind(void) = 0;
 signals:
     void position_changed(const std::string& id, const QPointF& pos);
 };

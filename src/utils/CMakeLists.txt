@@ -11,6 +11,7 @@ target_link_libraries(utils
     PUBLIC
         json
         QtUtils
+        dto
     PRIVATE
         ${OpenCV_LIBS}
 )

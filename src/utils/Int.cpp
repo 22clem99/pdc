@@ -55,3 +55,8 @@ std::string Int::get_str(const unsigned int tab) const
 {
     return Tab::tab(tab) + "Int, value=" + std::to_string(data);
 }
+
+PortTypes Int::get_port_type(void)
+{
+    return PortTypes::Int;
+}

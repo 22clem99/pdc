@@ -3,7 +3,7 @@
 
 #include <string>
 
-
+#include <dto/NodeData.hpp>
 
 class Int {
 public:
@@ -19,6 +19,7 @@ public:
     static std::string class_name(void);
     std::string get_str(void) const;
     std::string get_str(const unsigned int tab) const;
+    static PortTypes get_port_type(void);
 };
 
 #endif

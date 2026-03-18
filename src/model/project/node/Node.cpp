@@ -210,3 +210,19 @@ NodeNotifier* Node::get_notifier(void)
 {
     return notifier;
 }
+
+std::vector<PortData> Node::get_ports_data(PortDirection dir)
+{
+    std::vector<PortData> data;
+
+    for (auto& [id, port] : ports)
+    {
+        if ((dir == port->get_direction()) && (ConnectionMode::None != port->get_connection_mode()))
+        {
+            data.push_back(PortData{id,
+                            port->get_port_type()});
+        }
+    }
+
+    return data;
+}

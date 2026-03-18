@@ -201,6 +201,8 @@ public:
     virtual const Id get_id() const = 0;
 
     virtual void set_id(Id new_id) = 0;
+
+    virtual PortTypes get_port_type(void) const = 0;
 };
 
 /**
@@ -364,6 +366,11 @@ using Identifiable<Port<T>>::id;
     void set_id(Id new_id) override
     {
         this->id = new_id;
+    }
+
+    PortTypes get_port_type(void) const override
+    {
+        return T::get_port_type();
     }
 };
 

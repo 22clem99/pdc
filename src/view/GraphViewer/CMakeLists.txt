@@ -4,6 +4,7 @@ add_library(GraphViewer
     GraphScene.cpp
     GraphScene.hpp
     NodeView.hpp
+    PortView.hpp
 )
 
 target_link_libraries(GraphViewer

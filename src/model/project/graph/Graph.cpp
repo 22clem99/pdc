@@ -21,8 +21,23 @@ Graph::Graph(const nlohmann::json& j)
            Log::error("Can't allocate node of type \"" + node["node_type"].get<std::string>() + "\"");
         }
 
-        // override the node ID by the one read from the conf file
         Id id = new_node->id;
+
+        Log::debug("Node " + id + " created with type " + node["node_type"].get<std::string>());
+
+        // Set head if needed
+        if (new_node->get_kind() == NodeKind::Head) {
+            Log::debug("The node " + id + " is set as the head");
+            head_id = id;
+        }
+
+        // Set tail if needed
+        if (new_node->get_kind() == NodeKind::Tail)
+        {
+            Log::debug("The node " + id + " is set as the tail");
+            tail_id = id;
+        }
+
         nodes.insert({id, std::move(new_node)});
     }
 
@@ -100,6 +115,8 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
     data.node_id = id;
     data.pretty_print = NodeAllocator::get_pretty_print(node_type);
     data.position = pos;
+    data.in_ports_data = nodes[id]->get_ports_data(PortDirection::Input);
+    data.out_ports_data = nodes[id]->get_ports_data(PortDirection::Output);
 
     emit node_has_been_added(data);
 
@@ -596,6 +613,9 @@ nlohmann::json Graph::to_json(void)
 
 bool Graph::is_json_valid(const nlohmann::json& j)
 {
+    bool is_tail_set = false;
+    bool is_head_set = false;
+
     if (!j.is_object())
     {
         return false;
@@ -625,6 +645,32 @@ bool Graph::is_json_valid(const nlohmann::json& j)
         {
             return false;
         }
+        else
+        {
+            // Test head
+            if (NodeAllocator::get_property(node_type)->descriptor.kind == NodeKind::Head)
+            {
+                if (is_head_set == false) {
+                    is_head_set = true;
+                }
+                else {
+                    Log::error("The conf file has two head");
+                    return false;
+                }
+            }
+
+            // Test tail
+            if (NodeAllocator::get_property(node_type)->descriptor.kind == NodeKind::Tail )
+            {
+                if (is_tail_set == false) {
+                    is_tail_set = true;
+                }
+                else {
+                    Log::error("The conf file has two tail");
+                    return false;
+                }
+            }
+        }
     }
 
     JSON_REQUIRED_FIELD(j, "edges", is_array);
@@ -647,7 +693,9 @@ std::vector<NodeData> Graph::get_nodes_data(void)
     {
         data.push_back(NodeData{id,
                         NodeAllocator::get_pretty_print(node->get_class_name()),
-                        node->get_position()});
+                        node->get_position(),
+                        node->get_ports_data(PortDirection::Input),
+                        node->get_ports_data(PortDirection::Output)});
     }
 
     return data;

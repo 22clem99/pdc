@@ -16,6 +16,7 @@
 
 #include <utils/Qt/ImageUtils.hpp>
 #include <utils/Log.hpp>
+#include <dto/NodeData.hpp>
 
 enum class ImgStatus {
     ImgReadSuccessfully,
@@ -132,11 +133,14 @@ public:
     std::vector<char> encode_img(void);
     ImgStatus get_img_status(void);
     ImgEncodeStatus get_encode_status(void);
+    static PortTypes get_port_type(void);
 
 private:
     ImgStatus status;
     ImgEncodeStatus encode_status;
     std::optional<ImgExtensions> extension;
 };
+
+
 
 #endif
