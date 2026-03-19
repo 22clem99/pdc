@@ -3,6 +3,9 @@
 
 #include <QGraphicsObject>
 #include <QPainter>
+#include <QMenu>
+#include <QAction>
+#include <QGraphicsSceneContextMenuEvent>
 
 #include <dto/NodeData.hpp>
 #include <utils/Log.hpp>
@@ -51,6 +54,8 @@ public:
             auto port = new PortView(data.in_ports_data[i], this);
 
             port->setPos(QPointF(input_ports_location[i], -25.0));
+
+            input_ports.insert({data.in_ports_data[i].port_id, port});
         }
 
 
@@ -64,6 +69,8 @@ public:
             auto port = new PortView(data.out_ports_data[i], this);
 
             port->setPos(QPointF(output_ports_location[i], 25.0));
+
+            output_ports.insert({data.out_ports_data[i].port_id, port});
         }
     }
 
@@ -92,15 +99,11 @@ public:
         );
     }
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant& value) override
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     {
-        Log::debug("The node moved! need to update the model");
-        if (change == ItemPositionHasChanged) {
-            Log::debug("Position changed, need to be updated");
-            emit node_moved(node_id, pos());
-        }
+        QGraphicsObject::mouseReleaseEvent(event);
 
-        return QGraphicsObject::itemChange(change, value);
+        emit node_moved(node_id, pos()); // UNE SEULE FOIS
     }
 
     std::vector<double> get_ports_locations(int nb_port, double lengh)
@@ -127,8 +130,26 @@ public:
         return points;
     }
 
+
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
+    {
+        QMenu menu;
+
+        QAction* remove_node = menu.addAction("Remove Node");
+        QAction* action = menu.exec(event->screenPos());
+
+        if (action == remove_node)
+        {
+            Log::info("View ask to remove node " + node_id);
+            emit request_remove_node(node_id);
+        }
+
+        event->accept();
+    }
+
 signals:
     void node_moved(const Id& id, const QPointF& position);
+    void request_remove_node(const Id& id);
 
 private:
     QString label;

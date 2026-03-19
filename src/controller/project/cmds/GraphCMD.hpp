@@ -40,7 +40,7 @@ public:
     MoveNodeCommand(GraphEditor* g, const Id& id, const QPointF& pos)
         : graph(g), node_id(id), new_position(pos)
     {
-        setText("Add node");
+        setText("Move node");
         old_position = graph->get_node_position(id);
     }
 
