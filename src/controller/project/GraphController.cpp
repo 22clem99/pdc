@@ -12,12 +12,15 @@ GraphController::GraphController(GraphEditor* model, GraphViewer* view, QUndoSta
     Log::debug("Create graph controller");
     connect(view->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
     connect(view->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
+    connect(view->scene, &GraphScene::request_remove_node, this, &GraphController::on_request_remove_node);
     connect(this, &GraphController::ask_clear_scene, view->scene, &GraphScene::clear_scene);
 
     // Connect event from the node editor to the view
     connect(editor, &GraphEditor::node_has_been_added, view->scene, &GraphScene::add_node_to_graph);
     connect(editor, &GraphEditor::node_has_been_delete, view->scene, &GraphScene::remove_node_to_graph);
     connect(editor, &GraphEditor::node_position_changed, view->scene, &GraphScene::update_node_view);
+
+
 
     // Update the view there
     sync_view_model();
@@ -97,4 +100,11 @@ void GraphController::sync_view_model(void)
     }
 
     // Add here edges
+}
+
+void GraphController::on_request_remove_node(const Id& id)
+{
+    Log::debug("View request to remove the node " + id);
+
+    undo_stack->push(new RemoveNodeCommand(editor, id));
 }

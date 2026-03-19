@@ -62,6 +62,8 @@ public:
     std::vector<NodeData> get_nodes_data(void);
     // const std::vector<Edge*>& Edges() const
 
+    std::string get_node_type(const Id& id);
+
 signals:
     void node_position_changed(const Id& id, const QPointF& pos);
     void node_has_been_delete(const Id& id);

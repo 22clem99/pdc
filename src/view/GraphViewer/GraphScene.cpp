@@ -16,6 +16,14 @@ GraphScene::GraphScene(QObject* parent) : QGraphicsScene(parent)
 
 void GraphScene::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 {
+    QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
+
+    if (item)
+    {
+        QGraphicsScene::contextMenuEvent(event);
+        return;
+    }
+
     QMenu menu;
 
     QAction* addNode = menu.addAction("Add Node");
@@ -44,6 +52,7 @@ void GraphScene::add_node_to_graph(const NodeData& data)
 
     // connect here the moved function
     connect(node_view, &NodeView::node_moved, this, &GraphScene::on_node_move);
+    connect(node_view, &NodeView::request_remove_node, this, &GraphScene::request_remove_node);
 }
 
 void GraphScene::clear_scene(void)

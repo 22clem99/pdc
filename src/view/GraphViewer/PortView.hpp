@@ -73,11 +73,23 @@ public:
         }
     }
 
+    void mousePressEvent(QGraphicsSceneMouseEvent* event)
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            // emit start_connection(this);
+            event->accept();
+        }
+    }
+
     QRectF boundingRect() const override
     {
         return QRectF(-2.5, -2.5, 5.0, 5.0); // centré
     }
 
+
+signals:
+    // emit start_connection(this);
 
 private:
     Id node_id;

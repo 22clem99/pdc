@@ -79,3 +79,8 @@ std::vector<NodeData> GraphEditor::get_nodes_data(void)
 {
     return node_graph.get_nodes_data();
 }
+
+std::string GraphEditor::get_node_type(const Id& id)
+{
+    return node_graph.get_node_type(id);
+}

@@ -700,3 +700,8 @@ std::vector<NodeData> Graph::get_nodes_data(void)
 
     return data;
 }
+
+std::string Graph::get_node_type(const Id& id)
+{
+    return nodes[id]->get_class_name();
+}

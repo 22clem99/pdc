@@ -21,6 +21,7 @@ public:
     {
         Log::debug("Add a node " + data.pretty_print + " at (" + std::to_string(data.position.x()) + ")(" + std::to_string(data.position.y()) + ") to the view ");
         setPos(data.position);
+        setAcceptedMouseButtons(Qt::AllButtons);
         setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemIsSelectable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -99,11 +100,40 @@ public:
         );
     }
 
+    void mousePressEvent(QGraphicsSceneMouseEvent* event)
+    {
+        // Ignore right button click
+        if (event->button() == Qt::RightButton)
+        {
+            event->ignore();
+            return;
+        }
+
+        // Catch only left click event
+        if (event->button() == Qt::LeftButton)
+        {
+            start_pos = pos();
+            QGraphicsObject::mousePressEvent(event);
+        }
+    }
+
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     {
-        QGraphicsObject::mouseReleaseEvent(event);
-
-        emit node_moved(node_id, pos()); // UNE SEULE FOIS
+        // Ignore right button click
+        if (event->button() == Qt::RightButton)
+        {
+            event->ignore();
+            return;
+        }
+        // Catch only left click event
+        if (event->button() == Qt::LeftButton)
+        {
+            QGraphicsObject::mouseReleaseEvent(event);
+            if (pos() != start_pos)
+            {
+                emit node_moved(node_id, pos());
+            }
+        }
     }
 
     std::vector<double> get_ports_locations(int nb_port, double lengh)
@@ -154,6 +184,7 @@ signals:
 private:
     QString label;
     QRectF rect;
+    QPointF start_pos;
     Id node_id;
 
     std::unordered_map<Id, PortView*> input_ports;

@@ -22,6 +22,8 @@ public:
 
     void sync_view_model(void);
 
+    void on_request_remove_node(const Id& id);
+
 private:
     GraphEditor* editor;
     GraphViewer* view;
