@@ -12,6 +12,7 @@
 GraphScene::GraphScene(QObject* parent) : QGraphicsScene(parent)
 {
     setSceneRect(-5000, -5000, 10000, 10000);
+    temp_edge = nullptr;
 }
 
 void GraphScene::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
@@ -53,6 +54,8 @@ void GraphScene::add_node_to_graph(const NodeData& data)
     // connect here the moved function
     connect(node_view, &NodeView::node_moved, this, &GraphScene::on_node_move);
     connect(node_view, &NodeView::request_remove_node, this, &GraphScene::request_remove_node);
+    connect(node_view, &NodeView::request_create_edge, this, &GraphScene::on_create_edge);
+    connect(node_view, &NodeView::request_stop_edge, this, &GraphScene::on_stop_edge);
 }
 
 void GraphScene::clear_scene(void)
@@ -84,6 +87,11 @@ void GraphScene::remove_node_to_graph(const Id& id)
     {
         auto item = it->second;
 
+        // Remove all connections
+        item->remove_connections();
+        disconnect(item, nullptr, nullptr, nullptr);
+        disconnect(nullptr, nullptr, item, nullptr);
+
         removeItem(item);
         node_items.erase(it);
 
@@ -92,5 +100,62 @@ void GraphScene::remove_node_to_graph(const Id& id)
     else
     {
         Log::error("View receive a signal to remove the node " + id + " of the view but it doen not exist in the view");
+    }
+}
+
+void GraphScene::on_create_edge(const Id& port_id, const Id& node_id)
+{
+    Log::debug("Start a new connection from " + port_id + " of node " + node_id);
+
+    temp_edge = new EdgeView(port_id, node_id, node_items[node_id]->get_port_view_by_id(port_id));
+    temp_edge->update_end_point(node_items[node_id]->get_port_view_by_id(port_id)->scenePos());
+
+    addItem(temp_edge);
+}
+
+void GraphScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    // Log::debug("Get an event");
+    if (temp_edge != nullptr)
+    {
+        // Log::debug("Get an event on the edge");
+        temp_edge->update_end_point(event->scenePos());
+    }
+
+    QGraphicsScene::mouseMoveEvent(event);
+}
+
+void GraphScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    QGraphicsScene::mouseReleaseEvent(event);
+
+    if (temp_edge != nullptr)
+    {
+        Log::debug("Release the button");
+        //Release the edge not on a port so ignore it
+        temp_edge->deleteLater();
+
+        temp_edge = nullptr;
+    }
+}
+
+void GraphScene::on_stop_edge(const Id& port_id, const Id& node_id)
+{
+    if (temp_edge != nullptr)
+    {
+
+
+        //Release the edge now need to instantiate a real edge
+        // emit a signal to the graph controller to ask to add
+        // the edge to the graph with the input and the output
+        emit request_new_edge(temp_edge->get_port_src(),
+                              temp_edge->get_node_src(),
+                              port_id,
+                              node_id);
+
+
+        temp_edge->deleteLater();
+
+        temp_edge = nullptr;
     }
 }

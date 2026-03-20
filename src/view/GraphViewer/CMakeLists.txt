@@ -5,6 +5,7 @@ add_library(GraphViewer
     GraphScene.hpp
     NodeView.hpp
     PortView.hpp
+    EdgeView.hpp
 )
 
 target_link_libraries(GraphViewer

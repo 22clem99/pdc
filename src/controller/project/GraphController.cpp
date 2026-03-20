@@ -14,13 +14,12 @@ GraphController::GraphController(GraphEditor* model, GraphViewer* view, QUndoSta
     connect(view->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
     connect(view->scene, &GraphScene::request_remove_node, this, &GraphController::on_request_remove_node);
     connect(this, &GraphController::ask_clear_scene, view->scene, &GraphScene::clear_scene);
+    connect(view->scene, &GraphScene::request_new_edge, this, &GraphController::on_request_create_edge);
 
     // Connect event from the node editor to the view
     connect(editor, &GraphEditor::node_has_been_added, view->scene, &GraphScene::add_node_to_graph);
     connect(editor, &GraphEditor::node_has_been_delete, view->scene, &GraphScene::remove_node_to_graph);
     connect(editor, &GraphEditor::node_position_changed, view->scene, &GraphScene::update_node_view);
-
-
 
     // Update the view there
     sync_view_model();
@@ -107,4 +106,9 @@ void GraphController::on_request_remove_node(const Id& id)
     Log::debug("View request to remove the node " + id);
 
     undo_stack->push(new RemoveNodeCommand(editor, id));
+}
+
+void GraphController::on_request_create_edge(const Id& from_port, const Id& from_node, const Id& to_port, const Id& to_node)
+{
+    Log::debug("View request to create an edge from [" + from_port + "](" + from_node + ") et [" + to_port + "](" + to_node + ")");
 }

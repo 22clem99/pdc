@@ -21,6 +21,8 @@ class PortView: public QGraphicsObject
 public:
     explicit PortView(const PortData& data, QGraphicsItem* parent = nullptr): QGraphicsObject(parent)
     {
+        port_id = data.port_id;
+
         switch (data.type)
         {
         case PortTypes::Image:
@@ -73,26 +75,36 @@ public:
         }
     }
 
-    void mousePressEvent(QGraphicsSceneMouseEvent* event)
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
         if (event->button() == Qt::LeftButton)
         {
-            // emit start_connection(this);
+            emit start_connection(port_id);
+            event->accept();
+        }
+    }
+
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            Log::debug("Get a release event on " + port_id);
+            emit stop_connection(port_id);
             event->accept();
         }
     }
 
     QRectF boundingRect() const override
     {
-        return QRectF(-2.5, -2.5, 5.0, 5.0); // centré
+        return QRectF(-2.5, -2.5, 5.0, 5.0);
     }
 
-
 signals:
-    // emit start_connection(this);
+    void start_connection(const Id& id);
+    void stop_connection(const Id& id);
 
 private:
-    Id node_id;
+    Id port_id;
     ShapeType shape;
 };
 

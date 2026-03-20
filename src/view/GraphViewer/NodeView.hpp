@@ -11,6 +11,7 @@
 #include <utils/Log.hpp>
 
 #include "PortView.hpp"
+#include "EdgeView.hpp"
 
 class NodeView : public QGraphicsObject
 {
@@ -55,8 +56,11 @@ public:
             auto port = new PortView(data.in_ports_data[i], this);
 
             port->setPos(QPointF(input_ports_location[i], -25.0));
+            connect(port, &PortView::start_connection, this, &NodeView::on_start_connection);
+            connect(port, &PortView::stop_connection, this, &NodeView::on_stop_connection);
 
             input_ports.insert({data.in_ports_data[i].port_id, port});
+
         }
 
 
@@ -70,6 +74,8 @@ public:
             auto port = new PortView(data.out_ports_data[i], this);
 
             port->setPos(QPointF(output_ports_location[i], 25.0));
+            connect(port, &PortView::start_connection, this, &NodeView::on_start_connection);
+            connect(port, &PortView::stop_connection, this, &NodeView::on_stop_connection);
 
             output_ports.insert({data.out_ports_data[i].port_id, port});
         }
@@ -100,7 +106,7 @@ public:
         );
     }
 
-    void mousePressEvent(QGraphicsSceneMouseEvent* event)
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
         // Ignore right button click
         if (event->button() == Qt::RightButton)
@@ -117,7 +123,7 @@ public:
         }
     }
 
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override
     {
         // Ignore right button click
         if (event->button() == Qt::RightButton)
@@ -160,7 +166,6 @@ public:
         return points;
     }
 
-
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
     {
         QMenu menu;
@@ -177,9 +182,59 @@ public:
         event->accept();
     }
 
+    void on_start_connection(const Id& port_id)
+    {
+        Log::debug("Start a new connection from " + port_id);
+
+        emit request_create_edge(port_id, node_id);
+    }
+
+    void on_stop_connection(const Id& port_id)
+    {
+        Log::debug("Stop a connection to " + port_id);
+
+        emit request_stop_edge(port_id, node_id);
+    }
+
+    void remove_connections(void)
+    {
+        for (auto in_port : input_ports)
+        {
+            disconnect(in_port.second, nullptr, nullptr, nullptr);
+            disconnect(nullptr, nullptr, in_port.second, nullptr);
+        }
+
+        for (auto out_port : output_ports)
+        {
+            disconnect(out_port.second, nullptr, nullptr, nullptr);
+            disconnect(nullptr, nullptr, out_port.second, nullptr);
+        }
+
+    }
+
+    PortView* get_port_view_by_id(const Id& id)
+    {
+        for (auto port : input_ports)
+        {
+            if (port.first == id){
+                return port.second;
+            }
+        }
+
+        for (auto port : output_ports)
+        {
+            if (port.first == id){
+                return port.second;
+            }
+        }
+        return nullptr;
+    }
+
 signals:
     void node_moved(const Id& id, const QPointF& position);
     void request_remove_node(const Id& id);
+    void request_create_edge(const Id& port_id, const Id& node_id);
+    void request_stop_edge(const Id& port_id, const Id& node_id);
 
 private:
     QString label;
