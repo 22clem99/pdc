@@ -68,7 +68,7 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
             Log::debug("Node can be instanciate");
             break;
         default:
-            Log::error("Project return an unkwnow code when ask to create a node");
+            Log::error("Node editor return an unknown code when ask to create a node");
             return;
         }
 
@@ -112,6 +112,8 @@ void GraphController::on_request_create_edge(const Id& from_node, const Id& from
 {
     Log::debug("View request to create an edge from [" + from_port + "](" + from_node + ") et [" + to_port + "](" + to_node + ")");
 
+    Id src_node, src_port, dst_node, dst_port;
+
     // First check which port is the ouput, from the view
     // point, an edge is not oriented. We need to check at
     // this level to link an output and an input.
@@ -119,14 +121,61 @@ void GraphController::on_request_create_edge(const Id& from_node, const Id& from
     {
         // Data was sent in the good order
         Log::debug("View ask to create the edge with data in good order");
+
+        src_node = from_node;
+        src_port = from_port;
+        dst_node = to_node;
+        dst_port = to_port;
     }
     else if (editor->is_input(from_node, from_port) && editor->is_output(to_node, to_port))
     {
         // Data was sent in the wrong order, but we will create the edge anyway
         Log::debug("View ask to create the edge with data in bad order");
+
+        src_node = to_node;
+        src_port = to_port;
+        dst_node = from_node;
+        dst_port = from_port;
     }
     else
     {
         Log::info("Trying to link an input to an input, or an output to an output.");
+        return;
     }
+
+    // Test that we can create the new edge
+    auto test_result = editor->can_add_edge(src_node, src_port, dst_node, dst_port);
+
+    switch (test_result)
+    {
+    case EdgeCreationTestStatus::DestNodeDoesNotExist:
+    case EdgeCreationTestStatus::SrcNodeDoesNotExist:
+        QMessageBox::warning(nullptr, "Error", "The view asked to link nodes with an unknow node");
+        return;
+    case EdgeCreationTestStatus::DestPortDoesNotExist:
+    case EdgeCreationTestStatus::SrcPortDoesNotExist:
+        QMessageBox::warning(nullptr, "Error", "The view asked to link nodes with an unknow port");
+        return;
+    case EdgeCreationTestStatus::PortAreNotTheSameType:
+        QMessageBox::warning(nullptr, "Warning", "Can't link two different data port");
+        return;
+    case EdgeCreationTestStatus::SrcConnectionTypeIsWrong:
+        QMessageBox::warning(nullptr, "Error", "The output can't be linked");
+        return;
+    case EdgeCreationTestStatus::DestNotAvailableOrNotSingle:
+        QMessageBox::warning(nullptr, "Warning", "The input can only linked once");
+        return;
+    case EdgeCreationTestStatus::OK:
+        Log::debug("Edge can be instanciate");
+        break;
+    default:
+        Log::error("Node editor return an unkwnow code when ask to create a node");
+        QMessageBox::warning(nullptr, "Error", "Node editor return an unkwnow code when ask to create an edge");
+        return;
+    }
+
+    // Then ask trought the undo stack to connect the edge
+    auto cmd = new AddEdgeCommand(editor, src_node, src_port, dst_node, dst_port);
+    // push the cmd to the undo stack
+    undo_stack->push(cmd);
 }

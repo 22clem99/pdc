@@ -27,7 +27,7 @@ enum class SaveProjectStatus
     FailedToRenameTemp,
     FailedToGetImgExtension,
     FailedToEncodeImg,
-    EncodeErrorUnknow
+    EncodeErrorUnknown
 };
 
 enum class OpenProjectStatus

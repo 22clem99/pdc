@@ -200,64 +200,11 @@ bool Graph::has_edge(const Id& edge_id)
 
 Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
 {
-    // Test IDs before to do anything
-    if (!has_node(from_node))
-    {
-        Log::error("from node \"" + from_node + "\"is not a correct ID");
-        return nullid;
-    }
-    if (!has_node(to_node))
-    {
-        Log::error("to node \"" + to_node + "\" is not a correct ID");
-        return nullid;
-    }
-    if (!has_port(from_node, from_output) || !has_port(to_node, to_input))
-    {
-        Log::error("Port \"" + from_output + "\" is not a correct ID");
-        return nullid;
-    }
-    if (!has_port(from_node, from_output) || !has_port(to_node, to_input))
-    {
-        Log::error("Port \"" + to_input + "\" is not a correct ID");
-        return nullid;
-    }
-
     auto& from_node_obj = *nodes[from_node];
     auto& to_node_obj = *nodes[to_node];
 
     auto& from_output_obj = *from_node_obj.ports[from_output];
     auto& to_input_obj = *to_node_obj.ports[to_input];
-
-    // Test compatibility, edge need to link
-    // the same type of data.
-    if (!IPortBase::same_type(from_output_obj, to_input_obj))
-    {
-        Log::error("Node \"" + from_node + "\" and \"" + to_node + "\" are not the same type, can't be connected");
-        return nullid;
-    }
-
-    // Test output mode, edge need to link
-    // an output and the output kind need to
-    // be <Multiple>
-    if ((from_output_obj.get_direction() != PortDirection::Output)
-        || (from_output_obj.get_connection_mode() != ConnectionMode::Multiple))
-    {
-        Log::error("Node \"" + from_output + "\" is not an Output or it's connection mode is not Multiple");
-        return nullid;
-    }
-
-    // Test input mode, edge need to link
-    // to an input, the input kind need to
-    // be <Single> and the input port need
-    // to be available (i.e any connection
-    // is binded to this port)
-    if ((to_input_obj.get_direction() != PortDirection::Input)
-        || (to_input_obj.get_connection_mode() != ConnectionMode::Single)
-        || (!to_input_obj.get_connected_edges().empty()))
-    {
-        Log::error("Node \"" + to_input + "\" is not an Input or it's connection mode is not Single or a edge is already connected");
-        return nullid;
-    }
 
     // All test OK, now we can create the edge
     auto new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input);
@@ -276,6 +223,7 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     to_input_obj.add_connected_edge(new_edge_id);
 
     analysis.analysis_dirty = true;
+    auto edge_data = EdgeData(new_edge_id, from_node, from_output, to_node, to_input);
 
     return new_edge_id;
 }
@@ -312,6 +260,70 @@ bool Graph::disconnect(const Id& edge_id)
     analysis.analysis_dirty = true;
 
     return true;
+}
+
+EdgeCreationTestStatus Graph::can_connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
+{
+    // Test IDs before to do anything
+    if (!has_node(from_node))
+    {
+        Log::error("from node \"" + from_node + "\"is not a correct ID");
+        return EdgeCreationTestStatus::SrcNodeDoesNotExist;
+    }
+    if (!has_node(to_node))
+    {
+        Log::error("to node \"" + to_node + "\" is not a correct ID");
+        return EdgeCreationTestStatus::DestNodeDoesNotExist;
+    }
+    if (!has_port(from_node, from_output))
+    {
+        Log::error("Port \"" + from_output + "\" is not a correct ID");
+        return EdgeCreationTestStatus::SrcPortDoesNotExist;
+    }
+    if (!has_port(to_node, to_input))
+    {
+        Log::error("Port \"" + to_input + "\" is not a correct ID");
+        return EdgeCreationTestStatus::DestPortDoesNotExist;
+    }
+
+    auto& from_node_obj = *nodes[from_node];
+    auto& to_node_obj = *nodes[to_node];
+
+    auto& from_output_obj = *from_node_obj.ports[from_output];
+    auto& to_input_obj = *to_node_obj.ports[to_input];
+
+    // Test compatibility, edge need to link
+    // the same type of data.
+    if (!IPortBase::same_type(from_output_obj, to_input_obj))
+    {
+        Log::error("Node \"" + from_node + "\" and \"" + to_node + "\" are not the same type, can't be connected");
+        return EdgeCreationTestStatus::PortAreNotTheSameType;
+    }
+
+    // Test output mode, edge need to link
+    // an output and the output kind need to
+    // be <Multiple>
+    if ((from_output_obj.get_direction() != PortDirection::Output)
+        || (from_output_obj.get_connection_mode() != ConnectionMode::Multiple))
+    {
+        Log::error("Node \"" + from_output + "\" is not an Output or it's connection mode is not Multiple");
+        return EdgeCreationTestStatus::SrcConnectionTypeIsWrong;
+    }
+
+    // Test input mode, edge need to link
+    // to an input, the input kind need to
+    // be <Single> and the input port need
+    // to be available (i.e any connection
+    // is binded to this port)
+    if ((to_input_obj.get_direction() != PortDirection::Input)
+        || (to_input_obj.get_connection_mode() != ConnectionMode::Single)
+        || (!to_input_obj.get_connected_edges().empty()))
+    {
+        Log::error("Node \"" + to_input + "\" is not an Input or it's connection mode is not Single or a edge is already connected");
+        return EdgeCreationTestStatus::DestNotAvailableOrNotSingle;
+    }
+
+    return EdgeCreationTestStatus::OK;
 }
 
 int Graph::remove_edges_of_node(const Id& node_id)

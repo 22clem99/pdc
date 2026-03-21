@@ -46,6 +46,29 @@ NodeCreationTestStatus GraphEditor::can_add_node(const std::string& node_type)
     return node_graph.can_add_node(node_type);
 }
 
+EdgeData GraphEditor::add_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port)
+{
+    EdgeData data;
+
+    data.edge_id = node_graph.connect(from_node, from_port, to_node, to_port);
+    data.node_id_dst = from_node;
+    data.port_id_dst = from_port;
+    data.node_id_src = to_node;
+    data.port_id_src = to_port;
+
+    return data;
+}
+
+bool GraphEditor::remove_edge(const Id& edge_id)
+{
+    return node_graph.disconnect(edge_id);
+}
+
+EdgeCreationTestStatus GraphEditor::can_add_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port)
+{
+    return node_graph.can_connect(from_node, from_port, to_node, to_port);
+}
+
 std::string GraphEditor::get_str(void)
 {
     return get_str(0);

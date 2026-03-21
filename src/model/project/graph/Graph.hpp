@@ -16,6 +16,7 @@
 #include "../edge/Edge.hpp"
 #include <utils/JSONPrintable.hpp>
 #include <dto/NodeData.hpp>
+#include <dto/EdgeData.hpp>
 
 /**
  * @brief Provide the result abstraction result of the graph analyze
@@ -133,6 +134,8 @@ public:
      * @return false if the edge is not successfully removed
      */
     bool disconnect(const Id& edge_id);
+
+    EdgeCreationTestStatus can_connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input);
 
     /**
      * @brief Remove all edges connected to a node

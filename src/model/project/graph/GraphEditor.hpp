@@ -15,6 +15,7 @@
 #include <utils/Types.hpp>
 #include <utils/JSONPrintable.hpp>
 #include <dto/NodeData.hpp>
+#include <dto/EdgeData.hpp>
 #include "../node/NodeAllocator.hpp"
 
 class GraphEditor : public QObject
@@ -37,6 +38,13 @@ public:
     bool remove_node(const Id& node_id);
 
     NodeCreationTestStatus can_add_node(const std::string& node_type);
+
+    EdgeData add_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port);
+
+    bool remove_edge(const Id& edge_id);
+
+    EdgeCreationTestStatus can_add_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port);
+
 
     /**
      * @brief Get the string representation of the GraphEditor

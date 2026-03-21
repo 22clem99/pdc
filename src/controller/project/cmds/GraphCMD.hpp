@@ -102,4 +102,32 @@ private:
     QPointF new_position;
 };
 
+class AddEdgeCommand : public QUndoCommand
+{
+public:
+    AddEdgeCommand(GraphEditor* g, const Id& src_node, const Id& src_port, const Id& dst_node, const Id& dst_port)
+        : graph(g), from_node(src_node) ,from_port(src_port) ,to_node(dst_node) ,to_port(dst_port)
+    {
+        setText("Add edge");
+    }
+
+    void undo() override
+    {
+        graph->remove_edge(data.edge_id);
+    }
+
+    void redo() override
+    {
+        data = graph->add_edge(from_node, from_port, to_node, to_port);
+    }
+
+    EdgeData data;
+
+private:
+    GraphEditor* graph;
+    Id from_node;
+    Id from_port;
+    Id to_node;
+    Id to_port;
+};
 #endif

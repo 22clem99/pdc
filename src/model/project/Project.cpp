@@ -144,7 +144,7 @@ SaveProjectStatus Project::save(void)
         break;
     default:
         Log::error("Encode error unknow");
-        return SaveProjectStatus::EncodeErrorUnknow;
+        return SaveProjectStatus::EncodeErrorUnknown;
     }
 
     zip.add_file(ArchiveImagePath + input_image.get_extension().value(), image_bin);
