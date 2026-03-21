@@ -64,6 +64,10 @@ public:
 
     std::string get_node_type(const Id& id);
 
+    bool is_input(const Id& node_id, const Id& port_id);
+
+    bool is_output(const Id& node_id, const Id& port_id);
+
 signals:
     void node_position_changed(const Id& id, const QPointF& pos);
     void node_has_been_delete(const Id& id);

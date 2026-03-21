@@ -55,7 +55,6 @@ void GraphScene::add_node_to_graph(const NodeData& data)
     connect(node_view, &NodeView::node_moved, this, &GraphScene::on_node_move);
     connect(node_view, &NodeView::request_remove_node, this, &GraphScene::request_remove_node);
     connect(node_view, &NodeView::request_create_edge, this, &GraphScene::on_create_edge);
-    connect(node_view, &NodeView::request_stop_edge, this, &GraphScene::on_stop_edge);
 }
 
 void GraphScene::clear_scene(void)
@@ -129,12 +128,24 @@ void GraphScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsScene::mouseReleaseEvent(event);
 
-    if (temp_edge != nullptr)
+    if (temp_edge)
     {
-        Log::debug("Release the button");
-        //Release the edge not on a port so ignore it
-        temp_edge->deleteLater();
+        auto item = itemAt(event->scenePos(), QTransform());
 
+        if (auto port = dynamic_cast<PortView*>(item))
+        {
+            Log::debug("Release on a port, will create a new edge");
+            emit request_new_edge(temp_edge->get_node_src(),
+                                  temp_edge->get_port_src(),
+                                  port->get_node_id(),
+                                  port->get_port_id());
+        }
+        else
+        {
+            Log::debug("Release not on a port");
+        }
+
+        temp_edge->deleteLater();
         temp_edge = nullptr;
     }
 }
@@ -148,10 +159,10 @@ void GraphScene::on_stop_edge(const Id& port_id, const Id& node_id)
         //Release the edge now need to instantiate a real edge
         // emit a signal to the graph controller to ask to add
         // the edge to the graph with the input and the output
-        emit request_new_edge(temp_edge->get_port_src(),
-                              temp_edge->get_node_src(),
-                              port_id,
-                              node_id);
+        emit request_new_edge(temp_edge->get_node_src(),
+                              temp_edge->get_port_src(),
+                              node_id,
+                              port_id);
 
 
         temp_edge->deleteLater();

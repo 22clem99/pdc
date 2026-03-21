@@ -29,12 +29,12 @@ void Log::set_level(LogLevel new_level) {
 
 // Implementation methods
 void Log::debug_impl(const std::string& msg, const std::source_location& loc) const {
-    if (level <= LogLevel::Debug0) {
+    if (level >= LogLevel::Debug) {
         std::filesystem::path p(loc.file_name());
 
         std::cout << "DEBUG In [" << p.filename().string() << ":" << loc.line();
 
-        if (level <= LogLevel::Debug1) {
+        if (level >= LogLevel::Debug1) {
             std::cout << ":" << loc.function_name();
         }
 
@@ -43,25 +43,25 @@ void Log::debug_impl(const std::string& msg, const std::source_location& loc) co
 }
 
 void Log::info_impl(const std::string& msg) const {
-    if (level <= LogLevel::Info) {
+    if (level >= LogLevel::Info) {
         std::cout << "INFO: " << msg << std::endl;
     }
 }
 
 void Log::warning_impl(const std::string& msg) const {
-    if (level <= LogLevel::Warning) {
+    if (level >= LogLevel::Warning) {
         std::cout << "WARNING: " << msg << std::endl;
     }
 }
 
 void Log::error_impl(const std::string& msg) const {
-    if (level <= LogLevel::Error) {
+    if (level >= LogLevel::Error) {
         std::cout << "ERROR: " << msg << std::endl;
     }
 }
 
 void Log::critical_impl(const std::string& msg) const {
-    if (level <= LogLevel::Critical) {
+    if (level >= LogLevel::Critical) {
         std::cout << "CRITICAL: " << msg << std::endl;
     }
 }

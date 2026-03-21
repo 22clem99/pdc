@@ -705,3 +705,33 @@ std::string Graph::get_node_type(const Id& id)
 {
     return nodes[id]->get_class_name();
 }
+
+PortDirection Graph::get_port_direction(const Id& node_id, const Id& port_id)
+{
+    Log::debug("Node: " + node_id + " Port: " + port_id);
+
+    if (!nodes.contains(node_id))
+    {
+        Log::debug("Can't get the direction as the port does not exist");
+        return PortDirection::Error;
+    }
+
+    if (!nodes[node_id]->ports.contains(port_id))
+    {
+        Log::debug("Can't get the direction as the port does not exist");
+        return PortDirection::Error;
+    }
+
+    auto dir = nodes[node_id]->ports[port_id]->get_direction();
+
+    if (dir == PortDirection::Output)
+    {
+        Log::debug("this is an output");
+    }
+    else
+    {
+        Log::debug("this is an input");
+    }
+
+    return dir;
+}

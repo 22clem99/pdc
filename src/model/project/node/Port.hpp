@@ -27,7 +27,8 @@
  */
 enum class PortDirection {
     Input,
-    Output
+    Output,
+    Error
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(PortDirection, {

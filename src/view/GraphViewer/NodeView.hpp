@@ -53,11 +53,10 @@ public:
         {
             Log::debug("Will add the port " + data.in_ports_data[i].port_id + " to the node view");
 
-            auto port = new PortView(data.in_ports_data[i], this);
+            auto port = new PortView(node_id, data.in_ports_data[i], this);
 
             port->setPos(QPointF(input_ports_location[i], -25.0));
             connect(port, &PortView::start_connection, this, &NodeView::on_start_connection);
-            connect(port, &PortView::stop_connection, this, &NodeView::on_stop_connection);
 
             input_ports.insert({data.in_ports_data[i].port_id, port});
 
@@ -71,11 +70,10 @@ public:
         {
             Log::debug("Will add the port " + data.out_ports_data[i].port_id + " to the node view");
 
-            auto port = new PortView(data.out_ports_data[i], this);
+            auto port = new PortView(node_id, data.out_ports_data[i], this);
 
             port->setPos(QPointF(output_ports_location[i], 25.0));
             connect(port, &PortView::start_connection, this, &NodeView::on_start_connection);
-            connect(port, &PortView::stop_connection, this, &NodeView::on_stop_connection);
 
             output_ports.insert({data.out_ports_data[i].port_id, port});
         }
@@ -189,13 +187,6 @@ public:
         emit request_create_edge(port_id, node_id);
     }
 
-    void on_stop_connection(const Id& port_id)
-    {
-        Log::debug("Stop a connection to " + port_id);
-
-        emit request_stop_edge(port_id, node_id);
-    }
-
     void remove_connections(void)
     {
         for (auto in_port : input_ports)
@@ -234,7 +225,6 @@ signals:
     void node_moved(const Id& id, const QPointF& position);
     void request_remove_node(const Id& id);
     void request_create_edge(const Id& port_id, const Id& node_id);
-    void request_stop_edge(const Id& port_id, const Id& node_id);
 
 private:
     QString label;

@@ -108,7 +108,25 @@ void GraphController::on_request_remove_node(const Id& id)
     undo_stack->push(new RemoveNodeCommand(editor, id));
 }
 
-void GraphController::on_request_create_edge(const Id& from_port, const Id& from_node, const Id& to_port, const Id& to_node)
+void GraphController::on_request_create_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port)
 {
     Log::debug("View request to create an edge from [" + from_port + "](" + from_node + ") et [" + to_port + "](" + to_node + ")");
+
+    // First check which port is the ouput, from the view
+    // point, an edge is not oriented. We need to check at
+    // this level to link an output and an input.
+    if (editor->is_output(from_node, from_port) && editor->is_input(to_node, to_port))
+    {
+        // Data was sent in the good order
+        Log::debug("View ask to create the edge with data in good order");
+    }
+    else if (editor->is_input(from_node, from_port) && editor->is_output(to_node, to_port))
+    {
+        // Data was sent in the wrong order, but we will create the edge anyway
+        Log::debug("View ask to create the edge with data in bad order");
+    }
+    else
+    {
+        Log::info("Trying to link an input to an input, or an output to an output.");
+    }
 }

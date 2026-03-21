@@ -84,3 +84,13 @@ std::string GraphEditor::get_node_type(const Id& id)
 {
     return node_graph.get_node_type(id);
 }
+
+bool GraphEditor::is_input(const Id& node_id, const Id& port_id)
+{
+    return (PortDirection::Input == node_graph.get_port_direction(node_id, port_id) ? true : false );
+}
+
+bool GraphEditor::is_output(const Id& node_id, const Id& port_id)
+{
+    return (PortDirection::Output == node_graph.get_port_direction(node_id, port_id) ? true : false );
+}

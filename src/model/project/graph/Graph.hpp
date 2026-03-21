@@ -262,6 +262,8 @@ public:
 
     std::string get_node_type(const Id& id);
 
+    PortDirection get_port_direction(const Id& node_id, const Id& port_id);
+
 signals:
     void node_position_changed(const Id& id, const QPointF& pos);
     void node_has_been_delete(const Id& id);
