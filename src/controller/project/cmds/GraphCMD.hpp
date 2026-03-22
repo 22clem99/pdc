@@ -81,6 +81,8 @@ public:
     {
         setText("Move node");
         old_position = graph->get_node_position(id);
+
+        Log::debug("Create a move cmd with: old " + std::to_string(old_position.x()) + ", " + std::to_string(old_position.y()) + " et new " + std::to_string(new_position.x()) + ", " + std::to_string(new_position.y()));
     }
 
     void undo() override
@@ -130,4 +132,43 @@ private:
     Id to_node;
     Id to_port;
 };
+
+class RemoveEdgeCommand : public QUndoCommand
+{
+public:
+    RemoveEdgeCommand(GraphEditor* g, const Id& id)
+        : graph(g), edge_id(id)
+    {
+        setText("Remove edge");
+    }
+
+    void undo() override
+    {
+        data = graph->add_edge(edge_data.node_id_src,
+                               edge_data.port_id_src,
+                               edge_data.node_id_dst,
+                               edge_data.port_id_dst);
+
+        // Extract data and setup for the redo
+        edge_id = data.edge_id;
+    }
+
+    void redo() override
+    {
+        // Extract data if we need to undo the cmd
+        edge_data = graph->get_edge_data(edge_id);
+
+        // Remove edge
+        graph->remove_edge(edge_id);
+    }
+
+    EdgeData data;
+
+private:
+    GraphEditor* graph;
+    Id edge_id;
+
+    EdgeData edge_data;
+};
+
 #endif

@@ -10,6 +10,9 @@ GraphEditor::GraphEditor(void)
     QObject::connect(&node_graph, &Graph::node_position_changed, this, &GraphEditor::node_position_changed);
     QObject::connect(&node_graph, &Graph::node_has_been_delete, this, &GraphEditor::node_has_been_delete);
     QObject::connect(&node_graph, &Graph::node_has_been_added, this, &GraphEditor::node_has_been_added);
+
+    QObject::connect(&node_graph, &Graph::edge_has_been_delete, this, &GraphEditor::edge_has_been_delete);
+    QObject::connect(&node_graph, &Graph::edge_has_been_added, this, &GraphEditor::edge_has_been_added);
 }
 
 GraphEditor::GraphEditor(const nlohmann::json& j) : node_graph(j)
@@ -17,6 +20,9 @@ GraphEditor::GraphEditor(const nlohmann::json& j) : node_graph(j)
     QObject::connect(&node_graph, &Graph::node_position_changed, this, &GraphEditor::node_position_changed);
     QObject::connect(&node_graph, &Graph::node_has_been_delete, this, &GraphEditor::node_has_been_delete);
     QObject::connect(&node_graph, &Graph::node_has_been_added, this, &GraphEditor::node_has_been_added);
+
+    QObject::connect(&node_graph, &Graph::edge_has_been_delete, this, &GraphEditor::edge_has_been_delete);
+    QObject::connect(&node_graph, &Graph::edge_has_been_added, this, &GraphEditor::edge_has_been_added);
 }
 
 GraphEditor::~GraphEditor(void)
@@ -103,6 +109,11 @@ std::vector<NodeData> GraphEditor::get_nodes_data(void)
     return node_graph.get_nodes_data();
 }
 
+std::vector<EdgeData> GraphEditor::get_edges_data(void)
+{
+    return node_graph.get_edges_data();
+}
+
 std::string GraphEditor::get_node_type(const Id& id)
 {
     return node_graph.get_node_type(id);
@@ -116,4 +127,9 @@ bool GraphEditor::is_input(const Id& node_id, const Id& port_id)
 bool GraphEditor::is_output(const Id& node_id, const Id& port_id)
 {
     return (PortDirection::Output == node_graph.get_port_direction(node_id, port_id) ? true : false );
+}
+
+EdgeData GraphEditor::get_edge_data(const Id& id)
+{
+    return node_graph.get_edge_data(id);
 }

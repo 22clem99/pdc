@@ -107,7 +107,7 @@ public:
 
         Log::debug("Json parsing: edge is valid");
 
-        return false;
+        return true;
     }
 };
 

@@ -26,6 +26,8 @@ public:
 
     void on_request_create_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port);
 
+    void on_request_remove_edge(const Id& id);
+
 private:
     GraphEditor* editor;
     GraphViewer* view;
@@ -35,6 +37,9 @@ signals:
     void node_has_been_delete(const Id& id);
     void add_node_to_view(const NodeData& data);
     void ask_clear_scene(void);
+
+    void add_edge_to_view(const EdgeData& data);
+    void edge_has_been_delete(const Id& id);
 };
 
 #endif

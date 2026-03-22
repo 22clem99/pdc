@@ -191,6 +191,7 @@ void Node::set_position(const QPointF& pos)
 
     if(notifier)
     {
+        Log::debug("Node change is position, now emit a signal to update the view");
         notifier->node_position_changed(id, pos);
     }
 }

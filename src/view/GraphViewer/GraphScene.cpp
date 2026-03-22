@@ -106,7 +106,7 @@ void GraphScene::on_create_edge(const Id& port_id, const Id& node_id)
 {
     Log::debug("Start a new connection from " + port_id + " of node " + node_id);
 
-    temp_edge = new EdgeView(port_id, node_id, node_items[node_id]->get_port_view_by_id(port_id));
+    temp_edge = new TempEdgeView(port_id, node_id, node_items[node_id]->get_port_view_by_id(port_id));
     temp_edge->update_end_point(node_items[node_id]->get_port_view_by_id(port_id)->scenePos());
 
     addItem(temp_edge);
@@ -154,8 +154,6 @@ void GraphScene::on_stop_edge(const Id& port_id, const Id& node_id)
 {
     if (temp_edge != nullptr)
     {
-
-
         //Release the edge now need to instantiate a real edge
         // emit a signal to the graph controller to ask to add
         // the edge to the graph with the input and the output
@@ -168,5 +166,56 @@ void GraphScene::on_stop_edge(const Id& port_id, const Id& node_id)
         temp_edge->deleteLater();
 
         temp_edge = nullptr;
+    }
+}
+
+void GraphScene::add_edge_to_graph(const EdgeData& data)
+{
+    auto edge_view = new EdgeView(data.edge_id,
+                                  data.node_id_src,
+                                  data.port_id_dst,
+                                  data.node_id_dst,
+                                  data.port_id_dst,
+                                  node_items[data.node_id_src]->get_port_view_by_id(data.port_id_src),
+                                  node_items[data.node_id_dst]->get_port_view_by_id(data.port_id_dst));
+
+    addItem(edge_view);
+
+    edge_items[data.edge_id] = edge_view;
+
+    // Link the edge created to nodes
+    node_items[data.node_id_src]->link_edge(data.edge_id, edge_view);
+    node_items[data.node_id_dst]->link_edge(data.edge_id, edge_view);
+
+    // Connect edge signals
+    connect(edge_view, &EdgeView::request_remove_edge, this, &GraphScene::request_remove_edge);
+}
+
+
+void GraphScene::remove_edge_to_graph(const Id& id)
+{
+    Log::debug("Receive a signal to remove the edge " + id + " of the view");
+
+    auto it = edge_items.find(id);
+    if (it != edge_items.end())
+    {
+        auto item = it->second;
+
+        // Remove item from nodes edge linked list
+        node_items[item->get_node_src()]->unlink_edge(it->first);
+        node_items[item->get_node_dst()]->unlink_edge(it->first);
+
+        // Disconnect signals
+        disconnect(item, nullptr, nullptr, nullptr);
+        disconnect(nullptr, nullptr, item, nullptr);
+
+        removeItem(item);
+        edge_items.erase(it);
+
+        item->deleteLater();
+    }
+    else
+    {
+        Log::error("View receive a signal to remove the node " + id + " of the view but it doen not exist in the view");
     }
 }

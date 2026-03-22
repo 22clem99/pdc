@@ -62,7 +62,6 @@ public:
 
         }
 
-
         // Then print all output ports
         auto output_ports_location = get_ports_locations(nb_out, size_rect);
 
@@ -116,6 +115,7 @@ public:
         // Catch only left click event
         if (event->button() == Qt::LeftButton)
         {
+            Log::debug("Start a new click on node");
             start_pos = pos();
             QGraphicsObject::mousePressEvent(event);
         }
@@ -132,7 +132,8 @@ public:
         // Catch only left click event
         if (event->button() == Qt::LeftButton)
         {
-            QGraphicsObject::mouseReleaseEvent(event);
+            Log::debug("Stop a new click on node");
+            QGraphicsItem::mouseReleaseEvent(event);
             if (pos() != start_pos)
             {
                 emit node_moved(node_id, pos());
@@ -221,6 +222,34 @@ public:
         return nullptr;
     }
 
+    void link_edge(const Id& edge_id, EdgeView* edge)
+    {
+        linked_edges[edge_id] = edge;
+    }
+
+    void unlink_edge(const Id& id)
+    {
+        linked_edges.erase(id);
+    }
+
+    void update_linked_edges(void)
+    {
+        for (auto [id, edge] : linked_edges)
+        {
+            edge->update_path();
+        }
+    }
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value)
+    {
+        if (change == QGraphicsItem::ItemPositionHasChanged)
+        {
+            update_linked_edges();
+        }
+
+        return QGraphicsItem::itemChange(change, value);
+    }
+
 signals:
     void node_moved(const Id& id, const QPointF& position);
     void request_remove_node(const Id& id);
@@ -234,6 +263,8 @@ private:
 
     std::unordered_map<Id, PortView*> input_ports;
     std::unordered_map<Id, PortView*> output_ports;
+
+    std::unordered_map<Id, EdgeView*> linked_edges;
 };
 
 

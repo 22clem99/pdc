@@ -16,6 +16,7 @@ Graph::Graph(const nlohmann::json& j)
     for (const auto& node : j["nodes"])
     {
         std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_json(node["node_type"], node, this);
+        QObject::connect(new_node->get_notifier(), &NodeNotifier::node_position_changed, this, &Graph::node_position_changed);
 
         if(new_node == nullptr) {
            Log::error("Can't allocate node of type \"" + node["node_type"].get<std::string>() + "\"");
@@ -223,7 +224,10 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     to_input_obj.add_connected_edge(new_edge_id);
 
     analysis.analysis_dirty = true;
+
+    // Trigger the node view changement to add the new node
     auto edge_data = EdgeData(new_edge_id, from_node, from_output, to_node, to_input);
+    emit edge_has_been_added(edge_data);
 
     return new_edge_id;
 }
@@ -249,6 +253,10 @@ bool Graph::disconnect(const Id& edge_id)
     {
         Log::warning("Unable to remove links on nodes\"" + edge_obj->from_node + "\" and \"" + edge_obj->to_node + "\", will continue to remove the edge but with risk");
     }
+
+    // Remove Qt signals
+    // QObject::disconnect(edges[edge_id].get(), nullptr, nullptr, nullptr);
+    emit edge_has_been_delete(edge_id);
 
     // Then erase the edge from the edge map
     if (edges.erase(edge_id) != 1)
@@ -713,6 +721,22 @@ std::vector<NodeData> Graph::get_nodes_data(void)
     return data;
 }
 
+std::vector<EdgeData> Graph::get_edges_data(void)
+{
+    std::vector<EdgeData> data;
+
+    for (auto& [id, edge] : edges)
+    {
+        data.push_back(EdgeData{id,
+                                edge->from_node,
+                                edge->from_output,
+                                edge->to_node,
+                                edge->to_input});
+    }
+
+    return data;
+}
+
 std::string Graph::get_node_type(const Id& id)
 {
     return nodes[id]->get_class_name();
@@ -746,4 +770,17 @@ PortDirection Graph::get_port_direction(const Id& node_id, const Id& port_id)
     }
 
     return dir;
+}
+
+
+EdgeData Graph::get_edge_data(const Id& id)
+{
+    auto edge = edges[id].get();
+
+
+    return EdgeData{id,
+                    edge->from_node,
+                    edge->from_output,
+                    edge->to_node,
+                    edge->to_input};
 }

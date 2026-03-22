@@ -68,7 +68,9 @@ public:
     QPointF get_node_position(const Id& id);
 
     std::vector<NodeData> get_nodes_data(void);
-    // const std::vector<Edge*>& Edges() const
+    std::vector<EdgeData> get_edges_data(void);
+
+    EdgeData get_edge_data(const Id& id);
 
     std::string get_node_type(const Id& id);
 
@@ -80,6 +82,9 @@ signals:
     void node_position_changed(const Id& id, const QPointF& pos);
     void node_has_been_delete(const Id& id);
     void node_has_been_added(const NodeData& data);
+
+    void edge_has_been_delete(const Id& id);
+    void edge_has_been_added(const EdgeData& data);
 };
 
 #endif

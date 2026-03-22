@@ -15,11 +15,14 @@ GraphController::GraphController(GraphEditor* model, GraphViewer* view, QUndoSta
     connect(view->scene, &GraphScene::request_remove_node, this, &GraphController::on_request_remove_node);
     connect(this, &GraphController::ask_clear_scene, view->scene, &GraphScene::clear_scene);
     connect(view->scene, &GraphScene::request_new_edge, this, &GraphController::on_request_create_edge);
+    connect(view->scene, &GraphScene::request_remove_edge, this, &GraphController::on_request_remove_edge);
 
     // Connect event from the node editor to the view
     connect(editor, &GraphEditor::node_has_been_added, view->scene, &GraphScene::add_node_to_graph);
     connect(editor, &GraphEditor::node_has_been_delete, view->scene, &GraphScene::remove_node_to_graph);
     connect(editor, &GraphEditor::node_position_changed, view->scene, &GraphScene::update_node_view);
+    connect(editor, &GraphEditor::edge_has_been_added, view->scene, &GraphScene::add_edge_to_graph);
+    connect(editor, &GraphEditor::edge_has_been_delete, view->scene, &GraphScene::remove_edge_to_graph);
 
     // Update the view there
     sync_view_model();
@@ -90,7 +93,7 @@ void GraphController::sync_view_model(void)
 {
     view->scene->clear_scene();
 
-    // Ask to the model the graph
+    // Ask to the view to add nodes
     auto nodes_data = editor->get_nodes_data();
 
     for (auto data : nodes_data)
@@ -98,7 +101,13 @@ void GraphController::sync_view_model(void)
         view->scene->add_node_to_graph(data);
     }
 
-    // Add here edges
+    // Ask to the view to add edges
+    auto edges_data = editor->get_edges_data();
+
+    for (auto data : edges_data)
+    {
+        view->scene->add_edge_to_graph(data);
+    }
 }
 
 void GraphController::on_request_remove_node(const Id& id)
@@ -178,4 +187,13 @@ void GraphController::on_request_create_edge(const Id& from_node, const Id& from
     auto cmd = new AddEdgeCommand(editor, src_node, src_port, dst_node, dst_port);
     // push the cmd to the undo stack
     undo_stack->push(cmd);
+}
+
+
+
+void GraphController::on_request_remove_edge(const Id& id)
+{
+    Log::debug("View request to remove the node " + id);
+
+    undo_stack->push(new RemoveEdgeCommand(editor, id));
 }
