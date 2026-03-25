@@ -47,7 +47,6 @@ void GraphController::on_open_node_picker(const QPointF& scene_pos)
     if (dialog.exec() != QDialog::Accepted)
         return;
 
-
     auto selected_nodes = dialog.get_selected_node_id();
 
     for (auto node_type : selected_nodes)

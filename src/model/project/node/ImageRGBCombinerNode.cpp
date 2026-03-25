@@ -25,6 +25,11 @@ ImageRGBCombinerNode::ImageRGBCombinerNode(QObject* parent) : Node(port_defs, pa
     // Nothing to do here
 }
 
+ImageRGBCombinerNode::ImageRGBCombinerNode(const NodeSnapshot& snapshot, QObject* parent) : Node(snapshot, port_defs, parent)
+{
+    // Nothing to do here
+}
+
 ImageRGBCombinerNode::ImageRGBCombinerNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here

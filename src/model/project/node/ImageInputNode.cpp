@@ -22,6 +22,11 @@ ImageInputNode::ImageInputNode(QObject* parent) : Node(port_defs, parent)
     // Nothing to do here
 }
 
+ImageInputNode::ImageInputNode(const NodeSnapshot& snapshot, QObject* parent) : Node(snapshot, port_defs, parent)
+{
+    // Nothing to do here
+}
+
 ImageInputNode::ImageInputNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here

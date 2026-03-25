@@ -49,6 +49,8 @@ public:
      */
     ImageRGBCombinerNode(QObject* parent = nullptr);
 
+    ImageRGBCombinerNode(const NodeSnapshot& snapshot, QObject* parent = nullptr);
+
     ImageRGBCombinerNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();

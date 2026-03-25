@@ -39,6 +39,11 @@ public:
 
         Log::debug("ID generate id=\"" + id + "\"");
     }
+
+    Identifiable(const Id& existing_id) {
+        id = existing_id;
+        Log::debug("Set an existing ID id=\"" + id + "\"");
+    }
 };
 
 #endif

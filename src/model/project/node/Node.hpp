@@ -22,6 +22,7 @@
 #include <utils/JSONPrintable.hpp>
 #include "NodeNotifier.hpp"
 #include <dto/NodeData.hpp>
+#include "../graph/Snapshot.hpp"
 
 /**
  * @brief Kind of node
@@ -69,10 +70,13 @@ public:
     NodeNotifier* notifier = nullptr;
 
     Node(QObject* parent = nullptr) : QObject(parent) {}
+    Node(const NodeSnapshot& snapshot, QObject* parent = nullptr) : QObject(parent) {}
     Node(const nlohmann::json& j, QObject* parent = nullptr) : QObject(parent) {}
+
 
     Node(const std::vector<PortDef> ports_def, QObject* parent = nullptr);
     Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObject* parent = nullptr);
+    Node(const NodeSnapshot& snapshot, const std::vector<PortDef> ports_def, QObject* parent = nullptr);
 
     virtual ~Node() = default;
 
@@ -141,6 +145,10 @@ public:
     std::vector<PortData> get_ports_data(PortDirection dir);
 
     virtual NodeKind get_kind(void) = 0;
+
+    NodeSnapshot get_snapshot(void);
+
+    std::map<std::string, PortSnapshot> get_ports_snapshot(void);
 signals:
     void position_changed(const std::string& id, const QPointF& pos);
 };

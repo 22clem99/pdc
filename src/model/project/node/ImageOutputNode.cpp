@@ -22,6 +22,11 @@ ImageOutputNode::ImageOutputNode(QObject* parent) : Node(port_defs, parent)
     // Nothing to do here
 }
 
+ImageOutputNode::ImageOutputNode(const NodeSnapshot& snapshot, QObject* parent) : Node(snapshot, port_defs, parent)
+{
+    // Nothing to do here
+}
+
 ImageOutputNode::ImageOutputNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here

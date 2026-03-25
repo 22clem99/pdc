@@ -38,6 +38,12 @@ typedef std::function<std::unique_ptr<Node>(QObject*)> CreatorFuncNode;
 typedef std::function<std::unique_ptr<Node>(const nlohmann::json&, QObject*)> CreatorFuncNodeJson;
 
 /**
+ * @brief This define is just a alias for the allocation method call with snapshot function
+ *
+ */
+typedef std::function<std::unique_ptr<Node>(const NodeSnapshot&, QObject*)> CreatorFuncNodeSnapshot;
+
+/**
  * @brief This define is just to rename more consisly the JSON test method
  *
  */
@@ -52,6 +58,7 @@ class NodeProperty
 public:
     CreatorFuncNode factory;
     CreatorFuncNodeJson factory_json;
+    CreatorFuncNodeSnapshot factory_snapshot;
     JsonValidator json_validator;
 
     NodeDescriptor descriptor;

@@ -41,6 +41,8 @@ public:
      */
     ImageOutputNode(QObject* parent = nullptr);
 
+    ImageOutputNode(const NodeSnapshot& snapshot, QObject* parent = nullptr);
+
     ImageOutputNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();

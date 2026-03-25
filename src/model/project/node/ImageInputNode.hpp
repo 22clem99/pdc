@@ -42,7 +42,10 @@ public:
      */
     ImageInputNode(QObject* parent = nullptr);
 
+    ImageInputNode(const NodeSnapshot& snapshot, QObject* parent = nullptr);
+
     ImageInputNode(const nlohmann::json& j, QObject* parent = nullptr);
+
 
     static std::string class_name();
 

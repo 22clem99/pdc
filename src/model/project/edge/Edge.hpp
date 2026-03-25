@@ -15,6 +15,7 @@
 #include <utils/Tab.hpp>
 #include <utils/JSONPrintable.hpp>
 #include <utils/JSONWrapper.hpp>
+#include "../graph/Snapshot.hpp"
 
 /**
  * @brief Object Edge each edge created is unique
@@ -40,12 +41,14 @@ public:
      * The Edge object does not check anything,
      * verifications must be done in the graph level
      */
-    Edge(Id from_n, Id from_o, Id to_n, Id to_i)
+    Edge(const Id& from_n, const Id& from_o, const Id& to_n, const Id& to_i) : Identifiable()
     {
-        from_node = from_n;
-        from_output = from_o;
-        to_node = to_n;
-        to_input = to_i;
+        init(from_n, from_o, to_n, to_i);
+    }
+
+    Edge(const Id& from_n, const Id& from_o, const Id& to_n, const Id& to_i, const Id& existing_id) : Identifiable(existing_id)
+    {
+        init(from_n, from_o, to_n, to_i);
     }
 
     Edge(const nlohmann::json& j)
@@ -57,6 +60,13 @@ public:
         to_input    = j["to_input"].get<std::string>();
     }
 
+    void init(Id from_n, Id from_o, Id to_n, Id to_i)
+    {
+        from_node = from_n;
+        from_output = from_o;
+        to_node = to_n;
+        to_input = to_i;
+    }
 
     ~Edge() = default;
 
@@ -108,6 +118,15 @@ public:
         Log::debug("Json parsing: edge is valid");
 
         return true;
+    }
+
+    EdgeSnapshot get_snapshot(void)
+    {
+        return EdgeSnapshot(id,
+                            from_node,
+                            from_output,
+                            to_node,
+                            to_input);
     }
 };
 

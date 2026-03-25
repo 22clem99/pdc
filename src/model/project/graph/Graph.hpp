@@ -19,7 +19,7 @@
 #include <dto/EdgeData.hpp>
 
 /**
- * @brief Provide the result abstraction result of the graph analyze
+ * @brief Provide an abstraction result of the graph analyze
  *
  */
 class GraphAnalyzer
@@ -46,6 +46,10 @@ class Graph : public QObject
     Q_OBJECT
 private:
     GraphAnalyzer analysis;
+
+    std::optional<Id> head_id;
+    std::optional<Id> tail_id;
+
 public:
     /**
      * @brief Map of nodes
@@ -57,15 +61,30 @@ public:
      */
     std::map<Id, std::unique_ptr<Edge>> edges;
 
-    std::optional<Id> head_id;
-    std::optional<Id> tail_id;
-
+    /**
+     * @brief Construct a dafault Graph
+     *
+     */
     Graph() = default;
+
+    /**
+     * @brief Construct a new Graph based on a JSON representation
+     *
+     * @param j
+     */
     Graph(const nlohmann::json& j);
 
     /**
      *  Nodes manipulation
      */
+
+    /**
+     * @brief test if a node can be instantiate
+     *
+     * @param node_type type of node to be add
+     * @return NodeCreationTestStatus status of the test
+     */
+    NodeCreationTestStatus can_add_node(const std::string& node_type);
 
     /**
      * @brief Allocate a node and store it in the graph
@@ -75,7 +94,21 @@ public:
      */
     Id add_node(const std::string& node_type, const QPointF& pos);
 
-    NodeCreationTestStatus can_add_node(const std::string& node_type);
+    /**
+     * @brief Allocate a node and store it in the graph
+     *
+     * @param node_type node name to allocate, it will be used by the factory
+     * @return Id generate for this new Node
+     */
+    Id add_node_snapshot(const NodeSnapshot& snapshot);
+
+    /**
+     * @brief
+     *
+     * @param node_type
+     * @param pos
+     */
+    void init_node(Node* node, const std::string& node_type, const QPointF& pos);
 
     /**
      * @brief remove the node and edges bind to it
@@ -116,6 +149,17 @@ public:
      */
 
     /**
+     * @brief test if an edge can be instantiate
+     *
+     * @param from_node node ID source of the edge
+     * @param from_port port ID source of the edge
+     * @param to_node node ID destination of the edge
+     * @param to_port port ID destination of the edge
+     * @return * EdgeCreationTestStatus
+     */
+    EdgeCreationTestStatus can_connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input);
+
+    /**
      * @brief connect two nodes with an edge
      *
      * @param from_node edge start node
@@ -124,7 +168,7 @@ public:
      * @param to_input input from the end node
      * @return Id of the new edge create, if the edge can't be create, for any reason, return nullid
      */
-    Id connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input);
+    Id connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input, const Id& existing_id = nullid);
 
     /**
      * @brief remove an edge by ID, it will also remove reference in the node
@@ -134,8 +178,6 @@ public:
      * @return false if the edge is not successfully removed
      */
     bool disconnect(const Id& edge_id);
-
-    EdgeCreationTestStatus can_connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input);
 
     /**
      * @brief Remove all edges connected to a node
@@ -241,6 +283,10 @@ public:
     std::vector<Id> get_connections(const Id& node, const Id& PortID);
 
     /**
+     * Graph representation access
+     */
+
+    /**
      * @brief Get the string representation of the graph
      *
      * @return std::string graph representation
@@ -255,28 +301,109 @@ public:
      */
     std::string get_str(const unsigned int tab);
 
-    // Method to construc recursivly the json project file
+    /**
+     * @brief construct recursively a JSON representation of the graph
+     *
+     * @return nlohmann::json
+     */
     nlohmann::json to_json(void);
 
+    /**
+     * @brief used to validate a JSON graph representation
+     *
+     * @param j JSON to be tested
+     * @return true the JSON is valid
+     * @return false the JSON is not valid
+     */
     static bool is_json_valid(const nlohmann::json& j);
 
+    /**
+     * @brief Get nodes representation structure
+     *
+     * @return std::vector<NodeData> representation of all nodes defined by DTO
+     */
     std::vector<NodeData> get_nodes_data(void);
 
+    /**
+     * @brief Get node representation structure
+     *
+     * @param id ID of the node to get the representation
+     * @return EdgeData representation of an edges defined by DTO
+     */
+    NodeData get_node_data(const Id& id);
+
+    /**
+     * @brief Get edges representation structure
+     *
+     * @return std::vector<EdgeData> representation of all edges defined by DTO
+     */
     std::vector<EdgeData> get_edges_data(void);
 
-    std::string get_node_type(const Id& id);
-
-    PortDirection get_port_direction(const Id& node_id, const Id& port_id);
-
+    /**
+     * @brief Get edge representation structure
+     *
+     * @param id ID of the edge to get the edge representation
+     * @return EdgeData representation of an edges defined by DTO
+     */
     EdgeData get_edge_data(const Id& id);
 
-signals:
-    void node_position_changed(const Id& id, const QPointF& pos);
-    void node_has_been_delete(const Id& id);
+    /**
+     * @brief Get type of a specific node
+     *
+     * @param id
+     * @return std::string
+     */
+    std::string get_node_type(const Id& id);
+
+    /**
+     * @brief Get the port direction of a specific port of a node
+     *
+     * @param node_id node which contain the port
+     * @param port_id port to get the direction from
+     * @return PortDirection
+     */
+    PortDirection get_port_direction(const Id& node_id, const Id& port_id);
+
+    NodeSnapshot get_node_snapshot(const Id& id);
+
+    EdgeSnapshot get_edge_snapshot(const Id& id);
+
+    signals:
+    /**
+     * @brief Signal to aware the controller that a node has been added to the model
+     *
+     * @param data representation of the node added defined by DTO
+     */
     void node_has_been_added(const NodeData& data);
 
-    void edge_has_been_delete(const Id& id);
+    /**
+     * @brief Signal to aware the controller that a node position has been changed
+     *
+     * @param id node to be update the view
+     * @param pos new possition of the node
+     */
+    void node_position_changed(const Id& id, const QPointF& pos);
+
+    /**
+     * @brief Signal to aware the controller that a node has been remove
+     *
+     * @param id ID of the node removed
+     */
+    void node_has_been_delete(const Id& id);
+
+    /**
+     * @brief Signal to aware the controller that an edge has been added to the model
+     *
+     * @param data representation of the edge added defined by DTO
+     */
     void edge_has_been_added(const EdgeData& data);
+
+    /**
+     * @brief Signal to aware the controller that an edge has been removed from the model
+     *
+     * @param id ID of the edge removed
+     */
+    void edge_has_been_delete(const Id& id);
 };
 
 #endif

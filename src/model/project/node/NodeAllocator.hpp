@@ -46,6 +46,9 @@ public:
      */
     static std::unique_ptr<Node> alloc_node(const std::string& node_type, Graph* g);
 
+
+    static std::unique_ptr<Node> alloc_node_snapshot(const NodeSnapshot& snap, Graph* g);
+
     /**
      * @brief Method to allocate an object of kind Node registerd in the factory
      *

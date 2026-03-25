@@ -48,6 +48,8 @@ public:
      */
     ImageRGBSplitterNode(QObject* parent = nullptr);
 
+    ImageRGBSplitterNode(const NodeSnapshot& snapshot, QObject* parent = nullptr);
+
     ImageRGBSplitterNode(const nlohmann::json& j, QObject* parent = nullptr);
 
     static std::string class_name();

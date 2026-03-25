@@ -8,7 +8,7 @@
 #include "utils/JSONWrapper.hpp"
 #include <QString>
 
-Node::Node(const std::vector<PortDef> ports_def, QObject* parent) : QObject(parent)
+Node::Node(const std::vector<PortDef> ports_def, QObject* parent) : Identifiable(), QObject(parent)
 {
     for (const auto& def : ports_def)
     {
@@ -18,11 +18,21 @@ Node::Node(const std::vector<PortDef> ports_def, QObject* parent) : QObject(pare
     }
 }
 
-Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObject* parent) : QObject(parent)
+Node::Node(const NodeSnapshot& snapshot, const std::vector<PortDef> ports_def, QObject* parent) : Identifiable(snapshot.node_id), QObject(parent)
+{
+    // for (const auto [alias, port_snapshot] : snapshot.ports_snapshot)
+    for (const auto& def : ports_def)
+    {
+        Log::debug("Ask to create a port (alias: " + def.alias + ", id: " + snapshot.ports_snapshot.at(def.alias).port_id + ")");
+        auto port = def.creator_id(snapshot.ports_snapshot.at(def.alias).port_id);
+
+        ports.emplace(port->get_id(), std::move(port));
+    }
+}
+
+Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObject* parent) : Identifiable(j["id"]), QObject(parent)
 {
     Log::debug(" Will tried to decode json: \n" + j.dump(4));
-
-    id = j["id"];
 
     for (auto port : j["ports"])
     {
@@ -226,4 +236,26 @@ std::vector<PortData> Node::get_ports_data(PortDirection dir)
     }
 
     return data;
+}
+
+NodeSnapshot Node::get_snapshot(void)
+{
+    return NodeSnapshot(id,
+                        get_class_name(),
+                        get_position(),
+                        get_ports_snapshot());
+}
+
+std::map<std::string, PortSnapshot> Node::get_ports_snapshot(void)
+{
+    std::map<std::string, PortSnapshot> ports_snapshot;
+
+    for (auto& [id, port] : ports)
+    {
+        auto snapshot = port->get_snapshot();
+
+        ports_snapshot[snapshot.alias] = snapshot;
+    }
+
+    return ports_snapshot;
 }

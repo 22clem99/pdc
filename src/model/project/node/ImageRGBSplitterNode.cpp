@@ -25,6 +25,11 @@ ImageRGBSplitterNode::ImageRGBSplitterNode(QObject* parent) : Node(port_defs, pa
     // Nothing to do here
 }
 
+ImageRGBSplitterNode::ImageRGBSplitterNode(const NodeSnapshot& snapshot, QObject* parent) : Node(snapshot, port_defs, parent)
+{
+    // Nothing to do here
+}
+
 ImageRGBSplitterNode::ImageRGBSplitterNode(const nlohmann::json& j, QObject* parent) : Node(j, port_defs, parent)
 {
     // Nothing to do here

@@ -20,6 +20,7 @@
 #include <utils/Tab.hpp>
 #include <utils/JSONPrintable.hpp>
 #include <utils/Types.hpp>
+#include "../graph/Snapshot.hpp"
 
 /**
  * @brief describe the direction of the Port
@@ -204,6 +205,8 @@ public:
     virtual void set_id(Id new_id) = 0;
 
     virtual PortTypes get_port_type(void) const = 0;
+
+    virtual PortSnapshot get_snapshot(void) const = 0;
 };
 
 /**
@@ -220,7 +223,17 @@ class Port : public Identifiable<Port<T>>, public IPortBase
 public:
 using Identifiable<Port<T>>::id;
 
-    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias)
+    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias) : Identifiable<Port<T>>()
+    {
+        init(p_dir, p_mode, alias);
+    }
+
+    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias, const Id& existing_id) : Identifiable<Port<T>>(existing_id)
+    {
+        init(p_dir, p_mode, alias);
+    }
+
+    void init(PortDirection p_dir, ConnectionMode p_mode, std::string alias)
     {
         data = T();
         dir = p_dir;
@@ -373,15 +386,24 @@ using Identifiable<Port<T>>::id;
     {
         return T::get_port_type();
     }
+
+    PortSnapshot get_snapshot(void) const override
+    {
+        return PortSnapshot(id,
+                            port_alias);
+    }
 };
 
 struct PortDef
 {
     std::string alias;
     std::function<std::unique_ptr<IPortBase>()> creator;
+    std::function<std::unique_ptr<IPortBase>(const Id&)> creator_id;
 };
 
 #define NODE_PORT(alias, type, dir, mode) \
-    { alias, [](){ return std::make_unique<Port<type>>(dir, mode, alias); } }
+    { alias, \
+     [](){ return std::make_unique<Port<type>>(dir, mode, alias); },\
+     [](const Id& port_id){ return std::make_unique<Port<type>>(dir, mode, alias, port_id); }, }
 
 #endif

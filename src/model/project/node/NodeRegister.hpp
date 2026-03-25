@@ -27,6 +27,7 @@ public:
             NodeProperty{
                 [](QObject* parent){return std::make_unique<node>(parent);},
                 [](const nlohmann::json& j, QObject* parent){return std::make_unique<node>(j, parent);},
+                [](const NodeSnapshot& snap, QObject* parent){return std::make_unique<node>(snap, parent);},
                 [](const nlohmann::json& j){return node::is_json_valid(j);},
                 NodeDescriptor{
                     node::kind,

@@ -38,39 +38,41 @@ class RemoveNodeCommand : public QUndoCommand
 {
 public:
     RemoveNodeCommand(GraphEditor* g, const Id& id)
-        : graph(g), node_id(id)
+        : graph(g)
     {
         setText("Remove node");
+
+        // Extract snapshot data before to remove nodes and edges
+        node_snapshot = graph->get_node_snapshot(id);
+        edges_snapshot = graph->get_edges_snapshot_linked_to_node(id);
     }
 
     void undo() override
     {
-        data = graph->add_node(node_type, position);
+        // First roleback the node removing
+        data = graph->add_node_snapshot(node_snapshot);
 
-        // Extract data and setup for the redo
-        node_id = data.node_id;
+        // Then recreate all edges by snapshot
+        for (auto edge : edges_snapshot)
+        {
+            graph->add_edge_snapshot(edge);
+        }
     }
 
     void redo() override
     {
-        // Extract data by ID
-        position = graph->get_node_position(node_id);
-        node_type = graph->get_node_type(node_id);
-
-        // When edge will be managed, we will need to rewired
-        // all in the undo method
-
-        graph->remove_node(node_id);
+        // Call the remove node function, this will also remove edges
+        // wired to the node
+        graph->remove_node(node_snapshot.node_id);
     }
 
     NodeData data;
 
 private:
     GraphEditor* graph;
-    Id node_id;
-    std::string node_type;
-    QPointF position;
 
+    NodeSnapshot node_snapshot;
+    std::vector<EdgeSnapshot> edges_snapshot;//edges_linked_to_node;
 };
 
 class MoveNodeCommand : public QUndoCommand
@@ -140,26 +142,20 @@ public:
         : graph(g), edge_id(id)
     {
         setText("Remove edge");
+
+        // Extract snapshot data before to remove nodes and edges
+        edge_data = graph->get_edge_snapshot(id);
     }
 
     void undo() override
     {
-        data = graph->add_edge(edge_data.node_id_src,
-                               edge_data.port_id_src,
-                               edge_data.node_id_dst,
-                               edge_data.port_id_dst);
-
-        // Extract data and setup for the redo
-        edge_id = data.edge_id;
+        data = graph->add_edge_snapshot(edge_data);
     }
 
     void redo() override
     {
-        // Extract data if we need to undo the cmd
-        edge_data = graph->get_edge_data(edge_id);
-
         // Remove edge
-        graph->remove_edge(edge_id);
+        graph->remove_edge(edge_data.edge_id);
     }
 
     EdgeData data;
@@ -168,7 +164,7 @@ private:
     GraphEditor* graph;
     Id edge_id;
 
-    EdgeData edge_data;
+    EdgeSnapshot edge_data;
 };
 
 #endif

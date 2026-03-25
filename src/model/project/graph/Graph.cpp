@@ -15,7 +15,10 @@ Graph::Graph(const nlohmann::json& j)
     // Iterate on each node
     for (const auto& node : j["nodes"])
     {
+        // Instantiate the node with the allocator
         std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_json(node["node_type"], node, this);
+
+        // Link all Qt signals
         QObject::connect(new_node->get_notifier(), &NodeNotifier::node_position_changed, this, &Graph::node_position_changed);
 
         if(new_node == nullptr) {
@@ -45,6 +48,7 @@ Graph::Graph(const nlohmann::json& j)
     // Iterate on each edge
     for (const auto& edge : j["edges"])
     {
+        // Instatiate edge
         auto new_edge = std::make_unique<Edge>(edge);
 
         if(new_edge == nullptr) {
@@ -72,30 +76,50 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
     // Get factory configuration by the name
     std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
 
-    if (!prop) {
-        Log::error("Can't allocate node of type \"" + node_type +"\"");
-        return nullid;
-    }
-
-    if (prop->descriptor.kind == NodeKind::Head && head_id) {
-        Log::error("Can't allocate node of type \"" + node_type + "\", head node already exist");
-        return nullid;
-    }
-
-    if (prop->descriptor.kind == NodeKind::Tail && tail_id) {
-        Log::error("Can't allocate node of type \"" + node_type + "\", tail node already exist");
-        return nullid;
-    }
-
     // Allocation is done there
     std::unique_ptr<Node> new_node = NodeAllocator::alloc_node(node_type, this);
     QObject::connect(new_node->get_notifier(), &NodeNotifier::node_position_changed, this, &Graph::node_position_changed);
 
-    if(new_node == nullptr) {
+    init_node(new_node.get(), node_type, pos);
+
+    Id new_node_id = new_node->id;
+    nodes.insert({new_node->id, std::move(new_node)});
+
+    // Trigger the node view changement to add the new node
+    NodeData data = get_node_data(new_node_id);
+    emit node_has_been_added(data);
+
+    return new_node_id;
+}
+
+Id Graph::add_node_snapshot(const NodeSnapshot& snapshot)
+{
+    // Allocation is done there
+    std::unique_ptr<Node> new_node = NodeAllocator::alloc_node_snapshot(snapshot, this);
+    QObject::connect(new_node->get_notifier(), &NodeNotifier::node_position_changed, this, &Graph::node_position_changed);
+
+    init_node(new_node.get(), snapshot.node_type, snapshot.position);
+
+    Id new_node_id = new_node->id;
+    nodes.insert({new_node->id, std::move(new_node)});
+
+    // Trigger the node view changement to add the new node
+    NodeData data = get_node_data(new_node_id);
+    emit node_has_been_added(data);
+
+    return new_node_id;
+}
+
+void Graph::init_node(Node* node, const std::string& node_type, const QPointF& pos)
+{
+    // Get factory configuration by the name
+    std::optional<NodeProperty> prop = NodeAllocator::get_property(node_type);
+
+    if(node == nullptr) {
         Log::error("Can't allocate node of type \"" + node_type + "\"");
     }
 
-    Id id = new_node->id;
+    Id id = node->id;
 
     if(prop->descriptor.kind == NodeKind::Head) {
         head_id = id;
@@ -107,23 +131,9 @@ Id Graph::add_node(const std::string& node_type, const QPointF& pos)
         Log::debug("The node:\"" + id + "\" is set as the tail");
     }
 
-    new_node->position = pos;
-
-    nodes.insert({id, std::move(new_node)});
-
-    // Trigger the node view changement to add the new node
-    NodeData data;
-    data.node_id = id;
-    data.pretty_print = NodeAllocator::get_pretty_print(node_type);
-    data.position = pos;
-    data.in_ports_data = nodes[id]->get_ports_data(PortDirection::Input);
-    data.out_ports_data = nodes[id]->get_ports_data(PortDirection::Output);
-
-    emit node_has_been_added(data);
+    node->position = pos;
 
     analysis.analysis_dirty = true;
-
-    return id;
 }
 
 NodeCreationTestStatus Graph::can_add_node(const std::string& node_type)
@@ -199,7 +209,7 @@ bool Graph::has_edge(const Id& edge_id)
     return edges.find(edge_id) != edges.end();
 }
 
-Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input)
+Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node, const Id& to_input, const Id& existing_id)
 {
     auto& from_node_obj = *nodes[from_node];
     auto& to_node_obj = *nodes[to_node];
@@ -207,8 +217,19 @@ Id Graph::connect(const Id& from_node, const Id& from_output, const Id& to_node,
     auto& from_output_obj = *from_node_obj.ports[from_output];
     auto& to_input_obj = *to_node_obj.ports[to_input];
 
+    std::unique_ptr<Edge> new_edge;
+
+    Log::debug("Try to connect with the existing_id= \"" + existing_id + "\"");
+
     // All test OK, now we can create the edge
-    auto new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input);
+    if (existing_id != nullid)
+    {
+        new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input, existing_id);
+    }
+    else
+    {
+        new_edge = std::make_unique<Edge>(from_node, from_output, to_node, to_input);
+    }
 
     if(new_edge == nullptr) {
         Log::error("Can't allocate edge");
@@ -539,7 +560,7 @@ std::vector<Id> Graph::get_incoming_edges(const Id& node_id)
 
         if (!port_conn_edges.empty())
         {
-            edges_id.insert(port_conn_edges.end(), port_conn_edges.begin(), port_conn_edges.end());
+            edges_id.insert(edges_id.end(), port_conn_edges.begin(), port_conn_edges.end());
         }
     }
 
@@ -559,7 +580,7 @@ std::vector<Id> Graph::get_outgoing_edges(const Id& node_id)
 
         if (!port_conn_edges.empty())
         {
-            edges_id.insert(port_conn_edges.end(), port_conn_edges.begin(), port_conn_edges.end());
+            edges_id.insert(edges_id.end(), port_conn_edges.begin(), port_conn_edges.end());
         }
     }
 
@@ -721,6 +742,15 @@ std::vector<NodeData> Graph::get_nodes_data(void)
     return data;
 }
 
+NodeData Graph::get_node_data(const Id& id)
+{
+    return NodeData{id,
+                    NodeAllocator::get_pretty_print(nodes[id]->get_class_name()),
+                    nodes[id]->get_position(),
+                    nodes[id]->get_ports_data(PortDirection::Input),
+                    nodes[id]->get_ports_data(PortDirection::Output)};
+}
+
 std::vector<EdgeData> Graph::get_edges_data(void)
 {
     std::vector<EdgeData> data;
@@ -772,7 +802,6 @@ PortDirection Graph::get_port_direction(const Id& node_id, const Id& port_id)
     return dir;
 }
 
-
 EdgeData Graph::get_edge_data(const Id& id)
 {
     auto edge = edges[id].get();
@@ -783,4 +812,14 @@ EdgeData Graph::get_edge_data(const Id& id)
                     edge->from_output,
                     edge->to_node,
                     edge->to_input};
+}
+
+NodeSnapshot Graph::get_node_snapshot(const Id& id)
+{
+    return nodes[id]->get_snapshot();
+}
+
+EdgeSnapshot Graph::get_edge_snapshot(const Id& id)
+{
+    return edges[id]->get_snapshot();
 }
