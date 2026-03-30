@@ -114,3 +114,8 @@ bool PDCState::open_project(const std::filesystem::path& path)
 
     return true;
 }
+
+ProjectData PDCState::get_project_data(void)
+{
+    return project->get_dto();
+}

@@ -40,9 +40,7 @@ Node::Node(const nlohmann::json& j, const std::vector<PortDef> ports_def, QObjec
         {
             if (port["alias"] == def.alias)
             {
-                auto new_port = def.creator();
-
-                new_port->set_id(port["id"]);
+                auto new_port = def.creator_id(port["id"]);
 
                 ports.emplace(new_port->get_id(), std::move(new_port));
             }
@@ -222,12 +220,23 @@ NodeNotifier* Node::get_notifier(void)
     return notifier;
 }
 
-std::vector<PortData> Node::get_ports_data(PortDirection dir)
+std::vector<PortData> Node::get_ports_data_ordered(const std::vector<PortDef> ports_def, PortDirection dir)
 {
     std::vector<PortData> data;
 
-    for (auto& [id, port] : ports)
+    // for (auto& [id, port] : ports)
+    for (auto def : ports_def)
     {
+        Id id = get_port_by_alias(def.alias);
+
+        if (id == nullid)
+        {
+            Log::error("Unable to get the node with this alias: " + def.alias);
+            return data;
+        }
+
+        auto& port = ports[id];
+
         if ((dir == port->get_direction()) && (ConnectionMode::None != port->get_connection_mode()))
         {
             data.push_back(PortData{id,
@@ -246,9 +255,9 @@ NodeSnapshot Node::get_snapshot(void)
                         get_ports_snapshot());
 }
 
-std::map<std::string, PortSnapshot> Node::get_ports_snapshot(void)
+std::unordered_map<std::string, PortSnapshot> Node::get_ports_snapshot(void)
 {
-    std::map<std::string, PortSnapshot> ports_snapshot;
+    std::unordered_map<std::string, PortSnapshot> ports_snapshot;
 
     for (auto& [id, port] : ports)
     {
@@ -258,4 +267,28 @@ std::map<std::string, PortSnapshot> Node::get_ports_snapshot(void)
     }
 
     return ports_snapshot;
+}
+
+Id Node::get_port_by_alias(const std::string& alias)
+{
+    for (auto& [id, port] : ports)
+    {
+        if (port->get_alias() == alias)
+        {
+            return id;
+        }
+    }
+    return nullid;
+}
+
+Properties Node::get_properties(void)
+{
+    Properties properties;
+
+    for (auto& [id, port] : ports)
+    {
+        properties.props[id] = port->get_property();
+    }
+
+    return properties;
 }

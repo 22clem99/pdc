@@ -18,6 +18,7 @@ signals:
     void save_requested();
     void export_requested();
     void close_requested();
+    void edit_properties_requested();
 
 private:
     QUndoStack* stack;

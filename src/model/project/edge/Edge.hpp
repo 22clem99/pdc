@@ -39,18 +39,52 @@ public:
      * @param to_i Input of the node to be link
      *
      * The Edge object does not check anything,
-     * verifications must be done in the graph level
+     * verifications must be done in the graph level.
      */
     Edge(const Id& from_n, const Id& from_o, const Id& to_n, const Id& to_i) : Identifiable()
     {
         init(from_n, from_o, to_n, to_i);
     }
 
+    /**
+     * @brief Construct a new object with an existing ID, used for snapshot
+     *
+     * @param from_n Node from the edge begin
+     * @param from_o Output of the node to be link
+     * @param to_n Node to the edge end
+     * @param to_i Input of the node to be link
+     *
+     * The Edge object does not check anything,
+     * verifications must be done in the graph level.
+     */
     Edge(const Id& from_n, const Id& from_o, const Id& to_n, const Id& to_i, const Id& existing_id) : Identifiable(existing_id)
     {
         init(from_n, from_o, to_n, to_i);
     }
 
+private:
+    /**
+     * @brief private init method to setup an edge
+     *
+     * @param from_n
+     * @param from_o
+     * @param to_n
+     * @param to_i
+     */
+    void init(Id from_n, Id from_o, Id to_n, Id to_i)
+    {
+        from_node = from_n;
+        from_output = from_o;
+        to_node = to_n;
+        to_input = to_i;
+    }
+
+public:
+    /**
+     * @brief Construct a new Edge object based on a JSON file
+     *
+     * @param j content of the file used to create the edge
+     */
     Edge(const nlohmann::json& j)
     {
         id          = j["id"].get<std::string>();
@@ -60,14 +94,10 @@ public:
         to_input    = j["to_input"].get<std::string>();
     }
 
-    void init(Id from_n, Id from_o, Id to_n, Id to_i)
-    {
-        from_node = from_n;
-        from_output = from_o;
-        to_node = to_n;
-        to_input = to_i;
-    }
-
+    /**
+     * @brief Destroy the Edge object
+     *
+     */
     ~Edge() = default;
 
     /**
@@ -91,16 +121,33 @@ public:
         return Tab::tab(tab) + "\tEdge {id:\"" + id + "\", from " + from_node + "[" + from_output + "], to " + to_node +  "[" + to_input + "]}";
     }
 
+    /**
+     * @brief Return the class name of the object, used to generate IDs
+     *
+     * @return std::string
+     */
     static std::string class_name()
     {
         return "Edge";
     }
 
+    /**
+     * @brief Method used to write a JSON file recursively, used to save the project
+     *
+     * @return nlohmann::json
+     */
     nlohmann::json to_json(void)
     {
         return {{"id", id}, {"from_node", from_node}, {"from_output", from_output}, {"to_node", to_node}, {"to_input", to_input}};
     }
 
+    /**
+     * @brief Method to validate the edge JSON description of project file
+     *
+     * @param j content of the file to check
+     * @return true the edge JSON description is valid
+     * @return false the edge JSON description is not valid
+     */
     static bool is_json_valid(const nlohmann::json& j)
     {
         if (!j.is_object())
@@ -120,6 +167,11 @@ public:
         return true;
     }
 
+    /**
+     * @brief Create a snapshot of the edge
+     *
+     * @return EdgeSnapshot snapshot representation object
+     */
     EdgeSnapshot get_snapshot(void)
     {
         return EdgeSnapshot(id,

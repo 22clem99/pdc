@@ -14,10 +14,10 @@
 #include "utils/JSONWrapper.hpp"
 
 const std::vector<PortDef> ImageRGBCombinerNode::port_defs = {
-    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple),
-    NODE_PORT("R_input", Image, PortDirection::Input, ConnectionMode::Single),
-    NODE_PORT("G_input", Image, PortDirection::Input, ConnectionMode::Single),
-    NODE_PORT("B_input", Image, PortDirection::Input, ConnectionMode::Single)
+    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple, ""),
+    NODE_PORT("R_input", Image, PortDirection::Input, ConnectionMode::Single, ""),
+    NODE_PORT("G_input", Image, PortDirection::Input, ConnectionMode::Single, ""),
+    NODE_PORT("B_input", Image, PortDirection::Input, ConnectionMode::Single, "")
 };
 
 ImageRGBCombinerNode::ImageRGBCombinerNode(QObject* parent) : Node(port_defs, parent)
@@ -74,4 +74,9 @@ std::string ImageRGBCombinerNode::get_description(void)
 bool ImageRGBCombinerNode::is_json_valid(const nlohmann::json& j)
 {
     return Node::is_json_valid(j, port_defs);
+}
+
+std::vector<PortData> ImageRGBCombinerNode::get_ports_data(PortDirection dir)
+{
+    return get_ports_data_ordered(port_defs, dir);
 }

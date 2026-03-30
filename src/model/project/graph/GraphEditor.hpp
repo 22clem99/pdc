@@ -16,6 +16,7 @@
 #include <utils/JSONPrintable.hpp>
 #include <dto/NodeData.hpp>
 #include <dto/EdgeData.hpp>
+#include <dto/Properties.hpp>
 #include "../node/NodeAllocator.hpp"
 #include "Snapshot.hpp"
 
@@ -141,6 +142,12 @@ public:
      */
     EdgeData add_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port, const Id& existing_id = nullid);
 
+    /**
+     * @brief Add an edge to the graph based on a snapshot
+     *
+     * @param snap snapshot object repressenting an edge
+     * @return EdgeData data visualiastion of the edge created
+     */
     EdgeData add_edge_snapshot(const EdgeSnapshot& snap);
 
     /**
@@ -240,6 +247,14 @@ public:
      * @return std::vector<EdgeSnapshot>
      */
     std::vector<EdgeSnapshot> get_edges_snapshot_linked_to_node(const Id& id);
+
+    /**
+     * @brief Get properties of a specific node
+     *
+     * @param id node to get the properties from
+     * @return Properties
+     */
+    Properties get_node_properties(const Id& id);
 
 signals:
     /**

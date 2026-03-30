@@ -14,7 +14,7 @@
 #include "utils/JSONWrapper.hpp"
 
 const std::vector<PortDef> ImageInputNode::port_defs = {
-    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple)
+    NODE_PORT("output", Image, PortDirection::Output, ConnectionMode::Multiple, "")
 };
 
 ImageInputNode::ImageInputNode(QObject* parent) : Node(port_defs, parent)
@@ -69,4 +69,9 @@ std::string ImageInputNode::get_description(void)
 bool ImageInputNode::is_json_valid(const nlohmann::json& j)
 {
     return Node::is_json_valid(j, port_defs);
+}
+
+std::vector<PortData> ImageInputNode::get_ports_data(PortDirection dir)
+{
+    return get_ports_data_ordered(port_defs, dir);
 }

@@ -20,6 +20,7 @@ public:
     void on_close_project(void);
     void on_export_project(void);
     bool on_close_window(void);
+    void on_edit_project_properties(void);
 
     GraphController* graph_con;
     PDCView* view;

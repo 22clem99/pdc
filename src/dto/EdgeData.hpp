@@ -6,18 +6,6 @@
 
 #include <utils/Id.hpp>
 
-// enum class PortTypes {
-//     Image,
-//     Int,
-//     Float,
-//     Error
-// };
-
-// struct PortData {
-//     Id port_id;
-//     PortTypes type;
-// };
-
 struct EdgeData {
     Id edge_id;
     Id node_id_src;

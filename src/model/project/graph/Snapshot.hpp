@@ -18,7 +18,7 @@ struct NodeSnapshot {
     std::string node_type;
     QPointF position;
 
-    std::map<std::string, PortSnapshot> ports_snapshot;
+    std::unordered_map<std::string, PortSnapshot> ports_snapshot;
 };
 
 struct EdgeSnapshot {

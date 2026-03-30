@@ -39,6 +39,12 @@ Project::Project(const std::filesystem::path& path)
     zip.find_file_with_unknown_extension(ArchiveImagePath);
     auto image_from_archive = zip.read_binary_file(std::filesystem::path(ArchiveImagePath + ImageExtension::extension_to_string(zip.get_extension_status())));
     input_image = Image(image_from_archive, zip.get_extension_status());
+
+    // Get optional parameters
+    if (manifest_as_json.contains("description"))
+    {
+        description = manifest_as_json["description"];
+    }
 }
 
 Project::~Project()
@@ -93,6 +99,11 @@ nlohmann::json Project::to_json(void)
     nlohmann::json json_file = {{"name", name},
                                 {"PDCVersion", PROJECT_VERSION},
                                 {"graph", node_graph->to_json()}};
+
+    if (description)
+    {
+        json_file["description"] = description;
+    }
 
     return json_file;
 }
@@ -245,4 +256,9 @@ Image Project::get_input_image(void)
 GraphEditor* Project::get_graph_editor(void)
 {
     return node_graph.get();
+}
+
+ProjectData Project::get_dto(void)
+{
+    return ProjectData(name, std::nullopt, description);
 }

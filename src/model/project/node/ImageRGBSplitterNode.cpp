@@ -14,10 +14,10 @@
 #include "utils/JSONWrapper.hpp"
 
 const std::vector<PortDef> ImageRGBSplitterNode::port_defs = {
-    NODE_PORT("input", Image, PortDirection::Input, ConnectionMode::Single),
-    NODE_PORT("R_output", Image, PortDirection::Output, ConnectionMode::Multiple),
-    NODE_PORT("G_output", Image, PortDirection::Output, ConnectionMode::Multiple),
-    NODE_PORT("B_output", Image, PortDirection::Output, ConnectionMode::Multiple)
+    NODE_PORT("input", Image, PortDirection::Input, ConnectionMode::Single, ""),
+    NODE_PORT("R_output", Image, PortDirection::Output, ConnectionMode::Multiple, ""),
+    NODE_PORT("G_output", Image, PortDirection::Output, ConnectionMode::Multiple, ""),
+    NODE_PORT("B_output", Image, PortDirection::Output, ConnectionMode::Multiple, "")
 };
 
 ImageRGBSplitterNode::ImageRGBSplitterNode(QObject* parent) : Node(port_defs, parent)
@@ -75,4 +75,9 @@ std::string ImageRGBSplitterNode::get_description(void)
 bool ImageRGBSplitterNode::is_json_valid(const nlohmann::json& j)
 {
     return Node::is_json_valid(j, port_defs);
+}
+
+std::vector<PortData> ImageRGBSplitterNode::get_ports_data(PortDirection dir)
+{
+    return get_ports_data_ordered(port_defs, dir);
 }

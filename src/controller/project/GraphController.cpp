@@ -13,6 +13,7 @@ GraphController::GraphController(GraphEditor* model, GraphViewer* view, QUndoSta
     connect(view->scene, &GraphScene::request_add_node, this, &GraphController::on_open_node_picker);
     connect(view->scene, &GraphScene::on_node_move, this, &GraphController::on_move_node);
     connect(view->scene, &GraphScene::request_remove_node, this, &GraphController::on_request_remove_node);
+    connect(view->scene, &GraphScene::request_remove_node, this, &GraphController::on_request_edit_properties);
     connect(this, &GraphController::ask_clear_scene, view->scene, &GraphScene::clear_scene);
     connect(view->scene, &GraphScene::request_new_edge, this, &GraphController::on_request_create_edge);
     connect(view->scene, &GraphScene::request_remove_edge, this, &GraphController::on_request_remove_edge);
@@ -188,11 +189,17 @@ void GraphController::on_request_create_edge(const Id& from_node, const Id& from
     undo_stack->push(cmd);
 }
 
-
-
 void GraphController::on_request_remove_edge(const Id& id)
 {
     Log::debug("View request to remove the node " + id);
 
     undo_stack->push(new RemoveEdgeCommand(editor, id));
+}
+
+void GraphController::on_request_edit_properties(const Id& id)
+{
+    Log::debug("View request to edit node propertie");
+
+    // First ask to the model the node
+    auto props = editor->get_node_properties(id);
 }

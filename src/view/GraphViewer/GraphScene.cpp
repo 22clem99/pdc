@@ -54,6 +54,7 @@ void GraphScene::add_node_to_graph(const NodeData& data)
     // connect here the moved function
     connect(node_view, &NodeView::node_moved, this, &GraphScene::on_node_move);
     connect(node_view, &NodeView::request_remove_node, this, &GraphScene::request_remove_node);
+    connect(node_view, &NodeView::request_edit_properties, this, &GraphScene::request_edit_properties);
     connect(node_view, &NodeView::request_create_edge, this, &GraphScene::on_create_edge);
 }
 

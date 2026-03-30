@@ -131,7 +131,7 @@ void Graph::init_node(Node* node, const std::string& node_type, const QPointF& p
         Log::debug("The node:\"" + id + "\" is set as the tail");
     }
 
-    node->position = pos;
+    node->set_position(pos);
 
     analysis.analysis_dirty = true;
 }
@@ -822,4 +822,9 @@ NodeSnapshot Graph::get_node_snapshot(const Id& id)
 EdgeSnapshot Graph::get_edge_snapshot(const Id& id)
 {
     return edges[id]->get_snapshot();
+}
+
+Properties Graph::get_node_properties(const Id& id)
+{
+    return nodes[id]->get_properties();
 }

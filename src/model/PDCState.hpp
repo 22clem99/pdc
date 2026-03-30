@@ -10,6 +10,7 @@
 
 #include "project/Project.hpp"
 #include <utils/JSONPrintable.hpp>
+#include "../dto/ProjectData.hpp"
 
 enum class PDCProjectState
 {
@@ -53,6 +54,8 @@ public:
     OpenProjectStatus is_project_file_valid(const std::filesystem::path& path);
 
     bool open_project(const std::filesystem::path& path);
+
+    ProjectData get_project_data(void);
 };
 
 #endif

@@ -209,3 +209,9 @@ std::vector<EdgeSnapshot> GraphEditor::get_edges_snapshot_linked_to_node(const I
 
     return edges_snapshot;
 }
+
+
+Properties GraphEditor::get_node_properties(const Id& id)
+{
+    return node_graph.get_node_properties(id);
+}

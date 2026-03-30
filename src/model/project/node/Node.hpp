@@ -22,6 +22,7 @@
 #include <utils/JSONPrintable.hpp>
 #include "NodeNotifier.hpp"
 #include <dto/NodeData.hpp>
+#include <dto/Properties.hpp>
 #include "../graph/Snapshot.hpp"
 
 /**
@@ -58,19 +59,42 @@ enum class VisitState
 class Node : public QObject, public Identifiable<Node>
 {
     Q_OBJECT
-public:
-    std::map<Id, std::unique_ptr<IPortBase>> ports;
 
+private:
     NodeKind kind;
-
     VisitState visite_state;
-
     QPointF position;
-
     NodeNotifier* notifier = nullptr;
 
+public:
+    std::unordered_map<Id, std::unique_ptr<IPortBase>> ports;
+
+    /**
+     * Constructors
+     *
+     */
+
+    /**
+     * @brief Construct a new Node object
+     *
+     * @param parent Qt patent reference
+     */
     Node(QObject* parent = nullptr) : QObject(parent) {}
+
+    /**
+     * @brief Construct a new Node object based on a snapshot
+     *
+     * @param snapshot object to represent a node
+     * @param parent Qt patent reference
+     */
     Node(const NodeSnapshot& snapshot, QObject* parent = nullptr) : QObject(parent) {}
+
+    /**
+     * @brief Construct a new Node object
+     *
+     * @param j
+     * @param parent
+     */
     Node(const nlohmann::json& j, QObject* parent = nullptr) : QObject(parent) {}
 
 
@@ -142,13 +166,20 @@ public:
     void set_notifier(NodeNotifier* n);
     NodeNotifier* get_notifier(void);
 
-    std::vector<PortData> get_ports_data(PortDirection dir);
+    std::vector<PortData> get_ports_data_ordered(const std::vector<PortDef> ports_def, PortDirection dir);
+
+    virtual std::vector<PortData> get_ports_data(PortDirection dir) = 0;
 
     virtual NodeKind get_kind(void) = 0;
 
     NodeSnapshot get_snapshot(void);
 
-    std::map<std::string, PortSnapshot> get_ports_snapshot(void);
+    std::unordered_map<std::string, PortSnapshot> get_ports_snapshot(void);
+
+    Id get_port_by_alias(const std::string& alias);
+
+    Properties get_properties(void);
+
 signals:
     void position_changed(const std::string& id, const QPointF& pos);
 };

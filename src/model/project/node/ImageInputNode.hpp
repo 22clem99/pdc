@@ -86,6 +86,8 @@ public:
 
     static bool is_json_valid(const nlohmann::json& j);
 
+    std::vector<PortData> get_ports_data(PortDirection dir) override;
+
 private:
     inline static NodeRegister<ImageInputNode> reg;
 };

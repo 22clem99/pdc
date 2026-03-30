@@ -3,6 +3,7 @@
 #include "ProjectController.hpp"
 #include "../../view/dialog/NewProjectDialog/NewProjectDialog.hpp"
 #include "../../view/dialog/OpenProjectDialog/OpenProjectDialog.hpp"
+#include "../../view/dialog/ProjectProperties/ProjectProperties.hpp"
 #include "../../view/dialog/YesNoDialog/YesNoDialog.hpp"
 #include "../../view/PDCMenuBar/PDCMenuBar.hpp"
 #include "cmds/ProjectCMD.hpp"
@@ -17,6 +18,7 @@ ProjectController::ProjectController(PDCState* model, PDCView* view, QUndoStack*
     connect(view->menu_bar, &PDCMenuBar::open_requested, this, &ProjectController::on_open_project);
     connect(view->menu_bar, &PDCMenuBar::close_requested, this, &ProjectController::on_close_project);
     connect(view->menu_bar, &PDCMenuBar::export_requested, this, &ProjectController::on_export_project);
+    connect(view->menu_bar, &PDCMenuBar::edit_properties_requested, this, &ProjectController::on_edit_project_properties);
     connect(view, &PDCView::request_close_window, this, &ProjectController::on_close_window);
 }
 
@@ -201,4 +203,27 @@ bool ProjectController::on_close_window(void)
     Log::info("View ask to close the application");
 
     return true;
+}
+
+void ProjectController::on_edit_project_properties(void)
+{
+    Log::info("View ask to edit project properties");
+
+
+    if (!model->has_project())
+    {
+        Log::info("No project open.");
+        return;
+    }
+
+    ProjectData data = model->get_project_data();
+
+    ProjectProperties dialog(data);
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    ProjectData modified_values = dialog.project_data();
+
+    Log::debug("New project data are:\n- name: " + modified_values.name + "\n- img: " + modified_values.img_path.value() + "\n- description: " + modified_values.description.value());
 }

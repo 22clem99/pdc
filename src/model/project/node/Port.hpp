@@ -21,6 +21,8 @@
 #include <utils/JSONPrintable.hpp>
 #include <utils/Types.hpp>
 #include "../graph/Snapshot.hpp"
+#include <dto/Properties.hpp>
+#include "PortConstraints.hpp"
 
 /**
  * @brief describe the direction of the Port
@@ -40,7 +42,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(PortDirection, {
 /**
  * @brief Describe the connection mode
  *
- * None -> no connection available (mainly used for data to set by GUI)
+ * None -> no connection available (used for properties to set by GUI)
  * Single -> One connection only is allowed
  * Multiple -> Port can be bind multiple time
  */
@@ -56,63 +58,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ConnectionMode, {
     {ConnectionMode::Multiple, "Multiple"}
 })
 
-/**
- * @brief The class ValueConstraints describe a generic interface to provite value constraint for Port
- *
- * @tparam T type of the Port
- */
-template<typename T>
-class ValueConstraints
-{
-public:
-    ValueConstraints() = default;
-    std::optional<T> min;
-    std::optional<T> max;
-    std::optional<T> step;
-
-    std::optional<std::vector<T>> allowed_values;
-
-    /**
-     * @brief Test the value depending constraint setup
-     *
-     * @param value value to be tested
-     * @return true the value is valid
-     * @return false the value is not valid
-     */
-    bool validate(const T& value)
-    {
-        if (allowed_values)
-        {
-            return find(
-                allowed_values->begin(),
-                allowed_values->end(),
-                value
-            ) != allowed_values->end();
-        }
-
-        if (min && T::lesser(value, min))
-        {
-            return false;
-        }
-
-        if (max && T::greater(value, max))
-        {
-            return false;
-        }
-
-        if (step && T::is_divisible(value, step))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    bool is_json_valid(const nlohmann::json& j)
-    {
-        return false;
-    }
-
-};
 
 /**
  * @brief Abstract class used as list of reference in Node
@@ -202,11 +147,13 @@ public:
 
     virtual const Id get_id() const = 0;
 
-    virtual void set_id(Id new_id) = 0;
-
     virtual PortTypes get_port_type(void) const = 0;
 
     virtual PortSnapshot get_snapshot(void) const = 0;
+
+    virtual std::string get_alias(void) const = 0;
+
+    virtual Property get_property(void) const = 0;
 };
 
 /**
@@ -220,43 +167,78 @@ public:
 template<typename T>
 class Port : public Identifiable<Port<T>>, public IPortBase
 {
+private:
+    /**
+     * @brief Value of the port
+     *
+     */
+    T data;
+
+    /**
+     * @brief Direction of the port
+     *
+     */
+    enum PortDirection dir;
+
+    /**
+     * @brief Connection mode of the port
+     *
+     */
+    enum ConnectionMode mode;
+
+    using ConstraintType = std::conditional_t<Constrainable<T>, std::optional<ValueConstraints<T>>,std::monostate>;
+
+    /**
+     * @brief Constaints depentding of the Type used in the port
+     *
+     */
+    ConstraintType constraints;
+
+    /**
+     * @brief Reference of all edges link to this port
+     *
+     */
+    std::vector<Id> connected_edges;
+
+    /**
+     * @brief Alias of the port used for node definition
+     *
+     */
+    std::string port_alias;
+
+    /**
+     * @brief short description of the port (used for properties edition in GUI)
+     *
+     */
+    std::string pretty_print;
+
+    using Identifiable<Port<T>>::id;
 public:
-using Identifiable<Port<T>>::id;
 
-    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias) : Identifiable<Port<T>>()
+    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias, const std::string& desc) : Identifiable<Port<T>>()
     {
-        init(p_dir, p_mode, alias);
+        init(p_dir, p_mode, alias, desc);
     }
 
-    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias, const Id& existing_id) : Identifiable<Port<T>>(existing_id)
+    Port(PortDirection p_dir, ConnectionMode p_mode, std::string alias, const Id& existing_id, const std::string& desc) : Identifiable<Port<T>>(existing_id)
     {
-        init(p_dir, p_mode, alias);
+        init(p_dir, p_mode, alias, desc);
     }
 
-    void init(PortDirection p_dir, ConnectionMode p_mode, std::string alias)
+    void init(PortDirection p_dir, ConnectionMode p_mode, std::string alias, const std::string& desc)
     {
         data = T();
         dir = p_dir;
         mode = p_mode;
         connected_edges = {};
         port_alias = alias;
+        pretty_print = desc;
     }
 
-    const std::type_info& value_type() const {
+    const std::type_info& value_type() const
+    {
         return typeid(T);
     }
-
-    T data;
-    enum PortDirection dir;
-    enum ConnectionMode mode;
-
-    using ConstraintType = std::conditional_t<Constrainable<T>, std::optional<ValueConstraints<T>>,std::monostate>;
-
-    ConstraintType constraints;
-
-    std::vector<Id> connected_edges;
-
-    std::string port_alias;
 
     bool set_value(const T& value)
     {
@@ -345,7 +327,6 @@ using Identifiable<Port<T>>::id;
         return connected_edges;
     }
 
-
     void add_connected_edge(const Id& edge_id) override
     {
         connected_edges.push_back(edge_id);
@@ -360,14 +341,7 @@ using Identifiable<Port<T>>::id;
     {
         nlohmann::json port_json = {{"id", id}, {"alias", port_alias}};
 
-        // TODO add value and add type management
-        // if constexpr (Constrainable<T>)
-        // {
-        //     if (constraints)
-        //     {
-        //         port_json["constraints"] = constraints.value().to_json();
-        //     }
-        // }
+        // Add here the print of data
 
         return port_json;
     }
@@ -375,11 +349,6 @@ using Identifiable<Port<T>>::id;
     const Id get_id(void) const override
     {
         return this->id;
-    }
-
-    void set_id(Id new_id) override
-    {
-        this->id = new_id;
     }
 
     PortTypes get_port_type(void) const override
@@ -392,6 +361,16 @@ using Identifiable<Port<T>>::id;
         return PortSnapshot(id,
                             port_alias);
     }
+
+    std::string get_alias(void) const
+    {
+        return port_alias;
+    }
+
+    Property get_property(void) const
+    {
+        return Property();
+    }
 };
 
 struct PortDef
@@ -399,11 +378,12 @@ struct PortDef
     std::string alias;
     std::function<std::unique_ptr<IPortBase>()> creator;
     std::function<std::unique_ptr<IPortBase>(const Id&)> creator_id;
+    std::string desc;
 };
 
-#define NODE_PORT(alias, type, dir, mode) \
+#define NODE_PORT(alias, type, dir, mode, desc) \
     { alias, \
-     [](){ return std::make_unique<Port<type>>(dir, mode, alias); },\
-     [](const Id& port_id){ return std::make_unique<Port<type>>(dir, mode, alias, port_id); }, }
+     [](){ return std::make_unique<Port<type>>(dir, mode, alias, desc); },\
+     [](const Id& port_id){ return std::make_unique<Port<type>>(dir, mode, alias, port_id, desc); }, }
 
 #endif

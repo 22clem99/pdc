@@ -53,6 +53,7 @@ signals:
     void request_add_node(const QPointF& scene_pos);
     void on_node_move(const Id& id, const QPointF& position);
     void request_remove_node(const Id& id);
+    void request_edit_properties(const Id& id);
     void request_new_edge(const Id& from_node, const Id& from_port, const Id& to_node, const Id& to_port);
     void request_remove_edge(const Id& id);
 

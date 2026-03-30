@@ -14,6 +14,7 @@ PDCMenuBar::PDCMenuBar(QUndoStack* undo_stack, QMainWindow* window): QObject(win
     QAction* save_action = project_menu->addAction("Save");
     QAction* export_action = project_menu->addAction("Export");
     QAction* close_action = project_menu->addAction("Close");
+    QAction* edit_action = project_menu->addAction("Properties");
 
     // Add undo/redo buttons
     QAction *undo_action = stack->createUndoAction(this);
@@ -33,4 +34,5 @@ PDCMenuBar::PDCMenuBar(QUndoStack* undo_stack, QMainWindow* window): QObject(win
     connect(save_action, &QAction::triggered, this, &PDCMenuBar::save_requested);
     connect(export_action, &QAction::triggered, this, &PDCMenuBar::export_requested);
     connect(close_action, &QAction::triggered, this, &PDCMenuBar::close_requested);
+    connect(edit_action, &QAction::triggered, this, &PDCMenuBar::edit_properties_requested);
 }

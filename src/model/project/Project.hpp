@@ -7,11 +7,13 @@
 #include <filesystem>
 #include <string>
 #include <QObject>
+#include <optional>
 
 #include "graph/GraphEditor.hpp"
 #include <utils/JSONPrintable.hpp>
 #include <utils/Types.hpp>
 #include <dto/NodeData.hpp>
+#include <dto/ProjectData.hpp>
 
 enum class ProjectState
 {
@@ -66,14 +68,16 @@ private:
 
     Image input_image;
 
+    std::optional<std::string> description;
+
 public:
 
     /**
-     * @brief Construct a new Project object used when a new project is build from a location and with a name
+     * @brief Construct a new Project object used when a new project is create
      *
-     * @param project_name
-     * @param file_path
-     * @param img_path
+     * @param project_name new project name
+     * @param file_path new project path
+     * @param img_path image used in the project
      */
     Project(const std::string& project_name, const std::filesystem::path file_path, const std::filesystem::path img_path);
 
@@ -133,6 +137,8 @@ public:
     Image get_input_image(void);
 
     GraphEditor* get_graph_editor(void);
+
+    ProjectData get_dto(void);
 
 signals:
     void image_changed(const Image& img);

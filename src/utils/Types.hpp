@@ -6,6 +6,7 @@
 
 #include "Int.hpp"
 #include "Image.hpp"
+#include "Float.hpp"
 #include "Id.hpp"
 
 template<typename T>
@@ -13,6 +14,9 @@ struct is_constrainable : std::false_type {};
 
 template<>
 struct is_constrainable<Int> : std::true_type {};
+
+template<>
+struct is_constrainable<Float> : std::true_type {};
 
 template<>
 struct is_constrainable<Image> : std::false_type {};

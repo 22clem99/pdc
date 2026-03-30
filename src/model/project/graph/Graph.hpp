@@ -17,6 +17,7 @@
 #include <utils/JSONPrintable.hpp>
 #include <dto/NodeData.hpp>
 #include <dto/EdgeData.hpp>
+#include <dto/Properties.hpp>
 
 /**
  * @brief Provide an abstraction result of the graph analyze
@@ -54,12 +55,12 @@ public:
     /**
      * @brief Map of nodes
      */
-    std::map<Id, std::unique_ptr<Node>> nodes;
+    std::unordered_map<Id, std::unique_ptr<Node>> nodes;
 
     /**
      * @brief Map of edges between nodes
      */
-    std::map<Id, std::unique_ptr<Edge>> edges;
+    std::unordered_map<Id, std::unique_ptr<Edge>> edges;
 
     /**
      * @brief Construct a dafault Graph
@@ -364,11 +365,31 @@ public:
      */
     PortDirection get_port_direction(const Id& node_id, const Id& port_id);
 
+    /**
+     * @brief Get a snapshot of a specific node object
+     *
+     * @param id of the node to get the snapshot from
+     * @return NodeSnapshot snapshot created
+     */
     NodeSnapshot get_node_snapshot(const Id& id);
 
+    /**
+     * @brief Get a snapshot of a specific edge object
+     *
+     * @param id of the edge to get the snapshot from
+     * @return EdgeSnapshot snapshot created
+     */
     EdgeSnapshot get_edge_snapshot(const Id& id);
 
-    signals:
+    /**
+     * @brief Get properties of a node
+     *
+     * @param id ID of the node to get properties from
+     * @return Properties
+     */
+    Properties get_node_properties(const Id& id);
+
+signals:
     /**
      * @brief Signal to aware the controller that a node has been added to the model
      *

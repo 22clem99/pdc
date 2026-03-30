@@ -170,12 +170,19 @@ public:
         QMenu menu;
 
         QAction* remove_node = menu.addAction("Remove Node");
+        QAction* properties_node = menu.addAction("Properties");
         QAction* action = menu.exec(event->screenPos());
 
         if (action == remove_node)
         {
             Log::info("View ask to remove node " + node_id);
             emit request_remove_node(node_id);
+        }
+
+        if (action == properties_node)
+        {
+            Log::info("View ask to remove node " + node_id);
+            emit request_edit_properties(node_id);
         }
 
         event->accept();
@@ -253,6 +260,7 @@ public:
 signals:
     void node_moved(const Id& id, const QPointF& position);
     void request_remove_node(const Id& id);
+    void request_edit_properties(const Id& id);
     void request_create_edge(const Id& port_id, const Id& node_id);
 
 private:

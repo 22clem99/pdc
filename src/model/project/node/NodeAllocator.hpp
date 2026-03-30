@@ -42,11 +42,18 @@ public:
      * @brief Method to allocate an object of kind Node registerd in the factory
      *
      * @param node_type keyword of the node to allocate
+     * @param g parent pointer used by Qt
      * @return std::unique_ptr<Node> pointer on the new object allocate
      */
     static std::unique_ptr<Node> alloc_node(const std::string& node_type, Graph* g);
 
-
+    /**
+     * @brief Allocate a node object register in the factory based on a snapshot
+     *
+     * @param snap snapshot of the node to allocate
+     * @param g parent pointer used by Qt
+     * @return std::unique_ptr<Node>
+     */
     static std::unique_ptr<Node> alloc_node_snapshot(const NodeSnapshot& snap, Graph* g);
 
     /**
@@ -54,6 +61,7 @@ public:
      *
      * @param node_type keyword of the node to allocate
      * @param json json file
+     * @param g parent pointer used by Qt
      * @return std::unique_ptr<Node> pointer on the new object allocate
      */
     static std::unique_ptr<Node> alloc_node_json(const std::string& node_type, const nlohmann::json& j, Graph* g);
@@ -66,10 +74,29 @@ public:
      */
     static std::optional<NodeProperty> get_property(const std::string& node_type);
 
+    /**
+     * @brief Get the list of nodes available
+     *
+     * @return std::unordered_map<Id, NodeDescriptor>
+     */
     static std::unordered_map<Id, NodeDescriptor> get_available_node(void);
 
+    /**
+     * @brief Get the pretty print of a node type
+     *
+     * @param node_type node type to get the pretty print from
+     * @return std::string pretty print
+     */
     static std::string get_pretty_print(const std::string& node_type);
 
+    /**
+     * @brief Call the specific JSON validation method of a specific node type
+     *
+     * @param node_type node type to be tested
+     * @param j JSON content of the node
+     * @return true the JSON content is valid
+     * @return false the JSON content is not valid
+     */
     static bool is_json_valid(const std::string& node_type, const nlohmann::json& j);
 private:
     /**
