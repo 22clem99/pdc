@@ -23,7 +23,6 @@ foreach(src_file ${src_files})
         utils
         Qt6::Widgets
         Qt6::Gui
-        Node
         Graph
         Project
     )

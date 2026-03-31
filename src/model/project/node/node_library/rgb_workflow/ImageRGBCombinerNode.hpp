@@ -25,9 +25,9 @@
 #include <string>
 #include <QObject>
 
-#include "Node.hpp"
-#include "NodeRegister.hpp"
-#include "Port.hpp"
+#include "../../Node.hpp"
+#include "../../NodeRegister.hpp"
+#include "../../Port.hpp"
 
 /**
  * @brief Define ImageRGBCombinerNode, a specific Node

@@ -4,8 +4,8 @@
 
 #include <model/project/node/Node.hpp>
 #include <model/project/node/NodeAllocator.hpp>
-#include <model/project/node/ImageInputNode.hpp>
-#include <model/project/node/ImageOutputNode.hpp>
+#include <model/project/node/node_library/input/ImageInputNode.hpp>
+#include <model/project/node/node_library/output/ImageOutputNode.hpp>
 
 #include <utils/Log.hpp>
 

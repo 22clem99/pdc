@@ -1,5 +1,4 @@
-# add_subdirectory(input)
-# add_subdirectory(output)
+# add_subdirectory(node_library)
 
 add_library(Node SHARED
     Node.cpp
@@ -7,14 +6,14 @@ add_library(Node SHARED
     NodeNotifier.hpp
     NodeAllocator.cpp
     NodeAllocator.hpp
-    ImageInputNode.hpp
-    ImageInputNode.cpp
-    ImageOutputNode.hpp
-    ImageOutputNode.cpp
-    ImageRGBSplitterNode.hpp
-    ImageRGBSplitterNode.cpp
-    ImageRGBCombinerNode.hpp
-    ImageRGBCombinerNode.cpp
+    node_library/input/ImageInputNode.hpp
+    node_library/input/ImageInputNode.cpp
+    node_library/output/ImageOutputNode.hpp
+    node_library/output/ImageOutputNode.cpp
+    node_library/rgb_workflow/ImageRGBSplitterNode.hpp
+    node_library/rgb_workflow/ImageRGBSplitterNode.cpp
+    node_library/rgb_workflow/ImageRGBCombinerNode.hpp
+    node_library/rgb_workflow/ImageRGBCombinerNode.cpp
 )
 
 target_link_libraries(Node

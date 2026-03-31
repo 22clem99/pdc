@@ -96,7 +96,6 @@ ProjectData ProjectProperties::project_data(void) const
     if (description_edit->toPlainText().toStdString() != "")
         description = description_edit->toPlainText().toStdString();
 
-
     return ProjectData(project_name_edit->text().toStdString(),
                        path,
                        description);

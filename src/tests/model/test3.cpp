@@ -1,8 +1,8 @@
 #include <model/project/Project.hpp>
 
 #include <model/project/graph/Graph.hpp>
-#include <model/project/node/ImageInputNode.hpp>
-#include <model/project/node/ImageOutputNode.hpp>
+#include <model/project/node/node_library/input/ImageInputNode.hpp>
+#include <model/project/node/node_library/output/ImageOutputNode.hpp>
 
 #include <utils/Log.hpp>
 #include <cassert>
