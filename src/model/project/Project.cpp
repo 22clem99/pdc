@@ -262,3 +262,20 @@ ProjectData Project::get_dto(void)
 {
     return ProjectData(name, std::nullopt, description);
 }
+
+ImgStatus Project::change_image(const std::filesystem::path& path)
+{
+    input_image = Image(path);
+
+    return input_image.get_img_status();
+}
+
+void Project::set_description(const std::string& new_description)
+{
+    description = new_description;
+}
+
+void Project::set_name(const std::string& new_name)
+{
+    name = new_name;
+}

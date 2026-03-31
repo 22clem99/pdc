@@ -140,6 +140,12 @@ public:
 
     ProjectData get_dto(void);
 
+    ImgStatus change_image(const std::filesystem::path& path);
+
+    void set_description(const std::string& new_description);
+
+    void set_name(const std::string& new_name);
+
 signals:
     void image_changed(const Image& img);
 };

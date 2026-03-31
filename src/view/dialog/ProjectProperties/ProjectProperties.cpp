@@ -87,7 +87,17 @@ ProjectProperties::ProjectProperties(const ProjectData& data, QWidget* parent) :
 
 ProjectData ProjectProperties::project_data(void) const
 {
+    std::optional<std::string> path = std::nullopt;
+    std::optional<std::string> description = std::nullopt;
+
+    if (img_path_edit->text().toStdString() != "")
+        path = img_path_edit->text().toStdString();
+
+    if (description_edit->toPlainText().toStdString() != "")
+        description = description_edit->toPlainText().toStdString();
+
+
     return ProjectData(project_name_edit->text().toStdString(),
-                       img_path_edit->text().toStdString(),
-                       description_edit->toPlainText().toStdString());
+                       path,
+                       description);
 }

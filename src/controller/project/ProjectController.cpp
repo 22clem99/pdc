@@ -209,21 +209,51 @@ void ProjectController::on_edit_project_properties(void)
 {
     Log::info("View ask to edit project properties");
 
-
     if (!model->has_project())
     {
         Log::info("No project open.");
         return;
     }
 
+    // Get project data in the model
     ProjectData data = model->get_project_data();
 
+    // Create the dialog window
     ProjectProperties dialog(data);
-
     if (dialog.exec() != QDialog::Accepted)
         return;
 
+    // Get data set in the property dialog
     ProjectData modified_values = dialog.project_data();
 
-    Log::debug("New project data are:\n- name: " + modified_values.name + "\n- img: " + modified_values.img_path.value() + "\n- description: " + modified_values.description.value());
+    Log::debug("Change project data are:\n- name: " + modified_values.name);
+    if (modified_values.img_path)
+        Log::debug("\n- img: " + modified_values.img_path.value());
+    if (modified_values.description)
+        Log::debug("\n- description: " + modified_values.description.value());
+
+    // Test the new name
+    if (modified_values.name != data.name)
+    {
+        if (modified_values.name != "")
+        {
+            model->get_project()->set_name(modified_values.name);
+        }
+        else
+        {
+            QMessageBox::warning(nullptr, "Error", "The project name can't be empty");
+        }
+    }
+
+    // Test image path
+    if (modified_values.img_path)
+    {
+        model->get_project()->change_image(std::filesystem::path(modified_values.img_path.value()));
+    }
+
+    // Test description
+    if (modified_values.description)
+    {
+        model->get_project()->set_description(modified_values.description.value());
+    }
 }
